@@ -1,0 +1,6 @@
+config:
+    bundleName: AppBundle
+    generate: form
+    autowire: true
+    autoconfigure: true
+    public: true

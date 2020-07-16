@@ -1,0 +1,9 @@
+{
+    "config": {
+        "bundleName": "AppBundle",
+        "generate": "all",
+        "autowire": false,
+        "autoconfigure": true,
+        "public": true
+    }
+}
