@@ -1,0 +1,15 @@
+version: '3'
+services:
+  php:
+    build:
+      context: .
+      args:
+        TIMEZONE: ${TIMEZONE}
+    ports:
+      - "9000:9001"
+    env_file:
+      - .env
+    volumes:
+      - ./:/var/www
+    command:
+      - "/var/www/run.php"
