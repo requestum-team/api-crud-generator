@@ -7,19 +7,13 @@ use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Filesystem\Filesystem;
 
 use Requestum\ApiGeneratorBundle\Model\ActionCollection;
-use Requestum\ApiGeneratorBundle\Model\Action;
-use Requestum\ApiGeneratorBundle\Model\BaseModel;
 use Requestum\ApiGeneratorBundle\Model\EntityCollection;
 use Requestum\ApiGeneratorBundle\Model\FormCollection;
-use Requestum\ApiGeneratorBundle\Model\Routing;
 use Requestum\ApiGeneratorBundle\Model\RoutingCollection;
 
 
 class Generator
 {
-
-    const ATTRIBUT_PATTERN = '/\{\w+\}/';
-
     /**
      * @var Filesystem
      */
@@ -102,34 +96,6 @@ class Generator
 
     public function generate()
     {
-        foreach ($this->openApiSchema['paths'] as $url => $path) {
-            foreach ($path as $method => $data) {
-                if (!BaseModel::isAllowedMethods($method)) {
-                    continue;
-                }
-
-                $servicePath = $this->prepareServicePath($url);
-                $hasAttributs = $this->hasAttributs($url);
-
-                $action = new Action();
-                $action
-                    ->setHasAttributs($hasAttributs)
-                    ->setServicePath($servicePath)
-                    ->setName(array_shift($servicePath))
-                    ->setMethod($method)
-                    ->addArguments('AppBundle\Entity\Category')
-                    ->addArguments('AppBundle\Form\Category\CategoryType')
-                ;
-                $this->actionCollection->addElement($action);
-
-                $routing = new Routing($action);
-                $routing
-                    ->setUrl($url)
-                ;
-                $this->routingCollection->addElement($routing);
-            }
-        }
-
         $this->buildBaseFileSystem();
         $this->generateAction();
         $this->generateEntity();
@@ -283,48 +249,5 @@ class Generator
                 Yaml::dump($dump, 4)
             );
         }
-    }
-
-    /**
-     * @param string $url
-     *
-     * @return array
-     */
-    protected function prepareServicePath(string $url): array
-    {
-        $names = explode('/', $url);
-        $names = array_filter($names, function($k) {
-            return !empty($k) && !preg_match(Generator::ATTRIBUT_PATTERN, $k);
-        });
-
-        return array_map(array($this, 'pluralToSingular'), $names);
-    }
-
-    /**
-     * @param string $url
-     *
-     * @return bool
-     */
-    protected function hasAttributs(string $url): bool
-    {
-        return preg_match(Generator::ATTRIBUT_PATTERN, $url);
-    }
-
-    /**
-     * @param string $string
-     *
-     * @return string
-     */
-    protected function pluralToSingular(string $string): string
-    {
-        if (strtolower(substr($string, -3) === 'ies')) {
-            return strtolower(substr($string, 0,-3) . 'y');
-        }
-
-        if (strtolower(substr($string, -1) === 's')) {
-            return strtolower(substr($string, 0, -1));
-        }
-
-        return $string;
     }
 }

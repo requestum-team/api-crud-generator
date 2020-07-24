@@ -55,13 +55,6 @@ class ApiGeneratorCommand extends Command
         $outputDirectory = $input->getArgument('outputDirectory');
 
         $openApiSchema =$config = FileHelper::load($inputSpec);
-        if (empty($openApiSchema['paths'])) {
-            throw new \Exception('Node paths is absent');
-        }
-
-        if (empty($openApiSchema['components'])) {
-            throw new \Exception('Node components is absent');
-        }
 
         $configPath = $input->getOption('configPath');
         $config = new Config($configPath);
