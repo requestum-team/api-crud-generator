@@ -40,6 +40,11 @@ class EntityProperty
     /**
      * @var bool
      */
+    private bool $isRequired = false;
+
+    /**
+     * @var bool
+     */
     private bool $isNullable = false;
 
     /**
@@ -171,6 +176,26 @@ class EntityProperty
     public function setIsPrimary(bool $isPrimary)
     {
         $this->isPrimary = $isPrimary;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequired(): bool
+    {
+        return $this->isRequired;
+    }
+
+    /**
+     * @param bool $isRequired
+     *
+     * @return EntityProperty
+     */
+    public function setIsRequired(bool $isRequired)
+    {
+        $this->isRequired = $isRequired;
 
         return $this;
     }
