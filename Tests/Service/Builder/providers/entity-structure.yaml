@@ -1,0 +1,96 @@
+---
+openapi: 3.0.2
+info:
+  title: Field types
+  version: 1.0.0
+components:
+  schemas:
+    StructureTestEntity:
+      description: ""
+      required:
+        - name
+      x-primary-key:
+        - id
+      type: object
+      properties:
+        id:
+          description: ""
+          type: integer
+        name:
+          description: ""
+          type: string
+        email:
+          description: ""
+          type: string
+          format: email
+          nullable: true
+        slug:
+          description: ""
+          type: string
+          minLength: 5
+          maxLength: 10
+        ssn:
+          description: ""
+          type: string
+          pattern: '^\d{3}-\d{2}-\d{4}$'
+        amount:
+          description: ""
+          type: integer
+          minimum: 5
+          maximum: 10
+        postCount:
+          description: ""
+          type: integer
+          format: int32
+        price:
+          description: ""
+          type: number
+          format: double
+        status:
+          type: string
+          enum:
+            - new
+            - draft
+            - inProgress
+            - active
+        arrayField:
+          type: array
+          items:
+            type: integer
+          minItems: 1
+          maxItems: 10
+        comments:
+          description: ""
+          type: array
+          items:
+            $ref: '#/components/schemas/CommentEntity'
+        postId:
+          $ref: '#/components/schemas/PostEntity'
+          description: ""
+    PrimaryKeyEntity:
+      description: ""
+      required:
+        - name
+      x-primary-key:
+        - id
+        - name
+      type: object
+      properties:
+        id:
+          description: ""
+          type: integer
+        name:
+          description: ""
+          type: string
+    NonePrimaryKeyEntity:
+      description: ""
+      required:
+        - name
+      type: object
+      properties:
+        id:
+          description: ""
+          type: integer
+        name:
+          description: ""
+          type: string

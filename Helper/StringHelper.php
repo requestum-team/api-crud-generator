@@ -62,4 +62,30 @@ class StringHelper
     {
         return preg_match(self::ATTRIBUT_PATTERN, $url);
     }
+
+    /**
+     * @param string $ref
+     *
+     * @return string|null
+     */
+    public static function getReferencedSchemaObjectName(string $ref): ?string
+    {
+        $array = explode('/', $ref);
+
+        return count($array) > 0 ? array_pop($array): null;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return string | null
+     */
+    public static function getEntityNameFromObjectName(string $objectName): ?string
+    {
+        if (false !== strpos(strtolower($objectName), 'entity')) {
+            return substr($objectName, 0, -6);
+        }
+
+        return null;
+    }
 }

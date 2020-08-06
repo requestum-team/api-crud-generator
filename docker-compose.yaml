@@ -5,11 +5,11 @@ services:
       context: .
       args:
         TIMEZONE: ${TIMEZONE}
-    ports:
-      - "9000:9001"
+#    ports:
+#      - "9010:9001"
     env_file:
       - .env
     volumes:
       - ./:/var/www
     command:
-      - "/var/www/run.php"
+      - "/var/www/vendor/bin/phpunit"

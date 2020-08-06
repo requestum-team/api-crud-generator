@@ -1,0 +1,39 @@
+---
+openapi: 3.0.2
+info:
+  title: Field types
+  version: 1.0.0
+components:
+  schemas:
+    CommentEntity:
+      description: ""
+      required:
+        - comment
+        - postId
+      x-primary-key:
+        - id
+      type: object
+      properties:
+        id:
+          description: ""
+          type: integer
+        comment:
+          description: ""
+          type: string
+        postId:
+          description: ""
+          $ref: '#/components/schemas/PostEntity'
+    PostEntity:
+      description: ""
+      required:
+        - name
+      x-primary-key:
+        - id
+      type: object
+      properties:
+        id:
+          description: ""
+          type: integer
+        name:
+          description: ""
+          type: string

@@ -2,7 +2,7 @@
 
 namespace Requestum\ApiGeneratorBundle\Model;
 
-class Entity
+class Entity implements ModelInterface
 {
 
     /**
@@ -13,17 +13,36 @@ class Entity
     /**
      * @var string
      */
+    private string $originObjectName;
+
+    /**
+     * @var string
+     */
     private string $tableName;
 
     /**
-     * @var EntityProperty[]
+     * @var string
      */
-    private array $foreignKeys = [];
+    private ?string $description = null;
 
     /**
      * @var EntityProperty[]
      */
     private array $primaryColumns = [];
+
+    /**
+     * Entity's foreign key metadatas
+     *
+     * @var EntityProperty[]
+     */
+    private array $foreignKeys = [];
+
+    /**
+     * The list of columns that reference on the entity's primary key
+     *
+     * @var EntityProperty[]
+     */
+    private array $referenceKeys = [];
 
     /**
      * @var EntityProperty[]
@@ -58,6 +77,26 @@ class Entity
     /**
      * @return string
      */
+    public function getOriginObjectName(): string
+    {
+        return $this->originObjectName;
+    }
+
+    /**
+     * @param string $originObjectName
+     *
+     * @return Entity
+     */
+    public function setOriginObjectName(string $originObjectName)
+    {
+        $this->originObjectName = $originObjectName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getTableName(): string
     {
         return $this->tableName;
@@ -71,6 +110,26 @@ class Entity
     public function setTableName(string $tableName)
     {
         $this->tableName = $tableName;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string|null $description
+     *
+     * @return Entity
+     */
+    public function setDescription(?string $description)
+    {
+        $this->description = $description;
 
         return $this;
     }
@@ -102,7 +161,29 @@ class Entity
      */
     public function addForeignKey(EntityProperty $foreignKey)
     {
-        $this->foreignKeys[] = $foreignKey;
+        if (!in_array($foreignKey, $this->foreignKeys, true)) {
+            $this->foreignKeys[] = $foreignKey;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return EntityProperty[]
+     */
+    public function getReferenceKeys(): array
+    {
+        return $this->referenceKeys;
+    }
+
+    /**
+     * @param EntityProperty[] $referenceKeys
+     *
+     * @return Entity
+     */
+    public function setReferenceKeys(array $referenceKeys)
+    {
+        $this->referenceKeys = $referenceKeys;
 
         return $this;
     }
@@ -134,7 +215,9 @@ class Entity
      */
     public function addPrimaryColumn(EntityProperty $primaryColumn)
     {
-        $this->primaryColumns[] = $primaryColumn;
+        if (!in_array($primaryColumn, $this->primaryColumns, true)) {
+            $this->primaryColumns[] = $primaryColumn;
+        }
 
         return $this;
     }
@@ -166,7 +249,9 @@ class Entity
      */
     public function addUnique(EntityProperty $unique)
     {
-        $this->uniques[] = $unique;
+        if (!in_array($unique, $this->uniques, true)) {
+            $this->uniques[] = $unique;
+        }
 
         return $this;
     }
@@ -186,6 +271,15 @@ class Entity
      */
     public function setProperties(array $properties)
     {
+        /** @var EntityProperty $property */
+        foreach ($properties as $property) {
+            $property->setEntity($this);
+
+            if ($property->isPrimary()) {
+                $this->addPrimaryColumn($property);
+            }
+        }
+
         $this->properties = $properties;
 
         return $this;
@@ -201,5 +295,50 @@ class Entity
         $this->properties[] = $property;
 
         return $this;
+    }
+
+    /**
+     * @return EntityProperty[]
+     */
+    public function filterReferencedLinkProperties(): array
+    {
+        return array_filter($this->getProperties(), function (EntityProperty $el) {
+            return !is_null($el->getReferencedLink());
+        });
+    }
+
+    /**
+     * @param string $entityName
+     *
+     * @return EntityProperty[]|null
+     */
+    public function getRelatedProperty(string $entityName): ?EntityProperty
+    {
+        $referencedLinkProperties = $this->filterReferencedLinkProperties();
+        if (count($referencedLinkProperties) > 0) {
+            $result = array_filter($referencedLinkProperties, function (EntityProperty $el) use ($entityName) {
+                return $el->getReferencedLink() === $entityName;
+            });
+
+            if (count($result) === 1) {
+                return array_shift($result);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return EntityProperty|null
+     */
+    public function getProperyByName(string $name): ?EntityProperty
+    {
+        $result = array_filter($this->getProperties(), function (EntityProperty $el) use ($name) {
+            return $el->getName() === $name;
+        });
+
+        return count($result) === 1 ? array_shift($result): null;
     }
 }
