@@ -1,0 +1,44 @@
+---
+openapi: 3.0.2
+info:
+  title: Field types
+  version: 1.0.0
+components:
+  schemas:
+    ItemEntity:
+      description: ""
+      required:
+        - name
+      x-primary-key:
+        - id
+      type: object
+      properties:
+        id:
+          description: ""
+          type: integer
+        name:
+          description: ""
+          type: string
+        categories:
+          description: ""
+          type: array
+          $ref: '#/components/schemas/CategoryEntity'
+    CategoryEntity:
+      description: ""
+      required:
+        - name
+      x-primary-key:
+        - id
+      type: object
+      properties:
+        id:
+          description: ""
+          type: integer
+        name:
+          description: ""
+          type: string
+        items:
+          description: ""
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemEntity'

@@ -3,6 +3,7 @@
 namespace Requestum\ApiGeneratorBundle\Service;
 
 use Requestum\ApiGeneratorBundle\Generators\BundleGenerator;
+use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -88,19 +89,29 @@ class Generator
         $this->openApiSchema = $openApiSchema;
         $this->outputDirectory = $outputDirectory;
 
-        $this->actionCollection = new ActionCollection($config);
-        $this->entityCollection = new EntityCollection($config);
-        $this->formCollection = new FormCollection($config);
-        $this->routingCollection = new RoutingCollection($config);
+//        $this->actionCollection = new ActionCollection($config);
+//        $this->entityCollection = new EntityCollection($config);
+//        $this->formCollection = new FormCollection($config);
+//        $this->routingCollection = new RoutingCollection($config);
     }
 
     public function generate()
     {
         $this->buildBaseFileSystem();
-        $this->generateAction();
-        $this->generateEntity();
-        $this->generateForm();
-        $this->generateRouting();
+        $this->buildEntity();
+
+
+//        $this->generateAction();
+//        $this->generateEntity();
+//        $this->generateForm();
+//        $this->generateRouting();
+    }
+
+    protected function buildEntity()
+    {
+        $entityBuilder = new EntityBuilder($this->config);
+        $this->entityCollection = $entityBuilder->build($this->openApiSchema);
+//        var_dump($this->entityCollection); exit;
     }
 
     /**

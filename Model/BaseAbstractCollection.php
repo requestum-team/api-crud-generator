@@ -24,16 +24,18 @@ abstract class BaseAbstractCollection
     /**
      * @return array
      */
-    public function getElements(): array {
+    public function getElements(): array
+    {
         return $this->elements;
     }
 
     /**
-     * @param Action $action
+     * @param ModelInterface $element
      *
      * @return $this
      */
-    public function addElement($element) {
+    public function addElement(ModelInterface $element)
+    {
         $this->elements[$element->getName()][] = $element;
 
         return $this;
@@ -42,8 +44,39 @@ abstract class BaseAbstractCollection
     /**
      * @return bool
      */
-    public function isEmpty() {
+    public function isEmpty()
+    {
         return count($this->elements) === 0;
+    }
+
+    /**
+     * @return ModelInterface
+     */
+    public function first()
+    {
+        return reset($this->elements);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function contains($element)
+    {
+        return in_array($element, $this->elements, true);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Entity|null
+     */
+    public function findElement(string $name): ?Entity
+    {
+        if (isset($this->elements[$name])) {
+            return $this->elements[$name];
+        }
+
+        return null;
     }
 
     abstract public function dump(): array;

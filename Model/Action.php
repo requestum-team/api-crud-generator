@@ -2,7 +2,7 @@
 
 namespace Requestum\ApiGeneratorBundle\Model;
 
-class Action extends BaseModel
+class Action extends BaseModel implements ModelInterface
 {
     const DEFAULT_ACTION_LIST   = 'Requestum\\ApiBundle\\Action\\ListAction';
     const DEFAULT_ACTION_CREATE = 'Requestum\\ApiBundle\\Action\\CreateAction';

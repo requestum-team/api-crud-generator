@@ -1,0 +1,15 @@
+---
+openapi: 3.0.2
+info:
+  title: Field types
+  version: 1.0.0
+components:
+  schemas:
+    StructureTestEntity:
+      description: ""
+      type: object
+      properties:
+        testField:
+          description: ""
+          type: string
+          minItems: 5

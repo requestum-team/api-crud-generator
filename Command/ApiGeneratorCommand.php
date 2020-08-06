@@ -54,7 +54,7 @@ class ApiGeneratorCommand extends Command
         $inputSpec = $input->getArgument('inputSpec');
         $outputDirectory = $input->getArgument('outputDirectory');
 
-        $openApiSchema =$config = FileHelper::load($inputSpec);
+        $openApiSchema = FileHelper::load($inputSpec);
 
         $configPath = $input->getOption('configPath');
         $config = new Config($configPath);

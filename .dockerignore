@@ -1,5 +1,8 @@
 .git
 .idea
 *.txt
+*.yml
+*.yaml
 Dockerfile
+doc
 .dockerignore
