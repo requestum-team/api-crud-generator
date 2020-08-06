@@ -4,6 +4,7 @@ namespace Requestum\ApiGeneratorBundle\Service;
 
 use Requestum\ApiGeneratorBundle\Generators\BundleGenerator;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
+use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -98,20 +99,18 @@ class Generator
     public function generate()
     {
         $this->buildBaseFileSystem();
-        $this->buildEntity();
+
+        $entityBuilder = new EntityBuilder($this->config);
+        $this->entityCollection = $entityBuilder->build($this->openApiSchema);
+
+        $formBuilder = new FormBuilder($this->config);
+        $this->formCollection = $formBuilder->build($this->openApiSchema, $this->entityCollection);
 
 
 //        $this->generateAction();
 //        $this->generateEntity();
 //        $this->generateForm();
 //        $this->generateRouting();
-    }
-
-    protected function buildEntity()
-    {
-        $entityBuilder = new EntityBuilder($this->config);
-        $this->entityCollection = $entityBuilder->build($this->openApiSchema);
-//        var_dump($this->entityCollection); exit;
     }
 
     /**

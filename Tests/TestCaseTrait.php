@@ -25,7 +25,7 @@ trait TestCaseTrait
         }
 
         throw new \Exception(
-            \sprintf('Cannot open file "%s".' . "\n", $filename)
+            \sprintf('Cannot open file "%s".' . "\n", $filePath)
         );
     }
 }

@@ -39,7 +39,7 @@ class EntityBuilder extends AbstractBuilder
      *
      * @throws \Exception
      */
-    public function build(array $openApiSchema): BaseAbstractCollection
+    public function build(array $openApiSchema, ?BaseAbstractCollection $relatedCollection = null): BaseAbstractCollection
     {
         if (empty($openApiSchema['components']['schemas'])) {
             return $this->collection;
