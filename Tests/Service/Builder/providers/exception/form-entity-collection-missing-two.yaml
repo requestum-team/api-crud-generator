@@ -1,0 +1,19 @@
+---
+openapi: 3.0.2
+info:
+  title: Field types
+  version: 1.0.0
+components:
+  schemas:
+    ItemCreate:
+      description: ""
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          description: ""
+          type: string
+        shopId:
+          description: ""
+          $ref: '#/components/schemas/ShopEntity'

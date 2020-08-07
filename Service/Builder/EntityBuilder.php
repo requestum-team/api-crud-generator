@@ -9,6 +9,7 @@ use Requestum\ApiGeneratorBundle\Model\BaseAbstractCollection;
 use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\EntityCollection;
 use Requestum\ApiGeneratorBundle\Model\EntityProperty;
+use Requestum\ApiGeneratorBundle\Model\PropertyTypeEnum;
 use Requestum\ApiGeneratorBundle\Service\Config;
 
 
@@ -39,7 +40,7 @@ class EntityBuilder extends AbstractBuilder
      *
      * @throws \Exception
      */
-    public function build(array $openApiSchema): BaseAbstractCollection
+    public function build(array $openApiSchema, ?BaseAbstractCollection $relatedCollection = null): BaseAbstractCollection
     {
         if (empty($openApiSchema['components']['schemas'])) {
             return $this->collection;
@@ -232,7 +233,7 @@ class EntityBuilder extends AbstractBuilder
      */
     private function detectManyToOneRelation(EntityProperty $property, Entity $targetEntity)
     {
-        if ($property->checkType(EntityProperty::TYPE_INTEGER) || is_null($property->getType()) && is_null($property->isUseList())) {
+        if ($property->checkType(PropertyTypeEnum::TYPE_INTEGER) || is_null($property->getType()) && is_null($property->isUseList())) {
 
             $property
                 ->setReferencedColumn(
@@ -244,12 +245,12 @@ class EntityBuilder extends AbstractBuilder
 
             $relatedProperty = $targetEntity->getRelatedProperty($property->getEntity()->getOriginObjectName());
             if ($relatedProperty) {
-                if (!$relatedProperty->checkType(EntityProperty::TYPE_ARRAY)) {
+                if (!$relatedProperty->checkType(PropertyTypeEnum::TYPE_ARRAY)) {
                     throw new ReferencedColumnException(
                         sprintf(
                             'The column % has to be type %s, type %s is given',
                             $relatedProperty->getName(),
-                            EntityProperty::TYPE_ARRAY,
+                            PropertyTypeEnum::TYPE_ARRAY,
                             $relatedProperty->getType(),
                         )
                     );
@@ -278,10 +279,10 @@ class EntityBuilder extends AbstractBuilder
      */
     private function detectOneToManyRelation(EntityProperty $property, Entity $targetEntity)
     {
-        if ($property->checkType(EntityProperty::TYPE_ARRAY)) {
+        if ($property->checkType(PropertyTypeEnum::TYPE_ARRAY)) {
             $relatedProperty = $targetEntity->getRelatedProperty($property->getEntity()->getOriginObjectName());
             if ($relatedProperty) {
-                if ($relatedProperty->checkType(EntityProperty::TYPE_INTEGER) || is_null($relatedProperty->getType())) {
+                if ($relatedProperty->checkType(PropertyTypeEnum::TYPE_INTEGER) || is_null($relatedProperty->getType())) {
                     $referencedColumn = $relatedProperty->getReferencedColumn();
 
                     $primaryKey = $this->getPrimaryKey($property->getEntity());
@@ -314,7 +315,7 @@ class EntityBuilder extends AbstractBuilder
      */
     private function detectOneToOneRelation(EntityProperty $property, Entity $targetEntity)
     {
-        if (($property->checkType(EntityProperty::TYPE_INTEGER) || is_null($property->getType())) && ($property->isUseList() === false)) {
+        if (($property->checkType(PropertyTypeEnum::TYPE_INTEGER) || is_null($property->getType())) && ($property->isUseList() === false)) {
 
             $property
                 ->setOneToOne(true)
@@ -363,7 +364,7 @@ class EntityBuilder extends AbstractBuilder
      */
     private function detectManyToManyRelation(EntityProperty $property, Entity $targetEntity)
     {
-        if ($property->checkType(EntityProperty::TYPE_ARRAY)) {
+        if ($property->checkType(PropertyTypeEnum::TYPE_ARRAY)) {
             $relatedProperty = $targetEntity->getRelatedProperty($property->getEntity()->getOriginObjectName());
             if ($relatedProperty) {
                 $referencedColumn = $relatedProperty->getReferencedColumn();
@@ -371,7 +372,7 @@ class EntityBuilder extends AbstractBuilder
                     return;
                 }
 
-                if ($relatedProperty->checkType(EntityProperty::TYPE_ARRAY)) {
+                if ($relatedProperty->checkType(PropertyTypeEnum::TYPE_ARRAY)) {
                     $relatedProperty
                         ->setReferencedColumn(
                             $this->getPrimaryKey($property->getEntity())

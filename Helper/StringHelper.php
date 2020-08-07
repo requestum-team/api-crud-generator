@@ -82,10 +82,20 @@ class StringHelper
      */
     public static function getEntityNameFromObjectName(string $objectName): ?string
     {
-        if (false !== strpos(strtolower($objectName), 'entity')) {
+        if (CommonHelper::isEntity($objectName)) {
             return substr($objectName, 0, -6);
         }
 
         return null;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return string | null
+     */
+    public static function getFormName(string $objectName): ?string
+    {
+        return CommonHelper::isForm($objectName) ? $objectName: null;
     }
 }

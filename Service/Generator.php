@@ -4,6 +4,7 @@ namespace Requestum\ApiGeneratorBundle\Service;
 
 use Requestum\ApiGeneratorBundle\Generators\BundleGenerator;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
+use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -12,7 +13,11 @@ use Requestum\ApiGeneratorBundle\Model\EntityCollection;
 use Requestum\ApiGeneratorBundle\Model\FormCollection;
 use Requestum\ApiGeneratorBundle\Model\RoutingCollection;
 
-
+/**
+ * Class Generator
+ *
+ * @package Requestum\ApiGeneratorBundle\Service
+ */
 class Generator
 {
     /**
@@ -36,17 +41,17 @@ class Generator
     protected $outputDirectory;
 
     /**
-     * @var array
+     * @var EntityCollection
      */
     protected $entityCollection;
 
     /**
-     * @var array
+     * @var FormCollection
      */
     protected $formCollection;
 
     /**
-     * @var array
+     * @var RoutingCollection
      */
     protected $routingCollection;
 
@@ -88,30 +93,23 @@ class Generator
 
         $this->openApiSchema = $openApiSchema;
         $this->outputDirectory = $outputDirectory;
-
-//        $this->actionCollection = new ActionCollection($config);
-//        $this->entityCollection = new EntityCollection($config);
-//        $this->formCollection = new FormCollection($config);
-//        $this->routingCollection = new RoutingCollection($config);
     }
 
     public function generate()
     {
         $this->buildBaseFileSystem();
-        $this->buildEntity();
+
+        $entityBuilder = new EntityBuilder($this->config);
+        $this->entityCollection = $entityBuilder->build($this->openApiSchema);
+
+        $formBuilder = new FormBuilder($this->config);
+        $this->formCollection = $formBuilder->build($this->openApiSchema, $this->entityCollection);
 
 
 //        $this->generateAction();
 //        $this->generateEntity();
 //        $this->generateForm();
 //        $this->generateRouting();
-    }
-
-    protected function buildEntity()
-    {
-        $entityBuilder = new EntityBuilder($this->config);
-        $this->entityCollection = $entityBuilder->build($this->openApiSchema);
-//        var_dump($this->entityCollection); exit;
     }
 
     /**

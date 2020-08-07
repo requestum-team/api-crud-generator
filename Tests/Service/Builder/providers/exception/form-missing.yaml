@@ -1,0 +1,37 @@
+---
+openapi: 3.0.2
+info:
+  title: Field types
+  version: 1.0.0
+components:
+  schemas:
+    UserCreate:
+      description: ""
+      x-entity:
+        $ref: '#/components/schemas/UserEntity'
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          description: ""
+          type: string
+        addresses:
+          description: ""
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressInput'
+    UserEntity:
+      description: ""
+      required:
+        - name
+      x-primary-key:
+        - id
+      type: object
+      properties:
+        id:
+          description: ""
+          type: integer
+        name:
+          description: ""
+          type: string

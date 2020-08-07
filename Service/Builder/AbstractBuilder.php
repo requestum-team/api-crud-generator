@@ -37,5 +37,5 @@ abstract class AbstractBuilder
      *
      * @return $collection
      */
-    public abstract function build(array $openApiSchema): BaseAbstractCollection;
+    public abstract function build(array $openApiSchema, ?BaseAbstractCollection $relatedCollection = null): BaseAbstractCollection;
 }

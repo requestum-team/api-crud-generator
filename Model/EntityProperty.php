@@ -7,205 +7,157 @@ namespace Requestum\ApiGeneratorBundle\Model;
  *
  * @package Requestum\ApiGeneratorBundle\Model
  */
-class EntityProperty
+class EntityProperty extends BaseAbstractProperty
 {
-    const GENERATION_STRATEGY_AUTO = 'auto';
-    const GENERATION_STRATEGY_SEQUENCE = 'sequence';
-    const GENERATION_STRATEGY_IDENTITY = 'identity';
-    const GENERATION_STRATEGY_UUID = 'uuid';
-    const GENERATION_STRATEGY_TABLE = 'table';
-    const GENERATION_STRATEGY_NONE = 'none';
-    const GENERATION_STRATEGY_CUSTOM = 'custom';
-
-    const TYPE_STRING = 'string';
-    const TYPE_NUMBER = 'number';
-    const TYPE_INTEGER = 'integer';
-    const TYPE_BOOLEAN = 'boolean';
-    const TYPE_ARRAY = 'array';
-    const TYPE_OBJECT = 'object';
-
     /**
      * @var Entity
      */
-    private Entity $entity;
+    protected Entity $entity;
 
     /**
      * @var string
      */
-    private string $name;
+    protected string $name;
 
     /**
      * @var string
      */
-    private string $databasePropertyName;
-
-    /**
-     * @var string
-     */
-    private ?string $description = null;
+    protected string $databasePropertyName;
 
     /**
      * @var string
      * @example string, number, integer, boolean, array, object
      */
-    private ?string $type = null;
-
-    /**
-     * @var string
-     * @example float, double, int32, int64, date, date-time,
-     * password, byte, binary, email, uuid, uri, hostname, ipv4, ipv6
-     */
-    private ?string $format = null;
-
-    /**
-     * @var string
-     * @example string, number, integer, boolean, array, object
-     */
-    private ?string $itemsType = null;
-
-    /**
-     * @var string[]
-     */
-    private array $enum = [];
+    protected ?string $itemsType = null;
 
     /**
      * applies only for string type
      *
      * @var integer
      */
-    private ?int $minLength = null;
+    protected ?int $minLength = null;
 
     /**
      * applies only for string type
      *
      * @var integer
      */
-    private ?int $maxLength = null;
+    protected ?int $maxLength = null;
 
     /**
      * applies only for string type
      *
      * @var string
      */
-    private ?string $pattern = null;
+    protected ?string $pattern = null;
 
     /**
      * applies only for integer or number types
      *
      * @var integer
      */
-    private ?int $minimum = null;
+    protected ?int $minimum = null;
 
     /**
      * applies only for integer or number types
      *
      * @var integer
      */
-    private ?int $maximum = null;
+    protected ?int $maximum = null;
 
     /**
      * applies only for array type
      *
      * @var integer
      */
-    private ?int $minItems = null;
+    protected ?int $minItems = null;
 
     /**
      * applies only for array type
      *
      * @var integer
      */
-    private ?int $maxItems = null;
+    protected ?int $maxItems = null;
 
     /**
      * @var bool
      */
-    private bool $primary = false;
+    protected bool $primary = false;
 
     /**
      * @var bool
      */
-    private bool $foreignKey = false;
+    protected bool $foreignKey = false;
 
     /**
      * @var bool
      */
-    private bool $backRefColumn = false;
+    protected bool $backRefColumn = false;
 
     /**
      * @var bool | null
      */
-    private ?bool $useList = null;
+    protected ?bool $useList = null;
 
     /**
      * @var bool
      */
-    private bool $required = false;
+    protected bool $nullable = false;
 
     /**
      * @var bool
      */
-    private bool $nullable = false;
-
-    /**
-     * @var bool
-     */
-    private bool $readOnly = false;
+    protected bool $readOnly = false;
 
     /**
      * @var string|null
      */
-    private ?string $generationStrategy = null;
+    protected ?string $generationStrategy = null;
 
     /**
      * @var mixed
      */
-    private $defaultValue = null;
+    protected $defaultValue = null;
 
     /**
      * @var bool
      */
-    private bool $unsigned = true;
+    protected bool $unsigned = true;
 
     /**
      * @var bool
      */
-    private bool $isCreateDate = false;
+    protected bool $isCreateDate = false;
 
     /**
      * @var bool
      */
-    private bool $isUpdateDate = false;
+    protected bool $isUpdateDate = false;
 
     /**
      * @var bool
      */
-    private bool $oneToMany = false;
+    protected bool $oneToMany = false;
 
     /**
      * @var bool
      */
-    private bool $manyToOne = false;
+    protected bool $manyToOne = false;
 
     /**
      * @var bool
      */
-    private bool $oneToOne = false;
+    protected bool $oneToOne = false;
 
     /**
      * @var bool
      */
-    private bool $manyToMany = false;
+    protected bool $manyToMany = false;
 
     /**
      * @var string|null
      */
-    private ?string $referencedLink = null;
-
-    /**
-     * @var string|null
-     */
-    private ?string $backRef = null;
+    protected ?string $backRef = null;
 
     /**
      * If this column is foreign key then it references some other column,
@@ -213,7 +165,7 @@ class EntityProperty
      *
      * @var EntityProperty|null
      */
-    private ?EntityProperty $referencedColumn = null;
+    protected ?EntityProperty $referencedColumn = null;
 
     /**
      * @return Entity
@@ -275,80 +227,7 @@ class EntityProperty
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
 
-    /**
-     * @param string|null $description
-     *
-     * @return EntityProperty
-     */
-    public function setDescription(?string $description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string|null $type
-     *
-     * @return EntityProperty
-     */
-    public function setType(?string $type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * @param string $type
-     * @example string, number, integer, boolean, array, object
-     *
-     * @return bool
-     */
-    public function checkType(string $type): bool
-    {
-        if (is_null($this->getType())) {
-            return false;
-        }
-
-        return $this->type === $type;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFormat(): ?string
-    {
-        return $this->format;
-    }
-
-    /**
-     * @param string|null $format
-     *
-     * @return EntityProperty
-     */
-    public function setFormat(?string $format)
-    {
-        $this->format = $format;
-
-        return $this;
-    }
 
     /**
      * @return string|null
@@ -371,26 +250,6 @@ class EntityProperty
     }
 
     /**
-     * @return string[]
-     */
-    public function getEnum(): array
-    {
-        return $this->enum;
-    }
-
-    /**
-     * @param string[] $enum
-     *
-     * @return EntityProperty
-     */
-    public function setEnum(array $enum)
-    {
-        $this->enum = $enum;
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getMinLength(): int
@@ -405,7 +264,7 @@ class EntityProperty
      */
     public function setMinLength(?int $minLength)
     {
-        if (!$this->checkType(EntityProperty::TYPE_STRING)) {
+        if (!$this->checkType(PropertyTypeEnum::TYPE_STRING)) {
             throw new \Exception(
                 'Min length applies only for type string. Use minimum for types integer and number or minItems for type array'
             );
@@ -431,7 +290,7 @@ class EntityProperty
      */
     public function setMaxLength(?int $maxLength)
     {
-        if (!$this->checkType(EntityProperty::TYPE_STRING)) {
+        if (!$this->checkType(PropertyTypeEnum::TYPE_STRING)) {
             throw new \Exception(
                 'Max length applies only for type string. Use maximum for types integer and number or maxItems for type array'
             );
@@ -457,7 +316,7 @@ class EntityProperty
      */
     public function setPattern(?string $pattern)
     {
-        if (!$this->checkType(EntityProperty::TYPE_STRING)) {
+        if (!$this->checkType(PropertyTypeEnum::TYPE_STRING)) {
             throw new \Exception(
                 'Pattern applies only for type string.'
             );
@@ -483,7 +342,7 @@ class EntityProperty
      */
     public function setMinimum(?int $minimum)
     {
-        if (!$this->checkType(EntityProperty::TYPE_INTEGER) && !$this->checkType(EntityProperty::TYPE_NUMBER)) {
+        if (!$this->checkType(PropertyTypeEnum::TYPE_INTEGER) && !$this->checkType(PropertyTypeEnum::TYPE_NUMBER)) {
             throw new \Exception(
                 'Minimum applies only for integer or number types. Use minLength for type string or mimItems type array'
             );
@@ -509,7 +368,7 @@ class EntityProperty
      */
     public function setMaximum(?int $maximum)
     {
-        if (!$this->checkType(EntityProperty::TYPE_INTEGER) && !$this->checkType(EntityProperty::TYPE_NUMBER)) {
+        if (!$this->checkType(PropertyTypeEnum::TYPE_INTEGER) && !$this->checkType(PropertyTypeEnum::TYPE_NUMBER)) {
             throw new \Exception(
                 'Maximum applies only for integer or number types. Use maxLength for type string or maxItems for type array'
             );
@@ -535,7 +394,7 @@ class EntityProperty
      */
     public function setMinItems(?int $minItems)
     {
-        if (!$this->checkType(EntityProperty::TYPE_ARRAY)) {
+        if (!$this->checkType(PropertyTypeEnum::TYPE_ARRAY)) {
             throw new \Exception(
                 'Min items applies only for type array. Use minLength for type string or minimum for types integer and number'
             );
@@ -561,7 +420,7 @@ class EntityProperty
      */
     public function setMaxItems(?int $maxItems)
     {
-        if (!$this->checkType(EntityProperty::TYPE_ARRAY)) {
+        if (!$this->checkType(PropertyTypeEnum::TYPE_ARRAY)) {
             throw new \Exception(
                 'Max items applies only for type array. Use maxLength for type string or maximum for types integer and number'
             );
@@ -588,26 +447,6 @@ class EntityProperty
     public function setPrimary(bool $primary)
     {
         $this->primary = $primary;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRequired(): bool
-    {
-        return $this->required;
-    }
-
-    /**
-     * @param bool $required
-     *
-     * @return EntityProperty
-     */
-    public function setRequired(bool $required)
-    {
-        $this->required = $required;
 
         return $this;
     }
@@ -752,26 +591,6 @@ class EntityProperty
     public function setIsUpdateDate(bool $isUpdateDate)
     {
         $this->isUpdateDate = $isUpdateDate;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReferencedLink(): ?string
-    {
-        return $this->referencedLink;
-    }
-
-    /**
-     * @param string|null $referencedLink
-     *
-     * @return EntityProperty
-     */
-    public function setReferencedLink(?string $referencedLink)
-    {
-        $this->referencedLink = $referencedLink;
 
         return $this;
     }
