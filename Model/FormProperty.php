@@ -7,37 +7,37 @@ namespace Requestum\ApiGeneratorBundle\Model;
  *
  * @package Requestum\ApiGeneratorBundle\Model
  */
-class FormProperty
+class FormProperty extends BaseAbstractProperty
 {
     /**
      * @var string
      */
-    private string $nameCamelCase;
+    protected string $nameCamelCase;
 
     /**
      * @var string
      */
-    private string $nameSnakeCase;
+    protected string $nameSnakeCase;
 
     /**
-     * @var string
+     * @var boolean
      */
-    private ?string $type = null;
+    protected ?bool $isEntity = false;
 
     /**
-     * @var string
+     * @var boolean
      */
-    private ?string $format = null;
+    protected ?bool $isForm = false;
 
     /**
-     * @var string
+     * @var Entity|null
      */
-    private ?string $description = null;
+    protected ?Entity $entity = null;
 
     /**
-     * @var bool
+     * @var Form|null
      */
-    private bool $required = false;
+    protected ?Form $form = null;
 
     /**
      * @return string
@@ -80,61 +80,21 @@ class FormProperty
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function getType(): string
+    public function isEntity(): bool
     {
-        return $this->type;
+        return $this->isEntity;
     }
 
     /**
-     * @param string $type
+     * @param bool $isEntity
      *
      * @return FormProperty
      */
-    public function setType(?string $type)
+    public function setIsEntity(bool $isEntity)
     {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFormat(): string
-    {
-        return $this->format;
-    }
-
-    /**
-     * @param string $format
-     *
-     * @return FormProperty
-     */
-    public function setFormat(?string $format)
-    {
-        $this->format = $format;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
-     *
-     * @return FormProperty
-     */
-    public function setDescription(?string $description)
-    {
-        $this->description = $description;
+        $this->isEntity = $isEntity;
 
         return $this;
     }
@@ -142,20 +102,55 @@ class FormProperty
     /**
      * @return bool
      */
-    public function isRequired(): bool
+    public function isForm(): bool
     {
-        return $this->required;
+        return $this->isForm;
     }
 
     /**
-     * @param bool $required
+     * @param bool $isForm
      *
      * @return FormProperty
      */
-    public function setRequired(bool $required)
+    public function setIsForm(bool $isForm)
     {
-        $this->required = $required;
+        $this->isForm = $isForm;
 
         return $this;
     }
+
+    /**
+     * @param Form|Entity $object
+     *
+     * @return FormProperty
+     */
+    public function setReferencedObject($object)
+    {
+        if ($this->isEntity()) {
+            $this->entity = $object;
+        }
+
+        if ($this->isForm()) {
+            $this->form = $object;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Form|Entity|null
+     */
+    public function getReferencedObject()
+    {
+        if ($this->isEntity()) {
+            return $this->entity;
+        }
+
+        if ($this->isForm()) {
+            return $this->form;
+        }
+
+        return null;
+    }
 }
+

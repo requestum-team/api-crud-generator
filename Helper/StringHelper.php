@@ -82,7 +82,7 @@ class StringHelper
      */
     public static function getEntityNameFromObjectName(string $objectName): ?string
     {
-        if (false !== strpos(strtolower($objectName), 'entity')) {
+        if (CommonHelper::isEntity($objectName)) {
             return substr($objectName, 0, -6);
         }
 
@@ -96,11 +96,6 @@ class StringHelper
      */
     public static function getFormName(string $objectName): ?string
     {
-
-        return
-            (strpos(strtolower($objectName), 'input') ||
-                strpos(strtolower($objectName), 'create') ||
-                strpos(strtolower($objectName), 'update') ||
-                strpos(strtolower($objectName), 'patch')) ? $objectName: null;
+        return CommonHelper::isForm($objectName) ? $objectName: null;
     }
 }

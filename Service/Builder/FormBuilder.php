@@ -3,6 +3,9 @@
 namespace Requestum\ApiGeneratorBundle\Service\Builder;
 
 use Requestum\ApiGeneratorBundle\Exception\CollectionException;
+use Requestum\ApiGeneratorBundle\Exception\EntityMissingException;
+use Requestum\ApiGeneratorBundle\Exception\FormMissingException;
+use Requestum\ApiGeneratorBundle\Helper\CommonHelper;
 use Requestum\ApiGeneratorBundle\Helper\StringHelper;
 use Requestum\ApiGeneratorBundle\Model\BaseAbstractCollection;
 use Requestum\ApiGeneratorBundle\Model\Entity;
@@ -51,16 +54,16 @@ class FormBuilder extends AbstractBuilder
                     $entityObjectName = StringHelper::getReferencedSchemaObjectName($objectData['x-entity']['$ref']);
 
                     $entityName = StringHelper::getEntityNameFromObjectName($entityObjectName);
-                    if (is_null($relatedCollection)) {
-                        throw new CollectionException(
+                    $this->checkRelatedCollectionIsEmpty($name, $entityObjectName, $relatedCollection);
+                    $entity = $relatedCollection->findElement($entityName);
+                    if (is_null($entity)) {
+                        throw new EntityMissingException(
                             sprintf(
-                                'Required the entity collection. Form %s has as a dependency an entity %s',
-                                $name,
-                                $entityObjectName
+                                'Entity %s is missing in the entity collection',
+                                $entityName,
                             )
                         );
                     }
-                    $entity = $relatedCollection->findElement($entityName);
                 }
 
                 $form = new Form();
@@ -77,6 +80,8 @@ class FormBuilder extends AbstractBuilder
                 $this->collection->addElement($form);
             }
         }
+
+        $this->processRelations($relatedCollection);
 
         return $this->collection;
     }
@@ -114,7 +119,100 @@ class FormBuilder extends AbstractBuilder
             if (!empty($data['format'])) {
                 $property->setFormat($data['format']);
             }
+
+            if (!empty($data['enum']) && is_array($data['enum'])) {
+                $property->setEnum(
+                    array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $data['enum'])
+                );
+            }
+
+            if (!empty($data['$ref'])) {
+                $property->setReferencedLink(
+                    StringHelper::getReferencedSchemaObjectName($data['$ref'])
+                );
+            }
+
+            if (!empty($data['items']['$ref'])) {
+                $property->setReferencedLink(
+                    StringHelper::getReferencedSchemaObjectName($data['items']['$ref'])
+                );
+            }
+
+            $properties[] = $property;
         }
 
+        return $properties;
+    }
+
+    private function processRelations(?BaseAbstractCollection $relatedCollection = null)
+    {
+        /**
+         * @var string $formName
+         * @var Form   $form
+         */
+        foreach ($this->collection->getElements() as $formName => $form) {
+            /** @var FormProperty $property */
+            foreach ($form->filterReferencedLinkProperties() as $property) {
+                if (is_null($property->getReferencedLink())) {
+                    continue;
+                }
+
+                if (CommonHelper::isEntity($property->getReferencedLink())) {
+                    $this->checkRelatedCollectionIsEmpty($formName, $property->getReferencedLink(), $relatedCollection);
+                    $entityName = StringHelper::getEntityNameFromObjectName($property->getReferencedLink());
+                    $referencedObject = $relatedCollection->findElement($entityName);
+                    if (is_null($referencedObject)) {
+                        throw new EntityMissingException(
+                            sprintf(
+                                'Entity %s is missing in the entity collection',
+                                $entityName,
+                            )
+                        );
+                    }
+
+                    $property
+                        ->setIsEntity(true)
+                        ->setReferencedObject($referencedObject)
+                    ;
+                }
+
+                if (CommonHelper::isForm($property->getReferencedLink())) {
+                    $referencedObject = $this->collection->findElement($property->getReferencedLink());
+                    if (is_null($referencedObject)) {
+                        throw new FormMissingException(
+                            sprintf(
+                                'Form %s has a relation with missing form %s',
+                                $formName,
+                                $property->getReferencedLink()
+                            )
+                        );
+                    }
+                    $property
+                        ->setIsForm(true)
+                        ->setReferencedObject($referencedObject)
+                    ;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param string $formName
+     * @param string $entityObjectName
+     * @param BaseAbstractCollection|null $relatedCollection
+     *
+     * @throws CollectionException
+     */
+    private function checkRelatedCollectionIsEmpty(string $formName, string $entityObjectName, ?BaseAbstractCollection $relatedCollection = null)
+    {
+        if (is_null($relatedCollection) || (($relatedCollection instanceof $relatedCollection) && $relatedCollection->isEmpty())) {
+            throw new CollectionException(
+                sprintf(
+                    'Required the entity collection. Form %s has as a dependency an entity %s',
+                    $formName,
+                    $entityObjectName
+                )
+            );
+        }
     }
 }

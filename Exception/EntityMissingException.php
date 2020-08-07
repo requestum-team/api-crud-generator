@@ -3,9 +3,9 @@
 namespace Requestum\ApiGeneratorBundle\Exception;
 
 /**
- * Class EntityPropertyException
+ * Class EntityMissingException
  *
  * @package Requestum\ApiGeneratorBundle\Exception
  */
-class EntityPropertyException extends \Exception
+class EntityMissingException extends \Exception
 {}

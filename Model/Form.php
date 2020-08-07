@@ -152,7 +152,9 @@ class Form implements ModelInterface
     {
         $this->entity = $entity;
 
-        $this->nameSpace = implode('\\', [$this->nameSpace, $entity->getName()]);
+        if (!is_null($entity)) {
+            $this->nameSpace = implode('\\', [$this->nameSpace, $entity->getName()]);
+        }
 
         return $this;
     }
@@ -175,5 +177,29 @@ class Form implements ModelInterface
         $this->properties = $properties;
 
         return $this;
+    }
+
+    /**
+     * @return FormProperty[]
+     */
+    public function filterReferencedLinkProperties(): array
+    {
+        return array_filter($this->getProperties(), function (FormProperty $el) {
+            return !is_null($el->getReferencedLink());
+        });
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return FormProperty|null
+     */
+    public function getProperyByNameCamelCase(string $name): ?FormProperty
+    {
+        $result = array_filter($this->getProperties(), function (FormProperty $el) use ($name) {
+            return $el->getNameCamelCase() === $name;
+        });
+
+        return count($result) === 1 ? array_shift($result): null;
     }
 }

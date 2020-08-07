@@ -68,9 +68,9 @@ abstract class BaseAbstractCollection
     /**
      * @param string $name
      *
-     * @return Entity|null
+     * @return Form|Entity|null
      */
-    public function findElement(string $name): ?Entity
+    public function findElement(string $name)
     {
         if (isset($this->elements[$name])) {
             return $this->elements[$name];

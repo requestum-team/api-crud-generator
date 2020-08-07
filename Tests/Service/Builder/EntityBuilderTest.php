@@ -5,6 +5,7 @@ namespace Requestum\ApiGeneratorBundle\Tests\Service\Builder;
 use PHPUnit\Framework\TestCase;
 use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\EntityProperty;
+use Requestum\ApiGeneratorBundle\Model\PropertyTypeEnum;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Requestum\ApiGeneratorBundle\Service\Config;
 use Requestum\ApiGeneratorBundle\Tests\TestCaseTrait;
@@ -55,51 +56,51 @@ class EntityBuilderTest extends TestCase
 
         $property = $structureTest->getProperyByName('id');
         static::assertEquals('id', $property->getName());
-        static::assertEquals(EntityProperty::TYPE_INTEGER, $property->getType());
+        static::assertEquals(PropertyTypeEnum::TYPE_INTEGER, $property->getType());
         static::assertTrue($property->isPrimary());
 
         $property = $structureTest->getProperyByName('name');
         static::assertEquals('name', $property->getName());
-        static::assertEquals(EntityProperty::TYPE_STRING, $property->getType());
+        static::assertEquals(PropertyTypeEnum::TYPE_STRING, $property->getType());
         static::assertTrue($property->isRequired());
 
         $property = $structureTest->getProperyByName('email');
         static::assertEquals('email', $property->getName());
-        static::assertEquals(EntityProperty::TYPE_STRING, $property->getType());
+        static::assertEquals(PropertyTypeEnum::TYPE_STRING, $property->getType());
         static::assertEquals('email', $property->getFormat());
         static::assertTrue($property->isNullable());
 
         $property = $structureTest->getProperyByName('slug');
         static::assertEquals('slug', $property->getName());
-        static::assertEquals(EntityProperty::TYPE_STRING, $property->getType());
+        static::assertEquals(PropertyTypeEnum::TYPE_STRING, $property->getType());
         static::assertEquals(5, $property->getMinLength());
         static::assertEquals(10, $property->getMaxLength());
 
         $property = $structureTest->getProperyByName('ssn');
         static::assertEquals('ssn', $property->getName());
-        static::assertEquals(EntityProperty::TYPE_STRING, $property->getType());
+        static::assertEquals(PropertyTypeEnum::TYPE_STRING, $property->getType());
         static::assertEquals('^\d{3}-\d{2}-\d{4}$', $property->getPattern());
 
         $property = $structureTest->getProperyByName('amount');
         static::assertEquals('amount', $property->getName());
-        static::assertEquals(EntityProperty::TYPE_INTEGER, $property->getType());
+        static::assertEquals(PropertyTypeEnum::TYPE_INTEGER, $property->getType());
         static::assertEquals(5, $property->getMinimum());
         static::assertEquals(10, $property->getMaximum());
 
         $property = $structureTest->getProperyByName('postCount');
         static::assertEquals('postCount', $property->getName());
         static::assertEquals('post_count', $property->getDatabasePropertyName());
-        static::assertEquals(EntityProperty::TYPE_INTEGER, $property->getType());
+        static::assertEquals(PropertyTypeEnum::TYPE_INTEGER, $property->getType());
         static::assertEquals('int32', $property->getFormat());
 
         $property = $structureTest->getProperyByName('price');
         static::assertEquals('price', $property->getName());
-        static::assertEquals(EntityProperty::TYPE_NUMBER, $property->getType());
+        static::assertEquals(PropertyTypeEnum::TYPE_NUMBER, $property->getType());
         static::assertEquals('double', $property->getFormat());
 
         $property = $structureTest->getProperyByName('status');
         static::assertEquals('status', $property->getName());
-        static::assertEquals(EntityProperty::TYPE_STRING, $property->getType());
+        static::assertEquals(PropertyTypeEnum::TYPE_STRING, $property->getType());
         static::assertIsArray($property->getEnum());
         static::assertContains('new', $property->getEnum());
         static::assertContains('draft', $property->getEnum());
@@ -107,14 +108,14 @@ class EntityBuilderTest extends TestCase
 
         $property = $structureTest->getProperyByName('arrayField');
         static::assertEquals('arrayField', $property->getName());
-        static::assertEquals(EntityProperty::TYPE_ARRAY, $property->getType());
-        static::assertEquals(EntityProperty::TYPE_INTEGER, $property->getItemsType());
+        static::assertEquals(PropertyTypeEnum::TYPE_ARRAY, $property->getType());
+        static::assertEquals(PropertyTypeEnum::TYPE_INTEGER, $property->getItemsType());
         static::assertEquals(1, $property->getMinItems());
         static::assertEquals(10, $property->getMaxItems());
 
         $property = $structureTest->getProperyByName('comments');
         static::assertEquals('comments', $property->getName());
-        static::assertEquals(EntityProperty::TYPE_ARRAY, $property->getType());
+        static::assertEquals(PropertyTypeEnum::TYPE_ARRAY, $property->getType());
         static::assertEquals('CommentEntity', $property->getReferencedLink());
 
         $property = $structureTest->getProperyByName('postId');
@@ -134,9 +135,10 @@ class EntityBuilderTest extends TestCase
     /**
      * @dataProvider exceptionProvider
      */
-    public function testException(string $filename)
+    public function testException(string $filename, string $message)
     {
         static::expectException(\Exception::class);
+        static::expectExceptionMessage($message);
 
         $filePath = realpath(__DIR__ . '/providers/exception/' . $filename);
 
@@ -149,9 +151,10 @@ class EntityBuilderTest extends TestCase
     /**
      * @dataProvider primaryKeyExceptionProvider
      */
-    public function testPrimaryKeyException(string $filename)
+    public function testPrimaryKeyException(string $filename, string $message)
     {
         static::expectException(\Exception::class);
+        static::expectExceptionMessage($message);
 
         $filePath = realpath(__DIR__ . '/providers/exception/' . $filename);
 
@@ -164,9 +167,10 @@ class EntityBuilderTest extends TestCase
     /**
      * @dataProvider backrefExceptionProvider
      */
-    public function testBackrefException(string $filename)
+    public function testBackrefException(string $filename, string $message)
     {
         static::expectException(\Exception::class);
+        static::expectExceptionMessage($message);
 
         $filePath = realpath(__DIR__ . '/providers/exception/' . $filename);
 
@@ -179,9 +183,10 @@ class EntityBuilderTest extends TestCase
     /**
      * @dataProvider manyToOneBidirectionalTypeExceptionProvider
      */
-    public function testManyToOneBidirectionalTypeException(string $filename)
+    public function testManyToOneBidirectionalTypeException(string $filename, string $message)
     {
         static::expectException(\Exception::class);
+        static::expectExceptionMessage($message);
 
         $filePath = realpath(__DIR__ . '/providers/exception/' . $filename);
 
@@ -371,44 +376,36 @@ class EntityBuilderTest extends TestCase
     public function exceptionProvider()
     {
         return [
-            [
-                'array-max-items.yaml',
-                'array-min-items.yaml',
-                'integer-maximum.yaml',
-                'integer-minimum.yaml',
-                'string-max-length.yaml',
-                'string-min-length.yaml',
-                'string-pattern.yaml',
-            ],
+            ['array-max-items.yaml', 'Max items applies only for type array. Use maxLength for type string or maximum for types integer and number'],
+            ['array-min-items.yaml', 'Min items applies only for type array. Use minLength for type string or minimum for types integer and number'],
+            ['integer-maximum.yaml', 'Maximum applies only for integer or number types. Use maxLength for type string or maxItems for type array'],
+            ['integer-minimum.yaml', 'Minimum applies only for integer or number types. Use minLength for type string or mimItems type array'],
+            ['string-max-length.yaml', 'Max length applies only for type string. Use maximum for types integer and number or maxItems for type array'],
+            ['string-min-length.yaml', 'Min length applies only for type string. Use minimum for types integer and number or minItems for type array'],
+            ['string-pattern.yaml', 'Pattern applies only for type string.'],
         ];
     }
 
     public function primaryKeyExceptionProvider()
     {
         return [
-            [
-                'primary-key-zero.yaml',
-                'primary-key-two.yaml',
-            ],
+            ['primary-key-zero.yaml', 'The entity "Post" doesn\'t have any primary key'],
+            ['primary-key-two.yaml', 'The entity "Post" has more than one primary key'],
         ];
     }
 
     public function backrefExceptionProvider()
     {
         return [
-            [
-                'backref-absent.yaml',
-                'backref-two.yaml',
-            ],
+            ['backref-absent.yaml', 'Couldn\'t find a referenced column payInfo in an entity Employee'],
+            ['backref-two.yaml', 'The back referenced column has to be only from one side'],
         ];
     }
 
     public function manyToOneBidirectionalTypeExceptionProvider()
     {
         return [
-            [
-                'many-to-one-bidirectional-type.yaml',
-            ],
+            ['many-to-one-bidirectional-type.yaml', 'The column as to be type array, type integer is given'],
         ];
     }
 

@@ -1,0 +1,18 @@
+---
+openapi: 3.0.2
+info:
+  title: Field types
+  version: 1.0.0
+components:
+  schemas:
+    UserCreate:
+      description: ""
+      x-entity:
+        $ref: '#/components/schemas/UserEntity'
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          description: ""
+          type: string

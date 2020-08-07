@@ -13,7 +13,11 @@ use Requestum\ApiGeneratorBundle\Model\EntityCollection;
 use Requestum\ApiGeneratorBundle\Model\FormCollection;
 use Requestum\ApiGeneratorBundle\Model\RoutingCollection;
 
-
+/**
+ * Class Generator
+ *
+ * @package Requestum\ApiGeneratorBundle\Service
+ */
 class Generator
 {
     /**
@@ -37,17 +41,17 @@ class Generator
     protected $outputDirectory;
 
     /**
-     * @var array
+     * @var EntityCollection
      */
     protected $entityCollection;
 
     /**
-     * @var array
+     * @var FormCollection
      */
     protected $formCollection;
 
     /**
-     * @var array
+     * @var RoutingCollection
      */
     protected $routingCollection;
 
@@ -89,11 +93,6 @@ class Generator
 
         $this->openApiSchema = $openApiSchema;
         $this->outputDirectory = $outputDirectory;
-
-//        $this->actionCollection = new ActionCollection($config);
-//        $this->entityCollection = new EntityCollection($config);
-//        $this->formCollection = new FormCollection($config);
-//        $this->routingCollection = new RoutingCollection($config);
     }
 
     public function generate()
