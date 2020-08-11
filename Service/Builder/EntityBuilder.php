@@ -2,6 +2,7 @@
 
 namespace Requestum\ApiGeneratorBundle\Service\Builder;
 
+use Requestum\ApiGeneratorBundle\Exception\EntityMissingException;
 use Requestum\ApiGeneratorBundle\Exception\PrimaryException;
 use Requestum\ApiGeneratorBundle\Exception\ReferencedColumnException;
 use Requestum\ApiGeneratorBundle\Helper\StringHelper;
@@ -18,20 +19,13 @@ use Requestum\ApiGeneratorBundle\Service\Config;
  *
  * @package Requestum\ApiGeneratorBundle\Service\Builder
  */
-class EntityBuilder extends AbstractBuilder
+class EntityBuilder implements BuilderInterface
 {
 
     /**
-     * EntityBuilder constructor.
-     *
-     * @param Config $config
+     * @var EntityCollection
      */
-    public function __construct(Config $config)
-    {
-        parent::__construct($config);
-
-        $this->collection = new EntityCollection($config);
-    }
+    private $collection;
 
     /**
      * @param array $openApiSchema
@@ -42,6 +36,8 @@ class EntityBuilder extends AbstractBuilder
      */
     public function build(array $openApiSchema, ?BaseAbstractCollection $relatedCollection = null): BaseAbstractCollection
     {
+        $this->collection = new EntityCollection();
+
         if (empty($openApiSchema['components']['schemas'])) {
             return $this->collection;
         }
@@ -199,9 +195,16 @@ class EntityBuilder extends AbstractBuilder
                     continue;
                 }
 
-                $targetEntity = $this->collection->findElement(StringHelper::getEntityNameFromObjectName($property->getReferencedLink()));
+                $targetEntityName = StringHelper::getEntityNameFromObjectName($property->getReferencedLink());
+                $targetEntity = $this->collection->findElement($targetEntityName);
                 if (is_null($targetEntity)) {
-                    continue;
+                    throw new EntityMissingException(
+                        sprintf(
+                            'Entity %s has a relation with missing entity %s',
+                            $entityName,
+                            $targetEntityName
+                        )
+                    );
                 }
 
                 $this->detectOneToOneRelation($property, $targetEntity);
@@ -248,7 +251,7 @@ class EntityBuilder extends AbstractBuilder
                 if (!$relatedProperty->checkType(PropertyTypeEnum::TYPE_ARRAY)) {
                     throw new ReferencedColumnException(
                         sprintf(
-                            'The column % has to be type %s, type %s is given',
+                            'The column %s has to be type %s, type %s is given',
                             $relatedProperty->getName(),
                             PropertyTypeEnum::TYPE_ARRAY,
                             $relatedProperty->getType(),
@@ -330,7 +333,7 @@ class EntityBuilder extends AbstractBuilder
             }
 
 
-            $relatedProperty = $targetEntity->getProperyByName($property->getBackRef());
+            $relatedProperty = $targetEntity->getPropertyByName($property->getBackRef());
             if (!$relatedProperty) {
                 throw new ReferencedColumnException(
                     sprintf(

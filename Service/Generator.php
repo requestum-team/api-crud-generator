@@ -2,7 +2,7 @@
 
 namespace Requestum\ApiGeneratorBundle\Service;
 
-use Requestum\ApiGeneratorBundle\Generators\BundleGenerator;
+use Requestum\ApiGeneratorBundle\Service\Generator\BundleGenerator;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
 use Symfony\Component\Yaml\Yaml;
@@ -99,10 +99,10 @@ class Generator
     {
         $this->buildBaseFileSystem();
 
-        $entityBuilder = new EntityBuilder($this->config);
+        $entityBuilder = new EntityBuilder();
         $this->entityCollection = $entityBuilder->build($this->openApiSchema);
 
-        $formBuilder = new FormBuilder($this->config);
+        $formBuilder = new FormBuilder();
         $this->formCollection = $formBuilder->build($this->openApiSchema, $this->entityCollection);
 
 

@@ -98,4 +98,24 @@ class StringHelper
     {
         return CommonHelper::isForm($objectName) ? $objectName: null;
     }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    public static function makeSetterName(string $name): string
+    {
+        return 'set' . ucfirst($name);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    public static function makeGetterName(string $name): string
+    {
+        return 'get' . ucfirst($name);
+    }
 }

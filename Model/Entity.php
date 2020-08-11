@@ -333,12 +333,65 @@ class Entity implements ModelInterface
      *
      * @return EntityProperty|null
      */
-    public function getProperyByName(string $name): ?EntityProperty
+    public function getPropertyByName(string $name): ?EntityProperty
     {
         $result = array_filter($this->getProperties(), function (EntityProperty $el) use ($name) {
             return $el->getName() === $name;
         });
 
         return count($result) === 1 ? array_shift($result): null;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return EntityProperty[]
+     */
+    public function getPropertiesByType(string $type): array
+    {
+        $result = array_filter($this->getProperties(), function (EntityProperty $el) {
+            return !is_null($el->getType());
+        });
+
+        return array_filter($result, function (EntityProperty $el) use ($type) {
+            return $el->getType() === $type;
+        });
+    }
+
+    /**
+     * @param string $type
+     * @param string $format
+     *
+     * @return EntityProperty[]
+     */
+    public function getPropertiesByTypeAndFormat(string $type, string $format): array
+    {
+        $result = array_filter($this->getPropertiesByType($type), function (EntityProperty $el) {
+            return !is_null($el->getFormat());
+        });
+
+        return array_filter($result, function (EntityProperty $el) use ($format) {
+            return $el->getFormat() === $format;
+        });
+    }
+
+    /**
+     * @return EntityProperty[]
+     */
+    public function getPropertiesEnum(): array
+    {
+        return array_filter($this->getProperties(), function (EntityProperty $el) {
+            return !is_null($el->getEnum()) && is_array($el->getEnum());
+        });
+    }
+
+    /**
+     * @return EntityProperty[]
+     */
+    public function getOneToManyProperties(): array
+    {
+        return array_filter($this->getProperties(), function (EntityProperty $el) {
+            return $el->isOneToMany();
+        });
     }
 }
