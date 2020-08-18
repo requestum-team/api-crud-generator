@@ -118,4 +118,30 @@ class StringHelper
     {
         return 'get' . ucfirst($name);
     }
+
+    /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public static function transformToEntityColumnParameters(array $params): string
+    {
+        $result = [];
+        foreach ($params as $key => $value) {
+            if (is_bool($value)) {
+                $value = $value === true ? 'true': 'false';
+                $param = sprintf('%s=%s',$key, $value);
+            } else if (is_int($value)) {
+                $param = sprintf('%s=%d', $key, $value);
+            } else if (is_float($value) || is_double($value)) {
+                $param = sprintf('%s=%f', $key, $value);
+            } else {
+                $param = sprintf('%s="%s"',$key, $value);
+            }
+
+            $result[] = $param;
+        }
+
+        return implode(', ', $result);
+    }
 }

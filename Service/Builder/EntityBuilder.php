@@ -10,8 +10,7 @@ use Requestum\ApiGeneratorBundle\Model\BaseAbstractCollection;
 use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\EntityCollection;
 use Requestum\ApiGeneratorBundle\Model\EntityProperty;
-use Requestum\ApiGeneratorBundle\Model\PropertyTypeEnum;
-use Requestum\ApiGeneratorBundle\Service\Config;
+use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
 
 
 /**

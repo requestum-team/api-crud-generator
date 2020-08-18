@@ -7,7 +7,7 @@ use Requestum\ApiGeneratorBundle\Exception\PrimaryException;
 use Requestum\ApiGeneratorBundle\Exception\PropertyTypeException;
 use Requestum\ApiGeneratorBundle\Exception\ReferencedColumnException;
 use Requestum\ApiGeneratorBundle\Model\Entity;
-use Requestum\ApiGeneratorBundle\Model\PropertyTypeEnum;
+use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Requestum\ApiGeneratorBundle\Tests\TestCaseTrait;
 

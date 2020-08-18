@@ -4,6 +4,8 @@ namespace Requestum\ApiGeneratorBundle\Tests\Service\Generator;
 
 use PHPUnit\Framework\TestCase;
 use Requestum\ApiGeneratorBundle\Model\Entity;
+use Requestum\ApiGeneratorBundle\Model\Generator\AccessLevelEnum;
+use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorMethodModel;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\EntityGeneratorModelBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\PhpGenerator;
@@ -39,13 +41,26 @@ class EntityGeneratorModelBuilderTest extends TestCase
         static::assertEquals('StructureTest', $model->getName());
         static::assertEquals('AppBundle\Entity', $model->getNameSpace());
         static::assertEquals('StructureTest.php', $model->getFilePath());
-        static::assertContains('Doctrine\ORM\Mapping as ORM;', $model->getUseSection());
+        static::assertContains('Doctrine\ORM\Mapping as ORM', $model->getUseSection());
         static::assertContains('@ORM\Table(name="structure_test")', $model->getAnnotations());
+        static::assertContains('@ORM\Entity(repositoryClass="AppBundle\Repository\StructureTestRepository")', $model->getAnnotations());
 
-        $phpGenerator = new PhpGenerator();
-        file_put_contents('Test.php', $phpGenerator->generate($model));
+        $property = $model->getPropertyByName('id');
+        static::assertEquals('id', $property->getName());
+        static::assertEquals(AccessLevelEnum::ACCESS_LELEV_PROTECTED, $property->getAccessLevel());
+        static::assertContains(['name' => 'ORM\Id'], $property->getAttributs());
 
-//        var_dump($model);
+        $property = $model->getPropertyByName('name');
+        static::assertEquals('name', $property->getName());
+        static::assertEquals(AccessLevelEnum::ACCESS_LELEV_PROTECTED, $property->getAccessLevel());
+        static::assertContains(['name' => 'ORM\Column(type="string", name="name")'], $property->getAttributs());
+
+        $method = $model->getMethodByName('__construct');
+        static::assertInstanceOf(GeneratorMethodModel::class, $method);
+        static::assertEquals('__construct', $method->getName());
+
+//        $phpGenerator = new PhpGenerator();
+//        file_put_contents('Test.php', $phpGenerator->generate($model));
     }
 
     public function structureProvider()

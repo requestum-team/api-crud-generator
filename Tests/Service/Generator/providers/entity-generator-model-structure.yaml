@@ -88,6 +88,9 @@ components:
         name:
           description: ""
           type: string
+        structureId:
+          $ref: '#/components/schemas/StructureTestEntity'
+          description: ""
     PostEntity:
       description: ""
       required:

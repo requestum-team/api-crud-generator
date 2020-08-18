@@ -3,6 +3,7 @@
 namespace Requestum\ApiGeneratorBundle\Model;
 
 use Requestum\ApiGeneratorBundle\Exception\PropertyTypeException;
+use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
 
 /**
  * Class EntityProperty
@@ -252,9 +253,9 @@ class EntityProperty extends BaseAbstractProperty
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getMinLength(): int
+    public function getMinLength(): ?int
     {
         return $this->minLength;
     }
@@ -278,9 +279,9 @@ class EntityProperty extends BaseAbstractProperty
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getMaxLength(): int
+    public function getMaxLength(): ?int
     {
         return $this->maxLength;
     }
@@ -304,9 +305,9 @@ class EntityProperty extends BaseAbstractProperty
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPattern(): string
+    public function getPattern(): ?string
     {
         return $this->pattern;
     }

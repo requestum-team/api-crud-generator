@@ -2,6 +2,9 @@
 
 namespace Requestum\ApiGeneratorBundle\Service\Generator;
 
+use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorMethodModel;
+use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorPropertyModel;
+
 /**
  * Class ClassGeneratorModel
  *
@@ -283,5 +286,33 @@ class ClassGeneratorModel implements ClassGeneratorModelInterface
         $this->filePath = $filePath;
 
         return $this;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return GeneratorPropertyModel|null
+     */
+    public function getPropertyByName(string $name): ?GeneratorPropertyModel
+    {
+        $result = array_filter($this->getProperties(), function (GeneratorPropertyModel $el) use ($name) {
+            return $el->getName() === $name;
+        });
+
+        return count($result) === 1 ? array_shift($result): null;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return GeneratorMethodModel|null
+     */
+    public function getMethodByName(string $name): ?GeneratorMethodModel
+    {
+        $result = array_filter($this->getMethods(), function (GeneratorMethodModel $el) use ($name) {
+            return $el->getName() === $name;
+        });
+
+        return count($result) === 1 ? array_shift($result): null;
     }
 }

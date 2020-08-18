@@ -11,8 +11,6 @@ components:
         - name
       x-primary-key:
         - id
-      x-traits:
-        - AppBundle\AbsTrait
       type: object
       properties:
         id:

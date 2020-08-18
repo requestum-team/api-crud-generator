@@ -2,6 +2,11 @@
 
 namespace Requestum\ApiGeneratorBundle\Model;
 
+/**
+ * Class Entity
+ *
+ * @package Requestum\ApiGeneratorBundle\Model
+ */
 class Entity implements ModelInterface
 {
 

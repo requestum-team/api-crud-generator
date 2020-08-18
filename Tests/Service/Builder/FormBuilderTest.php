@@ -8,7 +8,7 @@ use Requestum\ApiGeneratorBundle\Exception\EntityMissingException;
 use Requestum\ApiGeneratorBundle\Exception\FormMissingException;
 use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\Form;
-use Requestum\ApiGeneratorBundle\Model\PropertyTypeEnum;
+use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
 use Requestum\ApiGeneratorBundle\Tests\TestCaseTrait;

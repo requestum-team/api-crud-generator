@@ -1,6 +1,6 @@
 <?php
 
-namespace Requestum\ApiGeneratorBundle\Model;
+namespace Requestum\ApiGeneratorBundle\Model\Enum;
 
 /**
  * Class EntityGenerationStrategy

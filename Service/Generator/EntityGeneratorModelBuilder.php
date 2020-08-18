@@ -9,6 +9,8 @@ use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorMethodModel;
 use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorParameterModel;
 use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorPropertyModel;
 use Requestum\ApiGeneratorBundle\Model\EntityProperty;
+use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
+use Requestum\ApiGeneratorBundle\Service\Annotations\AnnotationGeneratorStrategy;
 
 /**
  * Class EntityGeneratorModelBuilder
@@ -53,6 +55,11 @@ class EntityGeneratorModelBuilder
     protected array $methods = [];
 
     /**
+     * @var AnnotationGeneratorStrategy
+     */
+    protected AnnotationGeneratorStrategy $annotationGeneratorStrategy;
+
+    /**
      * EntityGeneratorModelBuilder constructor.
      *
      * @param string $bundleName
@@ -60,6 +67,7 @@ class EntityGeneratorModelBuilder
     public function __construct(string $bundleName)
     {
         $this->bundleName = $bundleName;
+        $this->annotationGeneratorStrategy = new AnnotationGeneratorStrategy();
     }
 
     /**
@@ -101,8 +109,8 @@ class EntityGeneratorModelBuilder
      */
     private function baseUseSection(string $entityName)
     {
-        $this->useSection[] = 'Doctrine\ORM\Mapping as ORM;';
-        $this->useSection[] = 'Symfony\Component\Serializer\Annotation\Groups;';
+        $this->useSection[] = 'Doctrine\ORM\Mapping as ORM';
+        $this->useSection[] = 'Symfony\Component\Serializer\Annotation\Groups';
     }
 
     /**
@@ -162,7 +170,7 @@ class EntityGeneratorModelBuilder
             ;
 
             $this->methods[] = $construct;
-            $this->useSection[] = 'Doctrine\Common\Collections\ArrayCollection;';
+            $this->useSection[] = 'Doctrine\Common\Collections\ArrayCollection';
         }
     }
 
@@ -204,22 +212,19 @@ class EntityGeneratorModelBuilder
     private function getPropertyAttributs(EntityProperty $entityProperty): array
     {
         $result[] = [
-            [
-                'name' => 'var',
-                'description' => sprintf('%s $%s', $entityProperty->getType(), $entityProperty->getName())
-            ],
+            'name' => 'var',
+            'description' => sprintf('%s $%s', $entityProperty->getType(), $entityProperty->getName())
         ];
 
-        $attribut = sprintf(
-            'ORM\Column(name="%s", type="string", nullable=true)',
-            $entityProperty->getDatabasePropertyName()
+        $generator = $this->annotationGeneratorStrategy->getAnnotationGenerator(
+            $this->detectPropertyType($entityProperty)
         );
 
-        $result[] = [
-            [
+        foreach ($generator->generate($entityProperty) as $attribut) {
+            $result[] = [
                 'name' => $attribut,
-            ],
-        ];
+            ];
+        }
 
         return $result;
     }
@@ -275,12 +280,67 @@ class EntityGeneratorModelBuilder
     }
 
     /**
+     * todo
      * @param EntityProperty $entityProperty
      *
      * @return string
      */
     private function prepareParameterType(EntityProperty $entityProperty): string
     {
-       return !is_null($entityProperty->getType()) ? $entityProperty->getType(): 'string';
+        $type = '';
+        if (!is_null($entityProperty->getType())) {
+            $type = $entityProperty->getType();
+
+            switch ($entityProperty->getType()) {
+                case PropertyTypeEnum::TYPE_INTEGER:
+                    $type = 'int';
+                    break;
+
+                case PropertyTypeEnum::TYPE_BOOLEAN:
+                    $type = 'bool';
+                    break;
+
+                case PropertyTypeEnum::TYPE_NUMBER:
+                    $type = 'float';
+                    break;
+            }
+
+        }
+
+        if ($entityProperty->isForeignKey()) {
+            $type = 'int';
+        }
+
+        if ($entityProperty->isOneToMany()) {
+            $type = 'Doctrine\Common\Collections\ArrayCollection';
+        }
+
+        return $type;
+    }
+
+    /**
+     * @param EntityProperty $entityProperty
+     *
+     * @return string
+     */
+    private function detectPropertyType(EntityProperty $entityProperty): string
+    {
+        if ($entityProperty->isPrimary()) {
+            return PropertyTypeEnum::TYPE_PRIMARY_AUTO;
+        }
+
+        if ($entityProperty->getType() === PropertyTypeEnum::TYPE_INTEGER) {
+            return PropertyTypeEnum::TYPE_INTEGER;
+        }
+
+        if ($entityProperty->getType() === PropertyTypeEnum::TYPE_NUMBER) {
+            if (!is_null($entityProperty->getFormat()) && $entityProperty->getFormat() === PropertyTypeEnum::TYPE_DOUBLE) {
+                return PropertyTypeEnum::TYPE_DECIMAL;
+            }
+
+            return PropertyTypeEnum::TYPE_FLOAT;
+        }
+
+        return PropertyTypeEnum::TYPE_STRING;
     }
 }
