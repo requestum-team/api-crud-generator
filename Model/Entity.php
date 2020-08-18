@@ -65,6 +65,11 @@ class Entity implements ModelInterface
     private array $traits = [];
 
     /**
+     * @var array
+     */
+    private array $annotations = [];
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -421,6 +426,26 @@ class Entity implements ModelInterface
     public function setTraits(array $traits)
     {
         $this->traits = $traits;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAnnotations(): array
+    {
+        return $this->annotations;
+    }
+
+    /**
+     * @param array $annotations
+     *
+     * @return Entity
+     */
+    public function setAnnotations(array $annotations)
+    {
+        $this->annotations = $annotations;
 
         return $this;
     }

@@ -44,6 +44,7 @@ class EntityBuilderTest extends TestCase
         static::assertEquals('StructureTestEntity', $structureTest->getOriginObjectName());
         static::assertEquals(12, count($structureTest->getProperties()));
         static::assertIsArray($structureTest->getTraits());
+        static::assertIsArray($structureTest->getAnnotations());
 
         $property = $structureTest->getPropertyByName('id');
         static::assertEquals('id', $property->getName());
@@ -54,6 +55,7 @@ class EntityBuilderTest extends TestCase
         static::assertEquals('name', $property->getName());
         static::assertEquals(PropertyTypeEnum::TYPE_STRING, $property->getType());
         static::assertTrue($property->isRequired());
+        static::assertIsArray($property->getAnnotations());
 
         $property = $structureTest->getPropertyByName('email');
         static::assertEquals('email', $property->getName());
