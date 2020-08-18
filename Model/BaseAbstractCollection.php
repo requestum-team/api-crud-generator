@@ -12,16 +12,6 @@ abstract class BaseAbstractCollection
     protected $elements = [];
 
     /**
-     * @var Config
-     */
-    protected $config;
-
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-    }
-
-    /**
      * @return array
      */
     public function getElements(): array

@@ -12,26 +12,19 @@ use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\Form;
 use Requestum\ApiGeneratorBundle\Model\FormCollection;
 use Requestum\ApiGeneratorBundle\Model\FormProperty;
-use Requestum\ApiGeneratorBundle\Service\Config;
 
 /**
  * Class FormBuilder
  *
  * @package Requestum\ApiGeneratorBundle\Service\Builder
  */
-class FormBuilder extends AbstractBuilder
+class FormBuilder implements BuilderInterface
 {
-    /**
-     * EntityBuilder constructor.
-     *
-     * @param Config $config
-     */
-    public function __construct(Config $config)
-    {
-        parent::__construct($config);
 
-        $this->collection = new FormCollection($config);
-    }
+    /**
+     * @var FormCollection
+     */
+    private $collection;
 
     /**
      * @param array $openApiSchema
@@ -42,6 +35,8 @@ class FormBuilder extends AbstractBuilder
      */
     public function build(array $openApiSchema, ?BaseAbstractCollection $relatedCollection = null): BaseAbstractCollection
     {
+        $this->collection = new FormCollection();
+
         if (empty($openApiSchema['components']['schemas'])) {
             return $this->collection;
         }
@@ -70,7 +65,6 @@ class FormBuilder extends AbstractBuilder
                 $form
                     ->setName($name)
                     ->setDescription(!empty($objectData['description']) ? $objectData['description']: null)
-                    ->setBundleName($this->config->bundleName)
                     ->setEntity($entity)
                     ->setProperties(
                         $this->buildProperties($objectData['properties'], $required, $entity)

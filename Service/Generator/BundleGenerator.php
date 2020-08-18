@@ -1,6 +1,6 @@
 <?php
 
-namespace Requestum\ApiGeneratorBundle\Generators;
+namespace Requestum\ApiGeneratorBundle\Service\Generator;
 
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\FileGenerator;

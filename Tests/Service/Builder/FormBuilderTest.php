@@ -8,10 +8,9 @@ use Requestum\ApiGeneratorBundle\Exception\EntityMissingException;
 use Requestum\ApiGeneratorBundle\Exception\FormMissingException;
 use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\Form;
-use Requestum\ApiGeneratorBundle\Model\PropertyTypeEnum;
+use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
-use Requestum\ApiGeneratorBundle\Service\Config;
 use Requestum\ApiGeneratorBundle\Tests\TestCaseTrait;
 
 /**
@@ -24,29 +23,18 @@ class FormBuilderTest extends TestCase
     use TestCaseTrait;
 
     /**
-     * @var Config
-     */
-    private $config;
-
-    protected function setUp(): void
-    {
-        $configPath = realpath(__DIR__ .  '/../../../config.example.yml');
-        $this->config = new Config($configPath);
-    }
-
-    /**
      * @dataProvider structureProvider
      */
     public function testStructure(string $filename)
     {
         $filePath = realpath(__DIR__ . '/providers/' . $filename);
 
-        $entityBuilder = new EntityBuilder($this->config);
+        $entityBuilder = new EntityBuilder();
         $entityCollection = $entityBuilder->build(
             $this->getFileContent($filePath)
         );
 
-        $formBuilder = new FormBuilder($this->config);
+        $formBuilder = new FormBuilder();
         $collection = $formBuilder->build(
             $this->getFileContent($filePath),
             $entityCollection
@@ -61,22 +49,22 @@ class FormBuilderTest extends TestCase
         static::assertEquals('UserCreate', $structureTest->getName());
         static::assertEquals(8, count($structureTest->getProperties()));
 
-        $property = $structureTest->getProperyByNameCamelCase('firstName');
+        $property = $structureTest->getPropertyByNameCamelCase('firstName');
         static::assertEquals('firstName', $property->getNameCamelCase());
         static::assertEquals(PropertyTypeEnum::TYPE_STRING, $property->getType());
         static::assertTrue($property->isRequired());
 
-        $property = $structureTest->getProperyByNameCamelCase('email');
+        $property = $structureTest->getPropertyByNameCamelCase('email');
         static::assertEquals('email', $property->getNameCamelCase());
         static::assertEquals(PropertyTypeEnum::TYPE_STRING, $property->getType());
         static::assertEquals('email', $property->getFormat());
         static::assertTrue($property->isRequired());
 
-        $property = $structureTest->getProperyByNameCamelCase('age');
+        $property = $structureTest->getPropertyByNameCamelCase('age');
         static::assertEquals('age', $property->getNameCamelCase());
         static::assertEquals(PropertyTypeEnum::TYPE_INTEGER, $property->getType());
 
-        $property = $structureTest->getProperyByNameCamelCase('type');
+        $property = $structureTest->getPropertyByNameCamelCase('type');
         static::assertEquals('type', $property->getNameCamelCase());
         static::assertEquals(PropertyTypeEnum::TYPE_STRING, $property->getType());
         static::assertIsArray($property->getEnum());
@@ -84,13 +72,13 @@ class FormBuilderTest extends TestCase
         static::assertContains('manager', $property->getEnum());
         static::assertContains('admin', $property->getEnum());
 
-        $property = $structureTest->getProperyByNameCamelCase('shopId');
+        $property = $structureTest->getPropertyByNameCamelCase('shopId');
         static::assertEquals('shopId', $property->getNameCamelCase());
         static::assertTrue($property->isEntity());
         static::assertInstanceOf(Entity::class, $property->getReferencedObject());
         static::assertEquals('Shop', $property->getReferencedObject()->getName());
 
-        $property = $structureTest->getProperyByNameCamelCase('addresses');
+        $property = $structureTest->getPropertyByNameCamelCase('addresses');
         static::assertEquals('addresses', $property->getNameCamelCase());
         static::assertEquals(PropertyTypeEnum::TYPE_ARRAY, $property->getType());
         static::assertTrue($property->isForm());
@@ -100,65 +88,25 @@ class FormBuilderTest extends TestCase
     }
 
     /**
-     * @dataProvider entityCollectionExceptionProvider
+     * @param string $exception
+     * @param string $filename
+     * @param string $message
+     *
+     * @dataProvider exceptionProvider
      */
-    public function testEntityCollectionException(string $filename, string $message)
-    {
-        static::expectException(CollectionException::class);
-        static::expectExceptionMessage($message);
-
-        $filePath = realpath(__DIR__ . '/providers/exception/' . $filename);
-
-        $entityBuilder = new EntityBuilder($this->config);
-        $entityCollection = $entityBuilder->build(
-            $this->getFileContent($filePath)
-        );
-
-        $formBuilder = new FormBuilder($this->config);
-        $collection = $formBuilder->build(
-            $this->getFileContent($filePath),
-            $entityCollection
-        );
-    }
-
-    /**
-     * @dataProvider formMissingExceptionProvider
-     */
-    public function testFormMissingException(string $filename, string $message)
-    {
-        static::expectException(FormMissingException::class);
-        static::expectExceptionMessage($message);
-
-        $filePath = realpath(__DIR__ . '/providers/exception/' . $filename);
-
-        $entityBuilder = new EntityBuilder($this->config);
-        $entityCollection = $entityBuilder->build(
-            $this->getFileContent($filePath)
-        );
-
-        $formBuilder = new FormBuilder($this->config);
-        $collection = $formBuilder->build(
-            $this->getFileContent($filePath),
-            $entityCollection
-        );
-    }
-
-    /**
-     * @dataProvider entityMissingExceptionProvider
-     */
-    public function testEntityMissingException(string $exception, string $filename, string $message)
+    public function testException(string $exception, string $filename, string $message)
     {
         static::expectException($exception);
         static::expectExceptionMessage($message);
 
         $filePath = realpath(__DIR__ . '/providers/exception/' . $filename);
 
-        $entityBuilder = new EntityBuilder($this->config);
+        $entityBuilder = new EntityBuilder();
         $entityCollection = $entityBuilder->build(
             $this->getFileContent($filePath)
         );
 
-        $formBuilder = new FormBuilder($this->config);
+        $formBuilder = new FormBuilder();
         $collection = $formBuilder->build(
             $this->getFileContent($filePath),
             $entityCollection
@@ -174,23 +122,19 @@ class FormBuilderTest extends TestCase
         ];
     }
 
-    public function entityCollectionExceptionProvider()
+    public function exceptionProvider()
     {
         return [
             [
+                CollectionException::class,
                 'form-entity-collection-missing.yaml',
                 'Required the entity collection. Form UserCreate has as a dependency an entity UserEntity',
             ],
             [
+                CollectionException::class,
                 'form-entity-collection-missing-two.yaml',
                 'Required the entity collection. Form ItemCreate has as a dependency an entity ShopEntity',
             ],
-        ];
-    }
-
-    public function entityMissingExceptionProvider()
-    {
-        return [
             [
                 EntityMissingException::class,
                 'form-entity-missing.yaml',
@@ -206,16 +150,11 @@ class FormBuilderTest extends TestCase
                 'form-referenced-entity-missing.yaml',
                 'Entity Missing is missing in the entity collection',
             ],
-        ];
-    }
-
-    public function formMissingExceptionProvider()
-    {
-        return [
             [
+                FormMissingException::class,
                 'form-missing.yaml',
                 'Form UserCreate has a relation with missing form AddressInput',
-            ],
+            ]
         ];
     }
 }

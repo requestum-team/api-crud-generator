@@ -25,11 +25,6 @@ class Form implements ModelInterface
     private string $nameSpace = 'Form';
 
     /**
-     * @var string
-     */
-    private string $bundleName;
-
-    /**
      * @var Entity
      */
     private ?Entity $entity = null;
@@ -96,14 +91,6 @@ class Form implements ModelInterface
     }
 
     /**
-     * @return string
-     */
-    public function getFullNameSpace(): string
-    {
-        return implode('\\', [$this->getBundleName(), ...explode('\\', $this->getNameSpace())]);
-    }
-
-    /**
      * @param string $nameSpace
      *
      * @return Form
@@ -111,26 +98,6 @@ class Form implements ModelInterface
     public function setNameSpace(string $nameSpace)
     {
         $this->nameSpace = $nameSpace;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBundleName(): string
-    {
-        return $this->bundleName;
-    }
-
-    /**
-     * @param string $bundleName
-     *
-     * @return Form
-     */
-    public function setBundleName(string $bundleName)
-    {
-        $this->bundleName = $bundleName;
 
         return $this;
     }
@@ -194,7 +161,7 @@ class Form implements ModelInterface
      *
      * @return FormProperty|null
      */
-    public function getProperyByNameCamelCase(string $name): ?FormProperty
+    public function getPropertyByNameCamelCase(string $name): ?FormProperty
     {
         $result = array_filter($this->getProperties(), function (FormProperty $el) use ($name) {
             return $el->getNameCamelCase() === $name;

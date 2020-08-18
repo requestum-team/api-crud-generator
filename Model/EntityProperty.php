@@ -2,6 +2,9 @@
 
 namespace Requestum\ApiGeneratorBundle\Model;
 
+use Requestum\ApiGeneratorBundle\Exception\PropertyTypeException;
+use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
+
 /**
  * Class EntityProperty
  *
@@ -250,9 +253,9 @@ class EntityProperty extends BaseAbstractProperty
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getMinLength(): int
+    public function getMinLength(): ?int
     {
         return $this->minLength;
     }
@@ -265,7 +268,7 @@ class EntityProperty extends BaseAbstractProperty
     public function setMinLength(?int $minLength)
     {
         if (!$this->checkType(PropertyTypeEnum::TYPE_STRING)) {
-            throw new \Exception(
+            throw new PropertyTypeException(
                 'Min length applies only for type string. Use minimum for types integer and number or minItems for type array'
             );
         }
@@ -276,9 +279,9 @@ class EntityProperty extends BaseAbstractProperty
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getMaxLength(): int
+    public function getMaxLength(): ?int
     {
         return $this->maxLength;
     }
@@ -291,7 +294,7 @@ class EntityProperty extends BaseAbstractProperty
     public function setMaxLength(?int $maxLength)
     {
         if (!$this->checkType(PropertyTypeEnum::TYPE_STRING)) {
-            throw new \Exception(
+            throw new PropertyTypeException(
                 'Max length applies only for type string. Use maximum for types integer and number or maxItems for type array'
             );
         }
@@ -302,9 +305,9 @@ class EntityProperty extends BaseAbstractProperty
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPattern(): string
+    public function getPattern(): ?string
     {
         return $this->pattern;
     }
@@ -317,7 +320,7 @@ class EntityProperty extends BaseAbstractProperty
     public function setPattern(?string $pattern)
     {
         if (!$this->checkType(PropertyTypeEnum::TYPE_STRING)) {
-            throw new \Exception(
+            throw new PropertyTypeException(
                 'Pattern applies only for type string.'
             );
         }
@@ -343,7 +346,7 @@ class EntityProperty extends BaseAbstractProperty
     public function setMinimum(?int $minimum)
     {
         if (!$this->checkType(PropertyTypeEnum::TYPE_INTEGER) && !$this->checkType(PropertyTypeEnum::TYPE_NUMBER)) {
-            throw new \Exception(
+            throw new PropertyTypeException(
                 'Minimum applies only for integer or number types. Use minLength for type string or mimItems type array'
             );
         }
@@ -369,7 +372,7 @@ class EntityProperty extends BaseAbstractProperty
     public function setMaximum(?int $maximum)
     {
         if (!$this->checkType(PropertyTypeEnum::TYPE_INTEGER) && !$this->checkType(PropertyTypeEnum::TYPE_NUMBER)) {
-            throw new \Exception(
+            throw new PropertyTypeException(
                 'Maximum applies only for integer or number types. Use maxLength for type string or maxItems for type array'
             );
         }
@@ -395,7 +398,7 @@ class EntityProperty extends BaseAbstractProperty
     public function setMinItems(?int $minItems)
     {
         if (!$this->checkType(PropertyTypeEnum::TYPE_ARRAY)) {
-            throw new \Exception(
+            throw new PropertyTypeException(
                 'Min items applies only for type array. Use minLength for type string or minimum for types integer and number'
             );
         }
@@ -421,7 +424,7 @@ class EntityProperty extends BaseAbstractProperty
     public function setMaxItems(?int $maxItems)
     {
         if (!$this->checkType(PropertyTypeEnum::TYPE_ARRAY)) {
-            throw new \Exception(
+            throw new PropertyTypeException(
                 'Max items applies only for type array. Use maxLength for type string or maximum for types integer and number'
             );
         }

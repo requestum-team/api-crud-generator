@@ -1,6 +1,6 @@
 <?php
 
-namespace Requestum\ApiGeneratorBundle\Model;
+namespace Requestum\ApiGeneratorBundle\Model\Enum;
 
 /**
  * Class PropertyTypeEnum
@@ -15,4 +15,9 @@ final class PropertyTypeEnum
     const TYPE_BOOLEAN = 'boolean';
     const TYPE_ARRAY = 'array';
     const TYPE_OBJECT = 'object';
+
+    const TYPE_PRIMARY_AUTO = 'primary_auto';
+    const TYPE_FLOAT = 'float';
+    const TYPE_DOUBLE = 'double';
+    const TYPE_DECIMAL = 'decimal';
 }

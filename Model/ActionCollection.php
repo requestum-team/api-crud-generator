@@ -17,9 +17,9 @@ class ActionCollection extends BaseAbstractCollection
                     'class' => $action->getClassName(),
                     'arguments' => $action->getArguments(),
                 ];
-                if (!$this->config->autowire) {
-                    $service['tags'] = '["controller.service_arguments"]';
-                }
+//                if (!$this->config->autowire) {
+//                    $service['tags'] = '["controller.service_arguments"]';
+//                }
 
                 $services[$action->getServiceName()] = $service;
             }
