@@ -43,6 +43,7 @@ class EntityBuilderTest extends TestCase
         static::assertEquals('structure_test', $structureTest->getTableName());
         static::assertEquals('StructureTestEntity', $structureTest->getOriginObjectName());
         static::assertEquals(12, count($structureTest->getProperties()));
+        static::assertTrue(is_array($structureTest->getTraits()));
 
         $property = $structureTest->getPropertyByName('id');
         static::assertEquals('id', $property->getName());
