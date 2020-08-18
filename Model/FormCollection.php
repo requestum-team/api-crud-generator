@@ -7,7 +7,7 @@ class FormCollection extends BaseAbstractCollection
     /**
      * @param ModelInterface $element
      *
-     * @return $this$enum
+     * @return $this
      */
     public function addElement(ModelInterface $element)
     {
