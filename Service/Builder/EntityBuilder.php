@@ -47,6 +47,7 @@ class EntityBuilder implements BuilderInterface
                 $required = !empty($objectData['required']) ? array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $objectData['required']): [];
                 $primary = !empty($objectData['x-primary-key']) ? array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $objectData['x-primary-key']): [];
                 $traits = !empty($objectData['x-trait']) ? $objectData['x-trait'] : [];
+                $annotation = !empty($objectData['x-annotation']) ? $objectData['x-annotation'] : [];
 
                 $entity = new Entity();
                 $entity
@@ -60,6 +61,7 @@ class EntityBuilder implements BuilderInterface
                         $this->buildProperties($objectData['properties'], $required, $primary)
                     )
                     ->setTraits($traits)
+                    ->setAnnotations($annotation)
                 ;
 
                 $this->collection->addElement($entity);
@@ -132,6 +134,10 @@ class EntityBuilder implements BuilderInterface
 
             if (isset($data['x-uselist'])) {
                 $property->setUseList($data['x-uselist']);
+            }
+
+            if (isset($data['x-annotation'])) {
+                $property->setAnnotations($data['x-annotation']);
             }
 
             // applies only for string type

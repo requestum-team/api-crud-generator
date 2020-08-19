@@ -171,6 +171,11 @@ class EntityProperty extends BaseAbstractProperty
     protected ?EntityProperty $referencedColumn = null;
 
     /**
+     * @var array
+     */
+    protected array $annotations = [];
+
+    /**
      * @return Entity
      */
     public function getEntity(): Entity
@@ -776,6 +781,26 @@ class EntityProperty extends BaseAbstractProperty
     public function setBackRef(?string $backRef)
     {
         $this->backRef = $backRef;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAnnotations(): array
+    {
+        return $this->annotations;
+    }
+
+    /**
+     * @param array $annotations
+     *
+     * @return EntityProperty
+     */
+    public function setAnnotations(array $annotations)
+    {
+        $this->annotations = $annotations;
 
         return $this;
     }
