@@ -2,6 +2,8 @@
 
 namespace Requestum\ApiGeneratorBundle\Model;
 
+use Requestum\ApiGeneratorBundle\Helper\CommonHelper;
+
 /**
  * Class Entity
  *
@@ -315,10 +317,10 @@ class Entity implements ModelInterface
     /**
      * @return EntityProperty[]
      */
-    public function filterReferencedLinkProperties(): array
+    public function filterReferencedEntityLinkProperties(): array
     {
         return array_filter($this->getProperties(), function (EntityProperty $el) {
-            return !is_null($el->getReferencedLink());
+            return !is_null($el->getReferencedLink()) && CommonHelper::isEntity($el->getReferencedLink());
         });
     }
 
@@ -329,7 +331,7 @@ class Entity implements ModelInterface
      */
     public function getRelatedProperty(string $entityName): ?EntityProperty
     {
-        $referencedLinkProperties = $this->filterReferencedLinkProperties();
+        $referencedLinkProperties = $this->filterReferencedEntityLinkProperties();
         if (count($referencedLinkProperties) > 0) {
             $result = array_filter($referencedLinkProperties, function (EntityProperty $el) use ($entityName) {
                 return $el->getReferencedLink() === $entityName;

@@ -99,11 +99,14 @@ class Generator
     {
         $this->buildBaseFileSystem();
 
+        $inheritanceHandler = new InheritanceHandler();
+        $schemasAndRequestBodiesCollection = $inheritanceHandler->process($this->openApiSchema);
+
         $entityBuilder = new EntityBuilder();
-        $this->entityCollection = $entityBuilder->build($this->openApiSchema);
+        $this->entityCollection = $entityBuilder->build($schemasAndRequestBodiesCollection);
 
         $formBuilder = new FormBuilder();
-        $this->formCollection = $formBuilder->build($this->openApiSchema, $this->entityCollection);
+        $this->formCollection = $formBuilder->build($schemasAndRequestBodiesCollection, $this->entityCollection);
 
 
 //        $this->generateAction();

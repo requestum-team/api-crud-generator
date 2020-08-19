@@ -1,0 +1,106 @@
+---
+openapi: 3.0.2
+info:
+  title: Inheritance schemas
+  version: 1.0.0
+components:
+  schemas:
+    CommentStatus:
+      type: string
+      enum:
+        - new
+        - draft
+        - published
+      description: Comment status
+    UserRole:
+      type: string
+      enum:
+        - user
+        - admin
+        - manager
+        - vineyard
+      description: User role
+    UserAbstract:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email
+        fullName:
+          type: string
+          description: User's full name
+        city:
+          type: string
+          description: City
+    MainParent:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email
+        fullName:
+          type: string
+          description: User's full name
+    MainAbstract:
+      allOf:
+        - $ref: '#/components/schemas/MainParent'
+        - type: object
+          required:
+            - city
+          properties:
+            city:
+              type: string
+              description: City
+    UserEntity:
+      allOf:
+        - $ref: '#/components/schemas/UserAbstract'
+        - type: object
+          x-primary-key:
+            - id
+          properties:
+            id:
+              type: integer
+              format: int32
+            role:
+              $ref: '#/components/schemas/UserRole'
+            enabled:
+              type: boolean
+              description: User enable status(can be used to ban someone)
+            confirmed:
+              type: boolean
+              description: User confirmed account status(if user confermed the email)
+    CommentEntity:
+      description: ""
+      required:
+        - name
+      x-primary-key:
+        - id
+      type: object
+      properties:
+        id:
+          description: ""
+          type: integer
+        name:
+          description: ""
+          type: string
+        userId:
+          $ref: '#/components/schemas/UserEntity'
+          description: ""
+        status:
+          $ref: '#/components/schemas/CommentStatus'
+    MainEntity:
+      allOf:
+        - $ref: '#/components/schemas/MainAbstract'
+        - type: object
+          x-primary-key:
+            - id
+          properties:
+            id:
+              type: integer
+              format: int32

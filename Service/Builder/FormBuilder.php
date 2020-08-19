@@ -37,11 +37,11 @@ class FormBuilder implements BuilderInterface
     {
         $this->collection = new FormCollection();
 
-        if (empty($openApiSchema['components']['schemas'])) {
+        if (empty($openApiSchema)) {
             return $this->collection;
         }
 
-        foreach ($openApiSchema['components']['schemas'] as $objectName => $objectData) {
+        foreach ($openApiSchema as $objectName => $objectData) {
             if (null !== ($name = StringHelper::getFormName($objectName))) {
                 $required = !empty($objectData['required']) ? array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $objectData['required']): [];
                 $entity = null;

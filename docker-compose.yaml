@@ -12,4 +12,4 @@ services:
     volumes:
       - ./:/var/www
     command:
-      - "/var/www/vendor/bin/phpunit"
+      - "/var/www/run.php"

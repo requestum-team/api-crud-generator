@@ -1,19 +1,22 @@
 ---
 openapi: 3.0.2
 info:
-  title: Field types
+  title: Requestum API generatpr. Test case Exception entity missing for a property
   version: 1.0.0
 components:
-  schemas:
+  requestBodies:
     ItemCreate:
-      description: ""
-      required:
-        - name
-      type: object
-      properties:
-        name:
-          description: ""
-          type: string
-        shopId:
-          description: ""
-          $ref: '#/components/schemas/ShopEntity'
+      content:
+        application/json:
+          schema:
+            description: ""
+            required:
+              - name
+            type: object
+            properties:
+              name:
+                description: ""
+                type: string
+              shopId:
+                description: ""
+                $ref: '#/components/schemas/ShopEntity'

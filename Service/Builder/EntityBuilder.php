@@ -37,11 +37,11 @@ class EntityBuilder implements BuilderInterface
     {
         $this->collection = new EntityCollection();
 
-        if (empty($openApiSchema['components']['schemas'])) {
+        if (empty($openApiSchema)) {
             return $this->collection;
         }
 
-        foreach ($openApiSchema['components']['schemas'] as $objectName => $objectData) {
+        foreach ($openApiSchema as $objectName => $objectData) {
 
             if (null !== ($name = StringHelper::getEntityNameFromObjectName($objectName))) {
                 $required = !empty($objectData['required']) ? array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $objectData['required']): [];
@@ -197,7 +197,7 @@ class EntityBuilder implements BuilderInterface
          */
         foreach ($this->collection->getElements() as $entityName => $entity) {
             /** @var EntityProperty $property */
-            foreach ($entity->filterReferencedLinkProperties() as $property) {
+            foreach ($entity->filterReferencedEntityLinkProperties() as $property) {
                 if (is_null($property->getReferencedLink())) {
                     continue;
                 }
@@ -335,10 +335,10 @@ class EntityBuilder implements BuilderInterface
                 )
             ;
 
+            // if unidirectional relation
             if (is_null($property->getBackRef())) {
                 return;
             }
-
 
             $relatedProperty = $targetEntity->getPropertyByName($property->getBackRef());
             if (!$relatedProperty) {

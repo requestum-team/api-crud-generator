@@ -1,1 +1,1 @@
-./vendor/bin/phpunit
+/var/www/vendor/bin/phpunit

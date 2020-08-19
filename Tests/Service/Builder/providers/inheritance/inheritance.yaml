@@ -1,0 +1,43 @@
+openapi: 3.0.1
+info:
+  title: Field types
+  version: 1.0.0
+components:
+  schemas:
+    UserRole:
+      type: string
+      enum:
+        - user
+        - admin
+        - manager
+        - vineyard
+      description: User role
+    UserAbstract:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email
+        fullName:
+          type: string
+          description: User's full name
+        city:
+          type: string
+          description: City
+    UserEntity:
+      allOf:
+        - $ref: '#/components/schemas/UserAbstract'
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+            role:
+              $ref: '#/components/schemas/UserRole'
+            enabled:
+              type: boolean
+              description: User enable status(can be used to ban someone)
+            confirmed:
+              type: boolean
+              description: User confirmed account status(if user confermed the email)

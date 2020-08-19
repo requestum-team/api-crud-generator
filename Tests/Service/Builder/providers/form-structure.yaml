@@ -5,57 +5,6 @@ info:
   version: 1.0.0
 components:
   schemas:
-    UserCreate:
-      description: ""
-      x-entity:
-        $ref: '#/components/schemas/UserEntity'
-      required:
-        - firstName
-        - lastName
-        - email
-      type: object
-      properties:
-        firstName:
-          description: ""
-          type: string
-        lastName:
-          description: ""
-          type: string
-        email:
-          description: ""
-          type: string
-          format: email
-        phone:
-          description: ""
-          type: string
-        age:
-          description: ""
-          type: integer
-        type:
-          type: string
-          enum:
-            - user
-            - manager
-            - admin
-        shopId:
-          description: ""
-          $ref: '#/components/schemas/ShopEntity'
-        addresses:
-          description: ""
-          type: array
-          items:
-            $ref: '#/components/schemas/AddressInput'
-    AddressInput:
-      description: ""
-      x-entity:
-        $ref: '#/components/schemas/AddressEntity'
-      required:
-        - name
-      type: object
-      properties:
-        name:
-          description: ""
-          type: string
     UserEntity:
       description: ""
       required:
@@ -119,3 +68,60 @@ components:
         name:
           description: ""
           type: string
+  requestBodies:
+    UserCreate:
+      content:
+        application/json:
+          schema:
+            description: ""
+            x-entity:
+              $ref: '#/components/schemas/UserEntity'
+            required:
+              - firstName
+              - lastName
+              - email
+            type: object
+            properties:
+              firstName:
+                description: ""
+                type: string
+              lastName:
+                description: ""
+                type: string
+              email:
+                description: ""
+                type: string
+                format: email
+              phone:
+                description: ""
+                type: string
+              age:
+                description: ""
+                type: integer
+              type:
+                type: string
+                enum:
+                  - user
+                  - manager
+                  - admin
+              shopId:
+                $ref: '#/components/schemas/ShopEntity'
+              addresses:
+                description: ""
+                type: array
+                items:
+                  $ref: '#/components/requestBodies/AddressInput'
+    AddressInput:
+      content:
+        application/json:
+          schema:
+            description: ""
+            x-entity:
+              $ref: '#/components/schemas/AddressEntity'
+            required:
+              - name
+            type: object
+            properties:
+              name:
+                description: ""
+                type: string

@@ -5,18 +5,6 @@ info:
   version: 1.0.0
 components:
   schemas:
-    UserCreate:
-      description: ""
-      required:
-        - name
-      type: object
-      properties:
-        name:
-          description: ""
-          type: string
-        shopId:
-          description: ""
-          $ref: '#/components/schemas/MissingEntity'
     ShopEntity:
       description: ""
       required:
@@ -31,3 +19,19 @@ components:
         name:
           description: ""
           type: string
+  requestBodies:
+    UserCreate:
+      content:
+        application/json:
+          schema:
+            description: ""
+            required:
+              - name
+            type: object
+            properties:
+              name:
+                description: ""
+                type: string
+              shopId:
+                description: ""
+                $ref: '#/components/schemas/MissingEntity'

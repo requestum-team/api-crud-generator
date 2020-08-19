@@ -23,7 +23,9 @@ class FormBuilderTest extends TestCase
     use TestCaseTrait;
 
     /**
+     * @param string $filename
      * @dataProvider structureProvider
+     * @throws \Exception
      */
     public function testStructure(string $filename)
     {
@@ -31,12 +33,12 @@ class FormBuilderTest extends TestCase
 
         $entityBuilder = new EntityBuilder();
         $entityCollection = $entityBuilder->build(
-            $this->getFileContent($filePath)
+            $this->getSchemasAndRequestBodiesCollection($filePath)
         );
 
         $formBuilder = new FormBuilder();
         $collection = $formBuilder->build(
-            $this->getFileContent($filePath),
+            $this->getSchemasAndRequestBodiesCollection($filePath),
             $entityCollection
         );
 
@@ -103,12 +105,12 @@ class FormBuilderTest extends TestCase
 
         $entityBuilder = new EntityBuilder();
         $entityCollection = $entityBuilder->build(
-            $this->getFileContent($filePath)
+            $this->getSchemasAndRequestBodiesCollection($filePath)
         );
 
         $formBuilder = new FormBuilder();
         $collection = $formBuilder->build(
-            $this->getFileContent($filePath),
+            $this->getSchemasAndRequestBodiesCollection($filePath),
             $entityCollection
         );
     }
