@@ -9,6 +9,7 @@ use Requestum\ApiGeneratorBundle\Exception\ReferencedColumnException;
 use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
+use Requestum\ApiGeneratorBundle\Service\InheritanceHandler;
 use Requestum\ApiGeneratorBundle\Tests\TestCaseTrait;
 
 /**
@@ -30,7 +31,7 @@ class EntityBuilderTest extends TestCase
 
         $builder = new EntityBuilder();
         $collection = $builder->build(
-            $this->getFileContent($filePath)
+            $this->getSchemasAndRequestBodiesCollection($filePath)
         );
 
         $elements = $collection->getElements();
@@ -144,7 +145,7 @@ class EntityBuilderTest extends TestCase
 
         $builder = new EntityBuilder();
         $builder->build(
-            $this->getFileContent($filePath)
+            $this->getSchemasAndRequestBodiesCollection($filePath)
         );
     }
 
@@ -154,9 +155,10 @@ class EntityBuilderTest extends TestCase
     public function testManyToOneUnidirectional(string $filename)
     {
         $filePath = realpath(__DIR__ . '/providers/relations/' . $filename);
+
         $builder = new EntityBuilder();
         $collection = $builder->build(
-            $this->getFileContent($filePath)
+            $this->getSchemasAndRequestBodiesCollection($filePath)
         );
 
         /** @var Entity $commentEntity */
@@ -179,9 +181,10 @@ class EntityBuilderTest extends TestCase
     public function testManyToOneBidirectional(string $filename)
     {
         $filePath = realpath(__DIR__ . '/providers/relations/' . $filename);
+
         $builder = new EntityBuilder();
         $collection = $builder->build(
-            $this->getFileContent($filePath)
+            $this->getSchemasAndRequestBodiesCollection($filePath)
         );
 
         /** @var Entity $commentEntity */
@@ -211,7 +214,7 @@ class EntityBuilderTest extends TestCase
         $filePath = realpath(__DIR__ . '/providers/relations/' . $filename);
         $builder = new EntityBuilder();
         $collection = $builder->build(
-            $this->getFileContent($filePath)
+            $this->getSchemasAndRequestBodiesCollection($filePath)
         );
 
         /** @var Entity $payInfoEntity */
@@ -236,7 +239,7 @@ class EntityBuilderTest extends TestCase
         $filePath = realpath(__DIR__ . '/providers/relations/' . $filename);
         $builder = new EntityBuilder();
         $collection = $builder->build(
-            $this->getFileContent($filePath)
+            $this->getSchemasAndRequestBodiesCollection($filePath)
         );
 
         /** @var Entity $payInfoEntity */
@@ -266,7 +269,7 @@ class EntityBuilderTest extends TestCase
         $filePath = realpath(__DIR__ . '/providers/relations/' . $filename);
         $builder = new EntityBuilder();
         $collection = $builder->build(
-            $this->getFileContent($filePath)
+            $this->getSchemasAndRequestBodiesCollection($filePath)
         );
 
         /** @var Entity $commentEntity */
@@ -296,7 +299,7 @@ class EntityBuilderTest extends TestCase
         $filePath = realpath(__DIR__ . '/providers/relations/' . $filename);
         $builder = new EntityBuilder();
         $collection = $builder->build(
-            $this->getFileContent($filePath)
+            $this->getSchemasAndRequestBodiesCollection($filePath)
         );
 
         /** @var Entity $itemEntity */

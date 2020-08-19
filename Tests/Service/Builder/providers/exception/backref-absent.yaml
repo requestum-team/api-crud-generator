@@ -1,7 +1,7 @@
 ---
 openapi: 3.0.2
 info:
-  title: Field types
+  title: Requestum API generatpr. Test case Exception backref absent
   version: 1.0.0
 components:
   schemas:

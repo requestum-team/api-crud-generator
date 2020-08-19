@@ -1,18 +1,21 @@
 ---
 openapi: 3.0.2
 info:
-  title: Field types
+  title: Requestum API generatpr. Test case Exception entity missing
   version: 1.0.0
 components:
-  schemas:
+  requestBodies:
     UserCreate:
-      description: ""
-      x-entity:
-        $ref: '#/components/schemas/UserEntity'
-      required:
-        - name
-      type: object
-      properties:
-        name:
-          description: ""
-          type: string
+      content:
+        application/json:
+          schema:
+            description: ""
+            x-entity:
+              $ref: '#/components/schemas/UserEntity'
+            required:
+              - name
+            type: object
+            properties:
+              name:
+                description: ""
+                type: string

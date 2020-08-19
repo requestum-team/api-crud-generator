@@ -29,7 +29,7 @@ class EntityGeneratorModelBuilderTest extends TestCase
 
         $builder = new EntityBuilder();
         $collection = $builder->build(
-            $this->getFileContent($filePath)
+            $this->getSchemasAndRequestBodiesCollection($filePath)
         );
 
         /** @var Entity $structureTest */

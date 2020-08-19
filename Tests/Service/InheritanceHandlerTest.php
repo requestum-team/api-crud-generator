@@ -64,7 +64,13 @@ class InheritanceHandlerTest extends TestCase
         $entity = $collection['UserCreate'];
         static::assertEquals(5, count($entity['properties']));
         static::assertEquals('string', $entity['properties']['role']['type']);
-        static::assertEquals('string', $entity['properties']['plainPassword']['type']);
+        static::assertEquals('string', $entity['properties']['fullName']['type']);
+        static::assertEquals('string', $entity['properties']['email']['type']);
+
+        $entity = $collection['UserRegistrationInput'];
+        static::assertEquals(3, count($entity['properties']));
+        static::assertEquals('string', $entity['properties']['city']['type']);
+        static::assertEquals('string', $entity['properties']['fullName']['type']);
         static::assertEquals('string', $entity['properties']['email']['type']);
     }
 

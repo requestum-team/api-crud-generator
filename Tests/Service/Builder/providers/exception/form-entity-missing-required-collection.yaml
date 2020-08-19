@@ -4,16 +4,19 @@ info:
   title: Field types
   version: 1.0.0
 components:
-  schemas:
+  requestBodies:
     UserCreate:
-      description: ""
-      required:
-        - name
-      type: object
-      properties:
-        name:
-          description: ""
-          type: string
-        shopId:
-          description: ""
-          $ref: '#/components/schemas/MissingEntity'
+      content:
+        application/json:
+          schema:
+            description: ""
+            required:
+              - name
+            type: object
+            properties:
+              name:
+                description: ""
+                type: string
+              shopId:
+                description: ""
+                $ref: '#/components/schemas/MissingEntity'

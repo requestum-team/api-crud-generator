@@ -47,11 +47,19 @@ class InheritanceHandler
         }
 
         if (!empty($this->openApiSchema['components']['requestBodies'])) {
-            foreach ($this->openApiSchema['components']['requestBodies'] as $objectName => $objectData) {
+            foreach ($this->openApiSchema['components']['requestBodies'] as $objectName => $requestBody) {
                 if (CommonHelper::isForm($objectName)) {
-                    $this->collection[$objectName] = $objectData;
-                }
+                    if (!empty($requestBody['content']['application/json']['schema'])) {
+                        $objectData = $requestBody['content']['application/json']['schema'];
 
+                        if (!empty($objectData['allOf'])) {
+                            $structuredObject = $this->processInheritanceStructure($objectData['allOf']);
+                        } else {
+                            $structuredObject = $this->processFlatStructure($objectData);
+                        }
+                        $this->collection[$objectName] = $structuredObject;
+                    }
+                }
             }
         }
 

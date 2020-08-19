@@ -1,21 +1,10 @@
 ---
 openapi: 3.0.2
 info:
-  title: Field types
+  title: Form entity missing
   version: 1.0.0
 components:
   schemas:
-    UserCreate:
-      description: ""
-      x-entity:
-        $ref: '#/components/schemas/SomeEntity'
-      required:
-        - name
-      type: object
-      properties:
-        name:
-          description: ""
-          type: string
     UserEntity:
       description: ""
       required:
@@ -30,3 +19,18 @@ components:
         name:
           description: ""
           type: string
+  requestBodies:
+    UserCreate:
+      content:
+        application/json:
+          schema:
+            description: ""
+            x-entity:
+              $ref: '#/components/schemas/SomeEntity'
+            required:
+              - name
+            type: object
+            properties:
+              name:
+                description: ""
+                type: string
