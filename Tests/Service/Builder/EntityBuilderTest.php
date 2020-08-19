@@ -43,8 +43,8 @@ class EntityBuilderTest extends TestCase
         static::assertEquals('structure_test', $structureTest->getTableName());
         static::assertEquals('StructureTestEntity', $structureTest->getOriginObjectName());
         static::assertEquals(12, count($structureTest->getProperties()));
-        static::assertIsArray($structureTest->getTraits());
-        static::assertIsArray($structureTest->getAnnotations());
+        static::assertContains('AppBundle\AbsTrait', $structureTest->getTraits());
+        static::assertContains('AppBundle\QweTrait', $structureTest->getTraits());
 
         $property = $structureTest->getPropertyByName('id');
         static::assertEquals('id', $property->getName());
