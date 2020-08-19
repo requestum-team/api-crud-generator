@@ -11,6 +11,9 @@ components:
         - name
       x-primary-key:
         - id
+      x-trait:
+        - AppBundle\AbsTrait
+        - AppBundle\QweTrait
       type: object
       properties:
         id:

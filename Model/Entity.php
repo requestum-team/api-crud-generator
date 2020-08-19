@@ -60,6 +60,11 @@ class Entity implements ModelInterface
     private array $properties = [];
 
     /**
+     * @var array
+     */
+    private array $traits = [];
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -398,5 +403,25 @@ class Entity implements ModelInterface
         return array_filter($this->getProperties(), function (EntityProperty $el) {
             return $el->isOneToMany();
         });
+    }
+
+    /**
+     * @return array
+     */
+    public function getTraits(): array
+    {
+        return $this->traits;
+    }
+
+    /**
+     * @param array $traits
+     *
+     * @return Entity
+     */
+    public function setTraits(array $traits)
+    {
+        $this->traits = $traits;
+
+        return $this;
     }
 }
