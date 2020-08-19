@@ -32,4 +32,17 @@ class CommonHelper
                 false !== strpos(strtolower($objectName), 'update') ||
                 false !== strpos(strtolower($objectName), 'patch'));
     }
+
+    /**
+     * @param array $openApiSchema
+     * @param string $ref
+     *
+     * @return array|null
+     */
+    public static function getComponentsSchemaDataByPath(array $openApiSchema, string $ref): ?array
+    {
+        [,,$path, $node] = explode('/', $ref);
+
+        return $openApiSchema['components'][$path][$node] ?? null;
+    }
 }

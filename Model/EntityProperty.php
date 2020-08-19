@@ -98,6 +98,10 @@ class EntityProperty extends BaseAbstractProperty
     protected bool $backRefColumn = false;
 
     /**
+     * null -nothing
+     * false - relation is not list
+     * true - relation is list
+     *
      * @var bool | null
      */
     protected ?bool $useList = null;

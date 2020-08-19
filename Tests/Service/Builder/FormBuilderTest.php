@@ -23,7 +23,9 @@ class FormBuilderTest extends TestCase
     use TestCaseTrait;
 
     /**
+     * @param string $filename
      * @dataProvider structureProvider
+     * @throws \Exception
      */
     public function testStructure(string $filename)
     {
