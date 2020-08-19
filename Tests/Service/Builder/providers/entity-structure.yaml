@@ -14,6 +14,9 @@ components:
       x-trait:
         - AppBundle\AbsTrait
         - AppBundle\QweTrait
+      x-annotation:
+        - Assert\NotBlank(groups={"create"})
+        - Assert\NotBlank(groups={"update"})
       type: object
       properties:
         id:
@@ -22,6 +25,9 @@ components:
         name:
           description: ""
           type: string
+          x-annotation:
+            - Assert\NotBlank(groups={"create"})
+            - Assert\NotBlank(groups={"update"})
         email:
           description: ""
           type: string

@@ -45,6 +45,8 @@ class EntityBuilderTest extends TestCase
         static::assertEquals(12, count($structureTest->getProperties()));
         static::assertContains('AppBundle\AbsTrait', $structureTest->getTraits());
         static::assertContains('AppBundle\QweTrait', $structureTest->getTraits());
+        static::assertContains('Assert\NotBlank(groups={"create"})', $structureTest->getAnnotations());
+        static::assertContains('Assert\NotBlank(groups={"update"})', $structureTest->getAnnotations());
 
         $property = $structureTest->getPropertyByName('id');
         static::assertEquals('id', $property->getName());
@@ -55,7 +57,8 @@ class EntityBuilderTest extends TestCase
         static::assertEquals('name', $property->getName());
         static::assertEquals(PropertyTypeEnum::TYPE_STRING, $property->getType());
         static::assertTrue($property->isRequired());
-        static::assertIsArray($property->getAnnotations());
+        static::assertContains('Assert\NotBlank(groups={"create"})', $property->getAnnotations());
+        static::assertContains('Assert\NotBlank(groups={"update"})', $property->getAnnotations());
 
         $property = $structureTest->getPropertyByName('email');
         static::assertEquals('email', $property->getName());
