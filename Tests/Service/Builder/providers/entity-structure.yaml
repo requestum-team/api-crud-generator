@@ -17,6 +17,9 @@ components:
       x-annotation:
         - Assert\NotBlank(groups={"create"})
         - Assert\NotBlank(groups={"update"})
+      x-unique:
+        - email
+        - slug
       type: object
       properties:
         id:
