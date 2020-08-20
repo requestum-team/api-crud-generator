@@ -192,7 +192,7 @@ class EntityProperty extends BaseAbstractProperty
     /**
      * @var bool
      */
-    protected bool $unique = false;
+    protected bool $unique;
 
     /**
      * @return Entity
