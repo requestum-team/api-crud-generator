@@ -140,6 +140,15 @@ class EntityBuilder implements BuilderInterface
                 $property->setAnnotations($data['x-annotation']);
             }
 
+            if (isset($data['x-serializer'])) {
+                if (is_array($data['x-serializer'])) {
+                    $property->setSerializers($data['x-serializer']);
+                }
+                if (is_bool($data['x-serializer'])) {
+                    $property->setNeedSerializer($data['x-serializer']);
+                }
+            }
+
             // applies only for string type
             if (!empty($data['minLength'])) {
                 $property->setMinLength($data['minLength']);

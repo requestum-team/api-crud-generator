@@ -60,18 +60,23 @@ class EntityBuilderTest extends TestCase
         static::assertTrue($property->isRequired());
         static::assertContains('Assert\NotBlank(groups={"create"})', $property->getAnnotations());
         static::assertContains('Assert\NotBlank(groups={"update"})', $property->getAnnotations());
+        static::assertContains('Default', $property->getSerializers());
+        static::assertContains('some_group', $property->getSerializers());
 
         $property = $structureTest->getPropertyByName('email');
         static::assertEquals('email', $property->getName());
         static::assertEquals(PropertyTypeEnum::TYPE_STRING, $property->getType());
         static::assertEquals('email', $property->getFormat());
         static::assertTrue($property->isNullable());
+        static::assertFalse($property->isNeedSerializer());
+        static::assertTrue(empty($property->getSerializers()));
 
         $property = $structureTest->getPropertyByName('slug');
         static::assertEquals('slug', $property->getName());
         static::assertEquals(PropertyTypeEnum::TYPE_STRING, $property->getType());
         static::assertEquals(5, $property->getMinLength());
         static::assertEquals(10, $property->getMaxLength());
+        static::assertContains('Default', $property->getSerializers());
 
         $property = $structureTest->getPropertyByName('ssn');
         static::assertEquals('ssn', $property->getName());

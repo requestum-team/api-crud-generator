@@ -180,6 +180,16 @@ class EntityProperty extends BaseAbstractProperty
     protected array $annotations = [];
 
     /**
+     * @var array
+     */
+    protected array $serializers = ['Default'];
+
+    /**
+     * @var bool|null
+     */
+    protected ?bool $needSerializer = null;
+
+    /**
      * @return Entity
      */
     public function getEntity(): Entity
@@ -805,6 +815,48 @@ class EntityProperty extends BaseAbstractProperty
     public function setAnnotations(array $annotations)
     {
         $this->annotations = $annotations;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSerializers(): array
+    {
+        return $this->serializers;
+    }
+
+    /**
+     * @param array $serializers
+     *
+     * @return EntityProperty
+     */
+    public function setSerializers(array $serializers)
+    {
+        $this->serializers = $serializers;
+
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function isNeedSerializer(): ?bool
+    {
+        return $this->needSerializer;
+    }
+
+    /**
+     * @param bool $needSerializer
+     *
+     * @return EntityProperty
+     */
+    public function setNeedSerializer(bool $needSerializer)
+    {
+        $this->needSerializer = $needSerializer;
+
+        $needSerializer ?: $this->setSerializers([]);
 
         return $this;
     }
