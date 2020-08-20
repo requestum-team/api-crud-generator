@@ -190,6 +190,11 @@ class EntityProperty extends BaseAbstractProperty
     protected ?bool $needSerializer = null;
 
     /**
+     * @var bool
+     */
+    protected bool $unique;
+
+    /**
      * @return Entity
      */
     public function getEntity(): Entity
@@ -857,6 +862,26 @@ class EntityProperty extends BaseAbstractProperty
         $this->needSerializer = $needSerializer;
 
         $needSerializer ?: $this->setSerializers([]);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUnique(): bool
+    {
+        return $this->unique;
+    }
+
+    /**
+     * @param bool $unique
+     *
+     * @return EntityProperty
+     */
+    public function setUnique(bool $unique)
+    {
+        $this->unique = $unique;
 
         return $this;
     }

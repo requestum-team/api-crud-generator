@@ -62,6 +62,7 @@ class EntityBuilderTest extends TestCase
         static::assertContains('Assert\NotBlank(groups={"update"})', $property->getAnnotations());
         static::assertContains('Default', $property->getSerializers());
         static::assertContains('some_group', $property->getSerializers());
+        static::assertFalse($property->isUnique());
 
         $property = $structureTest->getPropertyByName('email');
         static::assertEquals('email', $property->getName());
@@ -70,6 +71,7 @@ class EntityBuilderTest extends TestCase
         static::assertTrue($property->isNullable());
         static::assertFalse($property->isNeedSerializer());
         static::assertTrue(empty($property->getSerializers()));
+        static::assertTrue($property->isUnique());
 
         $property = $structureTest->getPropertyByName('slug');
         static::assertEquals('slug', $property->getName());
@@ -77,6 +79,7 @@ class EntityBuilderTest extends TestCase
         static::assertEquals(5, $property->getMinLength());
         static::assertEquals(10, $property->getMaxLength());
         static::assertContains('Default', $property->getSerializers());
+        static::assertTrue($property->isUnique());
 
         $property = $structureTest->getPropertyByName('ssn');
         static::assertEquals('ssn', $property->getName());

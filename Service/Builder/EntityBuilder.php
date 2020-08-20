@@ -46,6 +46,7 @@ class EntityBuilder implements BuilderInterface
             if (null !== ($name = StringHelper::getEntityNameFromObjectName($objectName))) {
                 $required = !empty($objectData['required']) ? array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $objectData['required']): [];
                 $primary = !empty($objectData['x-primary-key']) ? array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $objectData['x-primary-key']): [];
+                $unique = !empty($objectData['x-unique']) ? array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $objectData['x-unique']): [];
                 $traits = !empty($objectData['x-trait']) ? $objectData['x-trait'] : [];
                 $annotation = !empty($objectData['x-annotation']) ? $objectData['x-annotation'] : [];
 
@@ -58,7 +59,7 @@ class EntityBuilder implements BuilderInterface
                         StringHelper::camelCaseToSnakeCaseName($name)
                     )
                     ->setProperties(
-                        $this->buildProperties($objectData['properties'], $required, $primary)
+                        $this->buildProperties($objectData['properties'], $required, $primary, $unique)
                     )
                     ->setTraits($traits)
                     ->setAnnotations($annotation)
@@ -77,12 +78,13 @@ class EntityBuilder implements BuilderInterface
      * @param array $propertiesData
      * @param array $required
      * @param array $primary
+     * @param array $unique
      *
      * @return array
      *
      * @throws \Exception
      */
-    private function buildProperties(array $propertiesData, array $required, array $primary): array
+    private function buildProperties(array $propertiesData, array $required, array $primary, array $unique): array
     {
         $properties = [];
 
@@ -96,6 +98,7 @@ class EntityBuilder implements BuilderInterface
                 ->setDescription(!empty($data['description']) ? $data['description']: null)
                 ->setRequired(in_array($property->getDatabasePropertyName(), $required))
                 ->setPrimary(in_array($property->getDatabasePropertyName(), $primary))
+                ->setUnique(in_array($property->getDatabasePropertyName(), $unique))
             ;
 
             if (!empty($data['type'])) {
