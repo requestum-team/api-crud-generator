@@ -49,6 +49,7 @@ class EntityBuilder implements BuilderInterface
                 $unique = !empty($objectData['x-unique']) ? array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $objectData['x-unique']): [];
                 $reference = !empty($objectData['x-reference']) ? array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $objectData['x-reference']): [];
                 $traits = !empty($objectData['x-trait']) ? $objectData['x-trait'] : [];
+                $repositoryTraits = !empty($objectData['x-repository-trait']) ? $objectData['x-repository-trait'] : [];
                 $annotation = !empty($objectData['x-annotation']) ? $objectData['x-annotation'] : [];
 
                 $entity = new Entity();
@@ -63,6 +64,7 @@ class EntityBuilder implements BuilderInterface
                         $this->buildProperties($objectData['properties'], $required, $primary, $unique, $reference)
                     )
                     ->setTraits($traits)
+                    ->setRepositoryTraits($repositoryTraits)
                     ->setAnnotations($annotation)
                 ;
 

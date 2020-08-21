@@ -46,6 +46,8 @@ class EntityBuilderTest extends TestCase
         static::assertEquals(12, count($structureTest->getProperties()));
         static::assertContains('AppBundle\AbsTrait', $structureTest->getTraits());
         static::assertContains('AppBundle\QweTrait', $structureTest->getTraits());
+        static::assertContains('AppBundle\AbsRepositoryTrait', $structureTest->getRepositoryTraits());
+        static::assertContains('AppBundle\QweRepositoryTrait', $structureTest->getRepositoryTraits());
         static::assertContains('Assert\NotBlank(groups={"create"})', $structureTest->getAnnotations());
         static::assertContains('Assert\NotBlank(groups={"update"})', $structureTest->getAnnotations());
 
