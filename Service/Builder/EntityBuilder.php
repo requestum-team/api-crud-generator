@@ -51,6 +51,7 @@ class EntityBuilder implements BuilderInterface
                 $traits = !empty($objectData['x-trait']) ? $objectData['x-trait'] : [];
                 $repositoryTraits = !empty($objectData['x-repository-trait']) ? $objectData['x-repository-trait'] : [];
                 $annotation = !empty($objectData['x-annotation']) ? $objectData['x-annotation'] : [];
+                $interfaces = !empty($objectData['x-interface']) ? $objectData['x-interface'] : [];
 
                 $entity = new Entity();
                 $entity
@@ -63,6 +64,7 @@ class EntityBuilder implements BuilderInterface
                     ->setProperties(
                         $this->buildProperties($objectData['properties'], $required, $primary, $unique, $reference)
                     )
+                    ->setInterfaces($interfaces)
                     ->setTraits($traits)
                     ->setRepositoryTraits($repositoryTraits)
                     ->setAnnotations($annotation)

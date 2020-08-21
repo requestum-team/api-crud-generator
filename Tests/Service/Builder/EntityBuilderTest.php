@@ -50,6 +50,7 @@ class EntityBuilderTest extends TestCase
         static::assertContains('AppBundle\QweRepositoryTrait', $structureTest->getRepositoryTraits());
         static::assertContains('Assert\NotBlank(groups={"create"})', $structureTest->getAnnotations());
         static::assertContains('Assert\NotBlank(groups={"update"})', $structureTest->getAnnotations());
+        static::assertContains('AppBundle\Entity\AggregateInterface', $structureTest->getInterfaces());
 
         $property = $structureTest->getPropertyByName('id');
         static::assertEquals('id', $property->getName());
