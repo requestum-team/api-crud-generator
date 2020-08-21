@@ -195,6 +195,11 @@ class EntityProperty extends BaseAbstractProperty
     protected bool $unique;
 
     /**
+     * @var bool
+     */
+    protected bool $reference;
+
+    /**
      * @return Entity
      */
     public function getEntity(): Entity
@@ -882,6 +887,26 @@ class EntityProperty extends BaseAbstractProperty
     public function setUnique(bool $unique)
     {
         $this->unique = $unique;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReference(): bool
+    {
+        return $this->reference;
+    }
+
+    /**
+     * @param bool $reference
+     *
+     * @return EntityProperty
+     */
+    public function setReference(bool $reference)
+    {
+        $this->reference = $reference;
 
         return $this;
     }

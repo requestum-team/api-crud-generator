@@ -47,6 +47,7 @@ class EntityBuilder implements BuilderInterface
                 $required = !empty($objectData['required']) ? array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $objectData['required']): [];
                 $primary = !empty($objectData['x-primary-key']) ? array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $objectData['x-primary-key']): [];
                 $unique = !empty($objectData['x-unique']) ? array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $objectData['x-unique']): [];
+                $reference = !empty($objectData['x-reference']) ? array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $objectData['x-reference']): [];
                 $traits = !empty($objectData['x-trait']) ? $objectData['x-trait'] : [];
                 $annotation = !empty($objectData['x-annotation']) ? $objectData['x-annotation'] : [];
 
@@ -59,7 +60,7 @@ class EntityBuilder implements BuilderInterface
                         StringHelper::camelCaseToSnakeCaseName($name)
                     )
                     ->setProperties(
-                        $this->buildProperties($objectData['properties'], $required, $primary, $unique)
+                        $this->buildProperties($objectData['properties'], $required, $primary, $unique, $reference)
                     )
                     ->setTraits($traits)
                     ->setAnnotations($annotation)
@@ -79,13 +80,19 @@ class EntityBuilder implements BuilderInterface
      * @param array $required
      * @param array $primary
      * @param array $unique
+     * @param array $reference
      *
      * @return array
      *
      * @throws \Exception
      */
-    private function buildProperties(array $propertiesData, array $required, array $primary, array $unique): array
-    {
+    private function buildProperties(
+        array $propertiesData,
+        array $required,
+        array $primary,
+        array $unique,
+        array $reference
+    ): array {
         $properties = [];
 
         foreach ($propertiesData as $field => $data) {
@@ -99,6 +106,7 @@ class EntityBuilder implements BuilderInterface
                 ->setRequired(in_array($property->getDatabasePropertyName(), $required))
                 ->setPrimary(in_array($property->getDatabasePropertyName(), $primary))
                 ->setUnique(in_array($property->getDatabasePropertyName(), $unique))
+                ->setReference(in_array($property->getDatabasePropertyName(), $reference))
             ;
 
             if (!empty($data['type'])) {

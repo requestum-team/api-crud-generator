@@ -122,6 +122,7 @@ class EntityBuilderTest extends TestCase
         static::assertEquals('comments', $property->getName());
         static::assertEquals(PropertyTypeEnum::TYPE_ARRAY, $property->getType());
         static::assertEquals('CommentEntity', $property->getReferencedLink());
+        static::assertTrue($property->isReference());
 
         $property = $structureTest->getPropertyByName('postId');
         static::assertEquals('postId', $property->getName());
