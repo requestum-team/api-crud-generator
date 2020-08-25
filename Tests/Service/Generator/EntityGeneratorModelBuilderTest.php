@@ -44,6 +44,8 @@ class EntityGeneratorModelBuilderTest extends TestCase
         static::assertContains('Doctrine\ORM\Mapping as ORM', $model->getUseSection());
         static::assertContains('@ORM\Table(name="structure_test")', $model->getAnnotations());
         static::assertContains('@ORM\Entity(repositoryClass="AppBundle\Repository\StructureTestRepository")', $model->getAnnotations());
+        static::assertContains('AppBundle\AbsTrait', $model->getTraits());
+        static::assertContains('AppBundle\QweTrait', $model->getTraits());
 
         $property = $model->getPropertyByName('id');
         static::assertEquals('id', $property->getName());
@@ -59,8 +61,12 @@ class EntityGeneratorModelBuilderTest extends TestCase
         static::assertInstanceOf(GeneratorMethodModel::class, $method);
         static::assertEquals('__construct', $method->getName());
 
-//        $phpGenerator = new PhpGenerator();
-//        file_put_contents('Test.php', $phpGenerator->generate($model));
+        $phpGenerator = new PhpGenerator();
+        file_put_contents('Test.php', $phpGenerator->generate($model));
+
+        $content =  file_get_contents('Test.php');
+        static::assertNotFalse(strpos($content, 'AppBundle\AbsTrait'));
+        static::assertNotFalse(strpos($content, 'AppBundle\QweTrait'));
     }
 
     public function structureProvider()

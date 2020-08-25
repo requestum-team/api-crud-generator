@@ -66,6 +66,7 @@ class PhpGenerator
             ->addMethods(
                 $this->prepareMethods($model->getMethods())
             )
+            ->addTraits($model->getTraits())
         ;
 
         return $class;

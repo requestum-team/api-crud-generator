@@ -77,9 +77,9 @@ class EntityGeneratorModelBuilder
      */
     public function buildModel(Entity $entity): ClassGeneratorModelInterface
     {
-
         $this->baseUseSection($entity->getName());
         $this->baseAnnotations($entity->getName(), $entity->getTableName());
+        $this->baseTraits($entity->getTraits());
         $this->detectConstructor($entity);
         $this->prepareConstants($entity);
         $this->prepareProperties($entity->getProperties());
@@ -94,6 +94,7 @@ class EntityGeneratorModelBuilder
             ->setFilePath(
                 $this->prepareFilePath($entity->getName())
             )
+            ->setTraits($this->traits)
             ->setAnnotations($this->annotations)
             ->setUseSection($this->useSection)
             ->setConstants($this->constants)
@@ -124,6 +125,16 @@ class EntityGeneratorModelBuilder
         // AppBundle\Repository\SomeRepository
         $repositoryClass = implode('\\', [$this->bundleName, 'Repository', implode('', [$entityName, 'Repository'])]);
         $this->annotations[] = sprintf('@ORM\Entity(repositoryClass="%s")', $repositoryClass);
+    }
+
+    /**
+     * @param array|null $traits
+     */
+    private function baseTraits(?array $traits = [])
+    {
+        foreach ($traits as $trait) {
+            $this->traits[] = $trait;
+        }
     }
 
     /**
