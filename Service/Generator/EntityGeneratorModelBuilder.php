@@ -128,9 +128,9 @@ class EntityGeneratorModelBuilder
     }
 
     /**
-     * @param array|null $traits
+     * @param array $traits
      */
-    private function baseTraits(?array $traits = [])
+    private function baseTraits(array $traits = [])
     {
         foreach ($traits as $trait) {
             $this->traits[] = $trait;

@@ -62,9 +62,8 @@ class EntityGeneratorModelBuilderTest extends TestCase
         static::assertEquals('__construct', $method->getName());
 
         $phpGenerator = new PhpGenerator();
-        file_put_contents('Test.php', $phpGenerator->generate($model));
+        $content =  $phpGenerator->generate($model);
 
-        $content =  file_get_contents('Test.php');
         static::assertNotFalse(strpos($content, 'AppBundle\AbsTrait'));
         static::assertNotFalse(strpos($content, 'AppBundle\QweTrait'));
     }
