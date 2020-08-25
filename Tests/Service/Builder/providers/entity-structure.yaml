@@ -11,6 +11,8 @@ components:
         - name
       x-primary-key:
         - id
+      x-interface:
+        - AppBundle\Entity\AggregateInterface
       x-trait:
         - AppBundle\AbsTrait
         - AppBundle\QweTrait

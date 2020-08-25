@@ -77,6 +77,11 @@ class Entity implements ModelInterface
     private array $annotations = [];
 
     /**
+     * @var array
+     */
+    private array $interfaces = [];
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -473,6 +478,26 @@ class Entity implements ModelInterface
     public function setAnnotations(array $annotations)
     {
         $this->annotations = $annotations;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getInterfaces(): array
+    {
+        return $this->interfaces;
+    }
+
+    /**
+     * @param array $interfaces
+     *
+     * @return Entity
+     */
+    public function setInterfaces(array $interfaces)
+    {
+        $this->interfaces = $interfaces;
 
         return $this;
     }
