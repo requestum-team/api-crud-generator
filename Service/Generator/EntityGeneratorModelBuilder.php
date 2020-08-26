@@ -133,9 +133,7 @@ class EntityGeneratorModelBuilder
      */
     private function baseTraits(array $traits = [])
     {
-        foreach ($traits as $trait) {
-            $this->traits[] = $trait;
-        }
+        array_push($this->traits, ...$traits);
     }
 
     /**
