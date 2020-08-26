@@ -1,10 +1,12 @@
 <?php
 
-namespace Requestum\ApiGeneratorBundle\Service\Annotations;
+namespace Requestum\ApiGeneratorBundle\Service\Annotations\Doctrine;
 
 use Requestum\ApiGeneratorBundle\Helper\StringHelper;
 use Requestum\ApiGeneratorBundle\Model\EntityProperty;
 use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
+use Requestum\ApiGeneratorBundle\Service\Annotations\AnnotationGeneratorInterface;
+use Requestum\ApiGeneratorBundle\Service\Annotations\AnnotationRecord;
 
 /**
  * Class FloatAnnotationGenerator
@@ -18,7 +20,7 @@ class FloatAnnotationGenerator implements AnnotationGeneratorInterface
      *
      * @return string[]
      */
-    public function generate(EntityProperty $entityProperty): array
+    public function generate(EntityProperty $entityProperty): AnnotationRecord
     {
         $params = [
             'type' => PropertyTypeEnum::TYPE_FLOAT,
@@ -29,9 +31,9 @@ class FloatAnnotationGenerator implements AnnotationGeneratorInterface
             $params['nullable'] = true;
         }
 
-//        if ($entityProperty->isUnique()) {
-//            $params['unique'] = true;
-//        }
+        if ($entityProperty->isUnique()) {
+            $params['unique'] = true;
+        }
 
         return [
             sprintf(
@@ -42,10 +44,18 @@ class FloatAnnotationGenerator implements AnnotationGeneratorInterface
     }
 
     /**
-     * @return string
+     * @param EntityProperty $entityProperty
+     *
+     * @return bool
      */
-    public function getType(): string
+    public function support(EntityProperty $entityProperty): bool
     {
-        return PropertyTypeEnum::TYPE_FLOAT;
+        if ($entityProperty->getType() === PropertyTypeEnum::TYPE_NUMBER) {
+            if (!is_null($entityProperty->getFormat()) && $entityProperty->getFormat() === PropertyTypeEnum::TYPE_FLOAT) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

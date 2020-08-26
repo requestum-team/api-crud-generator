@@ -10,7 +10,8 @@ use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorParameterModel;
 use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorPropertyModel;
 use Requestum\ApiGeneratorBundle\Model\EntityProperty;
 use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
-use Requestum\ApiGeneratorBundle\Service\Annotations\AnnotationGeneratorStrategy;
+use Requestum\ApiGeneratorBundle\Service\Annotations\AnnotationRecord;
+use Requestum\ApiGeneratorBundle\Service\Annotations\Doctrine\DoctrineAnnotationGeneratorStrategy;
 
 /**
  * Class EntityGeneratorModelBuilder
@@ -55,9 +56,9 @@ class EntityGeneratorModelBuilder
     protected array $methods = [];
 
     /**
-     * @var AnnotationGeneratorStrategy
+     * @var DoctrineAnnotationGeneratorStrategy
      */
-    protected AnnotationGeneratorStrategy $annotationGeneratorStrategy;
+    protected DoctrineAnnotationGeneratorStrategy $doctrineAnnotationGeneratorStrategy;
 
     /**
      * EntityGeneratorModelBuilder constructor.
@@ -67,7 +68,7 @@ class EntityGeneratorModelBuilder
     public function __construct(string $bundleName)
     {
         $this->bundleName = $bundleName;
-        $this->annotationGeneratorStrategy = new AnnotationGeneratorStrategy();
+        $this->doctrineAnnotationGeneratorStrategy = new DoctrineAnnotationGeneratorStrategy();
     }
 
     /**
@@ -216,15 +217,8 @@ class EntityGeneratorModelBuilder
             'description' => sprintf('%s $%s', $entityProperty->getType(), $entityProperty->getName())
         ];
 
-        $generator = $this->annotationGeneratorStrategy->getAnnotationGenerator(
-            $this->detectPropertyType($entityProperty)
-        );
-
-        foreach ($generator->generate($entityProperty) as $attribut) {
-            $result[] = [
-                'name' => $attribut,
-            ];
-        }
+        $generator = $this->doctrineAnnotationGeneratorStrategy->getAnnotationGenerator($entityProperty);
+        $result = array_merge($result, $generator->generate($entityProperty)->getAnnotation());
 
         return $result;
     }
@@ -316,31 +310,5 @@ class EntityGeneratorModelBuilder
         }
 
         return $type;
-    }
-
-    /**
-     * @param EntityProperty $entityProperty
-     *
-     * @return string
-     */
-    private function detectPropertyType(EntityProperty $entityProperty): string
-    {
-        if ($entityProperty->isPrimary()) {
-            return PropertyTypeEnum::TYPE_PRIMARY_AUTO;
-        }
-
-        if ($entityProperty->getType() === PropertyTypeEnum::TYPE_INTEGER) {
-            return PropertyTypeEnum::TYPE_INTEGER;
-        }
-
-        if ($entityProperty->getType() === PropertyTypeEnum::TYPE_NUMBER) {
-            if (!is_null($entityProperty->getFormat()) && $entityProperty->getFormat() === PropertyTypeEnum::TYPE_DOUBLE) {
-                return PropertyTypeEnum::TYPE_DECIMAL;
-            }
-
-            return PropertyTypeEnum::TYPE_FLOAT;
-        }
-
-        return PropertyTypeEnum::TYPE_STRING;
     }
 }
