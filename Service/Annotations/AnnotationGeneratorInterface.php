@@ -16,10 +16,12 @@ interface AnnotationGeneratorInterface
      *
      * @return array
      */
-    public function generate(EntityProperty $entityProperty): array;
+    public function generate(EntityProperty $entityProperty): AnnotationRecord;
 
     /**
-     * @return string
+     * @param EntityProperty $entityProperty
+     *
+     * @return bool
      */
-    public function getType(): string;
+    public function support(EntityProperty $entityProperty): bool;
 }
