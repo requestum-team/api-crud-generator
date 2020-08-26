@@ -16,8 +16,7 @@ components:
         - AppBundle\QweTrait
         - ZaqTrait
       x-annotation:
-        - Assert\NotBlank(groups={"create"})
-        - Assert\NotBlank(groups={"update"})
+        - Gedmo\Mapping\Annotation\SoftDeleteable()
       type: object
       properties:
         id:

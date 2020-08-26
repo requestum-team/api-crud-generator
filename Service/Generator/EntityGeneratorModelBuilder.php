@@ -81,6 +81,7 @@ class EntityGeneratorModelBuilder
         $this->baseUseSection($entity->getName());
         $this->baseAnnotations($entity->getName(), $entity->getTableName());
         $this->addTraits($entity->getTraits());
+        $this->addAnnotations($entity->getAnnotations());
         $this->detectConstructor($entity);
         $this->prepareConstants($entity);
         $this->prepareProperties($entity->getProperties());
@@ -142,6 +143,14 @@ class EntityGeneratorModelBuilder
 
             $this->traits[] = $trait;
         }
+    }
+
+    /**
+     * @param array $annotations
+     */
+    private function addAnnotations(array $annotations = [])
+    {
+        array_push($this->annotations, ...$annotations);
     }
 
     /**
@@ -236,6 +245,8 @@ class EntityGeneratorModelBuilder
 
         $generator = $this->doctrineAnnotationGeneratorStrategy->getAnnotationGenerator($entityProperty);
         $result = array_merge($result, $generator->generate($entityProperty)->getAnnotation());
+        $annotationRecord = new AnnotationRecord($entityProperty->getAnnotations());
+        $result = array_merge($result, $annotationRecord->getAnnotation());
 
         return $result;
     }
