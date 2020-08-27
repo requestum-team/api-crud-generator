@@ -169,4 +169,12 @@ class Form implements ModelInterface
 
         return count($result) === 1 ? array_shift($result): null;
     }
+
+    /**
+     * @return bool
+     */
+    public function isGenerate(): bool
+    {
+        return !(!empty($entity = $this->getEntity()) && $entity->isExist());
+    }
 }

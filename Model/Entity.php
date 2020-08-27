@@ -81,6 +81,9 @@ class Entity implements ModelInterface
      */
     private array $interfaces = [];
 
+    /** @var bool */
+    private bool $exist = false;
+
     /**
      * @return string
      */
@@ -498,6 +501,26 @@ class Entity implements ModelInterface
     public function setInterfaces(array $interfaces)
     {
         $this->interfaces = $interfaces;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExist(): bool
+    {
+        return $this->exist;
+    }
+
+    /**
+     * @param bool $exist
+     *
+     * @return $this
+     */
+    public function setExist(bool $exist): self
+    {
+        $this->exist = $exist;
 
         return $this;
     }

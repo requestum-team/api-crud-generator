@@ -68,6 +68,7 @@ class EntityBuilder implements BuilderInterface
                     ->setTraits($traits)
                     ->setRepositoryTraits($repositoryTraits)
                     ->setAnnotations($annotation)
+                    ->setExist(!empty($objectData['x-exist']))
                 ;
 
                 $this->collection->addElement($entity);
