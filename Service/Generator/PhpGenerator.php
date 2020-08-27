@@ -56,8 +56,10 @@ class PhpGenerator
             'shortDescription' => sprintf('Class %s', $model->getName()),
             'tags' => $tags,
         ]);
+
         $class
             ->setName($model->getName())
+            ->setExtendedClass($model->getExtendsClass() ?: null)
             ->setDocblock($docblock)
             ->addConstants($model->getConstants())
             ->addProperties(

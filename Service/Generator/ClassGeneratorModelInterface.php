@@ -17,7 +17,7 @@ interface ClassGeneratorModelInterface
 
     public function getUseSection(): array;
 
-    public function getExtentedClasses(): array;
+    public function getExtendsClass(): ?string;
 
     public function getImplementedInterfaces(): array;
 
