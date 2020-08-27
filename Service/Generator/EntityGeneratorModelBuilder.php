@@ -223,7 +223,7 @@ class EntityGeneratorModelBuilder
                 ->setName($entityProperty->getName())
                 ->setAccessLevel(AccessLevelEnum::ACCESS_LELEV_PROTECTED)
                 ->setAttributs(
-                    $this->getPropertyAttributs($entityProperty)
+                    $this->getPropertyAttributes($entityProperty)
                 )
             ;
 
@@ -235,8 +235,10 @@ class EntityGeneratorModelBuilder
      * @param EntityProperty $entityProperty
      *
      * @return array
+     *
+     * @throws \Exception
      */
-    private function getPropertyAttributs(EntityProperty $entityProperty): array
+    private function getPropertyAttributes(EntityProperty $entityProperty): array
     {
         $result[] = [
             'name' => 'var',

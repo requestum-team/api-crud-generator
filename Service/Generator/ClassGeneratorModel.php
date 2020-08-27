@@ -12,7 +12,6 @@ use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorPropertyModel;
  */
 class ClassGeneratorModel implements ClassGeneratorModelInterface
 {
-
     /**
      * @var string
      */
@@ -34,9 +33,9 @@ class ClassGeneratorModel implements ClassGeneratorModelInterface
     protected array $useSection = [];
 
     /**
-     * @var array
+     * @var string|null
      */
-    protected array $extentedClasses = [];
+    protected ?string $extendsClass = null;
 
     /**
      * @var array
@@ -129,21 +128,21 @@ class ClassGeneratorModel implements ClassGeneratorModelInterface
     }
 
     /**
-     * @return array
+     * @return string|null
      */
-    public function getExtentedClasses(): array
+    public function getExtendsClass(): ?string
     {
-        return $this->extentedClasses;
+        return $this->extendsClass;
     }
 
     /**
-     * @param array $extentedClasses
+     * @param string $extendsClass
      *
-     * @return ClassGeneratorModel
+     * @return $this
      */
-    public function setExtentedClasses(array $extentedClasses)
+    public function setExtendsClass(string $extendsClass): self
     {
-        $this->extentedClasses = $extentedClasses;
+        $this->extendsClass = $extendsClass;
 
         return $this;
     }
