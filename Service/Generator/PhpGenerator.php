@@ -59,7 +59,7 @@ class PhpGenerator
 
         $class
             ->setName($model->getName())
-            ->setExtendedClass($model->getExtendsClass() ?: null)
+            ->setExtendedClass($model->getExtendsClass())
             ->setDocblock($docblock)
             ->addConstants($model->getConstants())
             ->addProperties(
