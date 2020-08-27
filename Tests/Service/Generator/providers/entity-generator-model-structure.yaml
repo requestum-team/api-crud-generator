@@ -17,6 +17,9 @@ components:
       x-annotation:
         - Assert\NotBlank(groups={"create"})
         - Assert\NotBlank(groups={"update"})
+      x-repository-trait:
+        - AppBundle\AbsRepositoryTrait
+        - AppBundle\QweRepositoryTrait
       type: object
       properties:
         id:

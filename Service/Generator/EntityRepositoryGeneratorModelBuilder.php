@@ -77,9 +77,13 @@ class EntityRepositoryGeneratorModelBuilder
 
     /**
      * @param array $traits
+     *
+     * @return $this
      */
-    private function baseTraits(array $traits = []): void
+    private function baseTraits(array $traits = []): self
     {
         array_push($this->traits, ...$traits);
+
+        return $this;
     }
 }
