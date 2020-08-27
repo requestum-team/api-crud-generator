@@ -80,7 +80,7 @@ class EntityGeneratorModelBuilder
     {
         $this->baseUseSection($entity->getName());
         $this->baseAnnotations($entity->getName(), $entity->getTableName());
-        $this->baseTraits($entity->getTraits());
+        $this->addTraits($entity->getTraits());
         $this->detectConstructor($entity);
         $this->prepareConstants($entity);
         $this->prepareProperties($entity->getProperties());
@@ -131,9 +131,17 @@ class EntityGeneratorModelBuilder
     /**
      * @param array $traits
      */
-    private function baseTraits(array $traits = [])
+    private function addTraits(array $traits = [])
     {
-        array_push($this->traits, ...$traits);
+        foreach ($traits as $trait) {
+            $explodeTrait = explode('\\', $trait);
+            if (count($explodeTrait) > 1) {
+                $this->useSection[] = $trait;
+                $trait = array_pop($explodeTrait);
+            }
+
+            $this->traits[] = $trait;
+        }
     }
 
     /**
