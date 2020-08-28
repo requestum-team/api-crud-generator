@@ -28,10 +28,13 @@ class FormBuilder implements BuilderInterface
 
     /**
      * @param array $openApiSchema
+     * @param BaseAbstractCollection|null $relatedCollection
      *
      * @return BaseAbstractCollection
      *
-     * @throws \Exception
+     * @throws CollectionException
+     * @throws EntityMissingException
+     * @throws FormMissingException
      */
     public function build(array $openApiSchema, ?BaseAbstractCollection $relatedCollection = null): BaseAbstractCollection
     {
@@ -199,7 +202,12 @@ class FormBuilder implements BuilderInterface
      */
     private function checkRelatedCollectionIsEmpty(string $formName, string $entityObjectName, ?BaseAbstractCollection $relatedCollection = null)
     {
-        if (is_null($relatedCollection) || (($relatedCollection instanceof $relatedCollection) && $relatedCollection->isEmpty())) {
+        if (is_null($relatedCollection)
+            || (
+                ($relatedCollection instanceof BaseAbstractCollection)
+                && $relatedCollection->isEmpty())
+            )
+        {
             throw new CollectionException(
                 sprintf(
                     'Required the entity collection. Form %s has as a dependency an entity %s',

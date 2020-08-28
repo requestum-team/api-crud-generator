@@ -3,18 +3,19 @@
 namespace Requestum\ApiGeneratorBundle\Tests\Service\Generator;
 
 use PHPUnit\Framework\TestCase;
-use Requestum\ApiGeneratorBundle\Model\Entity;
+use Requestum\ApiGeneratorBundle\Model\Form;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
-use Requestum\ApiGeneratorBundle\Service\Generator\EntityRepositoryGeneratorModelBuilder;
+use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
+use Requestum\ApiGeneratorBundle\Service\Generator\FormGeneratorModelBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\PhpGenerator;
 use Requestum\ApiGeneratorBundle\Tests\TestCaseTrait;
 
 /**
- * Class EntityRepositoryGeneratorModelBuilderTest
+ * Class FormGeneratorModelBuilderTest
  *
  * @package Requestum\ApiGeneratorBundle\Tests\Service\Generator
  */
-class EntityRepositoryGeneratorModelBuilderTest extends TestCase
+class FormGeneratorModelBuilderTest extends TestCase
 {
     use TestCaseTrait;
 
@@ -30,25 +31,34 @@ class EntityRepositoryGeneratorModelBuilderTest extends TestCase
     {
         $filePath = realpath(__DIR__ . '/providers/' . $filename);
 
-        $builder = new EntityBuilder();
-        $collection = $builder->build(
+        $entityBuilder = new EntityBuilder();
+        $entityCollection = $entityBuilder->build(
             $this->getSchemasAndRequestBodiesCollection($filePath)
         );
 
-        /** @var Entity $structureTest */
+        $formBuilder = new FormBuilder();
+        $collection = $formBuilder->build(
+            $this->getSchemasAndRequestBodiesCollection($filePath),
+            $entityCollection
+        );
+
+        /** @var Form $structureTest */
         $structureTest = $collection->findElement($elementName);
-        $modelBuilder = (new EntityRepositoryGeneratorModelBuilder('AppBundle'));
+        $modelBuilder = (new FormGeneratorModelBuilder('AppBundle'));
         $model = $modelBuilder->buildModel($structureTest);
         $phpGenerator = new PhpGenerator();
         $content =  $phpGenerator->generate($model);
 
         static::assertNotFalse(
-            strpos($content, 'namespace AppBundle\Repository')
+            strpos($content, 'namespace AppBundle\Form\\' . $structureTest->getEntity()->getName())
         );
         static::assertNotFalse(
-            strpos($content, 'class ' . $elementName . EntityRepositoryGeneratorModelBuilder::NAME_POSTFIX)
+            strpos($content, 'class ' . $elementName . FormGeneratorModelBuilder::NAME_POSTFIX)
         );
-        static::assertNotFalse(strpos($content, 'extends ApiRepository'));
+        static::assertNotFalse(strpos($content, 'extends AbstractApiType'));
+        static::assertNotFalse(
+            strpos($content, "'data_class' => {$structureTest->getEntity()->getName()}::class,")
+        );
     }
 
     /**
@@ -58,8 +68,8 @@ class EntityRepositoryGeneratorModelBuilderTest extends TestCase
     {
         return [
             [
-                'entity-generator-model-structure.yaml',
-                'StructureTest',
+                'form-generator-model-structure.yaml',
+                'UserCreate',
             ],
         ];
     }

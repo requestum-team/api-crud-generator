@@ -86,11 +86,11 @@ class PhpGenerator
         foreach ($properties as $property) {
             $flag = PropertyGenerator::FLAG_PUBLIC;
             switch ($property->getAccessLevel()) {
-                case AccessLevelEnum::ACCESS_LELEV_PROTECTED:
+                case AccessLevelEnum::ACCESS_LEVEL_PROTECTED:
                     $flag = PropertyGenerator::FLAG_PROTECTED;
                     break;
 
-                case AccessLevelEnum::ACCESS_LELEV_PRIVATE:
+                case AccessLevelEnum::ACCESS_LEVEL_PRIVATE:
                     $flag = PropertyGenerator::FLAG_PRIVATE;
                     break;
             }
@@ -126,11 +126,11 @@ class PhpGenerator
         foreach ($methods as $method) {
             $flag = PropertyGenerator::FLAG_PUBLIC;
             switch ($method->getAccessLevel()) {
-                case AccessLevelEnum::ACCESS_LELEV_PROTECTED:
+                case AccessLevelEnum::ACCESS_LEVEL_PROTECTED:
                     $flag = PropertyGenerator::FLAG_PROTECTED;
                     break;
 
-                case AccessLevelEnum::ACCESS_LELEV_PRIVATE:
+                case AccessLevelEnum::ACCESS_LEVEL_PRIVATE:
                     $flag = PropertyGenerator::FLAG_PRIVATE;
                     break;
             }

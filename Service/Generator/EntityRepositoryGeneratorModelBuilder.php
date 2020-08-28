@@ -9,37 +9,22 @@ use Requestum\ApiGeneratorBundle\Model\Entity;
  *
  * @package Requestum\ApiGeneratorBundle\Service\Generator
  */
-class EntityRepositoryGeneratorModelBuilder
+class EntityRepositoryGeneratorModelBuilder extends GeneratorModelBuilderAbstract
 {
     /** @var string */
     const NAME_POSTFIX = 'Repository';
 
-    /** @var string */
-    protected string $bundleName;
-
-    /** @var string */
-    protected string $extendsClass;
-
-    /** @var array */
-    protected array $traits = [];
-
     /**
-     * EntityRepositoryGeneratorModelBuilder constructor.
-     *
-     * @param string $bundleName
-     */
-    public function __construct(string $bundleName)
-    {
-        $this->bundleName = $bundleName;
-    }
-
-    /**
-     * @param Entity $entity
+     * @param Entity|object $entity
      *
      * @return ClassGeneratorModelInterface
      */
-    public function buildModel(Entity $entity): ClassGeneratorModelInterface
+    public function buildModel(object $entity): ClassGeneratorModelInterface
     {
+        if (!$entity instanceof Entity) {
+            throw new \LogicException('Wrong subject type');
+        }
+
         $nameSpace = implode('\\', [$this->bundleName, self::NAME_POSTFIX]);
 
         $this->baseTraits($entity->getRepositoryTraits());
@@ -48,21 +33,9 @@ class EntityRepositoryGeneratorModelBuilder
             ->setName($entity->getName() . self::NAME_POSTFIX)
             ->setNameSpace($nameSpace)
             ->setFilePath($this->prepareFilePath($entity->getName()))
-            ->setExtendsClass($this->extendsClass)
+            ->setExtendsClass('ApiRepository')
             ->setTraits($this->traits)
         ;
-    }
-
-    /**
-     * @param string $extendsClass
-     *s
-     * @return $this
-     */
-    public function setExtendsClass(string $extendsClass): self
-    {
-        $this->extendsClass = $extendsClass;
-
-        return $this;
     }
 
     /**

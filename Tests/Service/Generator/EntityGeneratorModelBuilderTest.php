@@ -54,12 +54,12 @@ class EntityGeneratorModelBuilderTest extends TestCase
 
         $property = $model->getPropertyByName('id');
         static::assertEquals('id', $property->getName());
-        static::assertEquals(AccessLevelEnum::ACCESS_LELEV_PROTECTED, $property->getAccessLevel());
+        static::assertEquals(AccessLevelEnum::ACCESS_LEVEL_PROTECTED, $property->getAccessLevel());
         static::assertContains(['name' => 'ORM\Id'], $property->getAttributs());
 
         $property = $model->getPropertyByName('name');
         static::assertEquals('name', $property->getName());
-        static::assertEquals(AccessLevelEnum::ACCESS_LELEV_PROTECTED, $property->getAccessLevel());
+        static::assertEquals(AccessLevelEnum::ACCESS_LEVEL_PROTECTED, $property->getAccessLevel());
         static::assertContains(['name' => 'ORM\Column(type="string", name="name")'], $property->getAttributs());
 
         $method = $model->getMethodByName('__construct');
