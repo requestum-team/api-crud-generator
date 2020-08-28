@@ -44,8 +44,13 @@ class EntityGeneratorModelBuilderTest extends TestCase
         static::assertContains('Doctrine\ORM\Mapping as ORM', $model->getUseSection());
         static::assertContains('@ORM\Table(name="structure_test")', $model->getAnnotations());
         static::assertContains('@ORM\Entity(repositoryClass="AppBundle\Repository\StructureTestRepository")', $model->getAnnotations());
-        static::assertContains('AppBundle\AbsTrait', $model->getTraits());
-        static::assertContains('AppBundle\QweTrait', $model->getTraits());
+        static::assertContains('Gedmo\Mapping\Annotation\SoftDeleteable()', $model->getAnnotations());
+        static::assertContains('AbsTrait', $model->getTraits());
+        static::assertContains('QweTrait', $model->getTraits());
+        static::assertContains('ZaqTrait', $model->getTraits());
+        static::assertContains('AppBundle\AbsTrait', $model->getUseSection());
+        static::assertContains('AppBundle\QweTrait', $model->getUseSection());
+        static::assertNotContains('ZaqTrait', $model->getUseSection());
 
         $property = $model->getPropertyByName('id');
         static::assertEquals('id', $property->getName());
@@ -66,6 +71,9 @@ class EntityGeneratorModelBuilderTest extends TestCase
 
         static::assertNotFalse(strpos($content, 'AppBundle\AbsTrait'));
         static::assertNotFalse(strpos($content, 'AppBundle\QweTrait'));
+        static::assertNotFalse(strpos($content, 'Gedmo\Mapping\Annotation\SoftDeleteable()'));
+        static::assertNotFalse(strpos($content, 'Assert\NotBlank(groups={"update"})'));
+        static::assertNotFalse(strpos($content, 'Assert\NotBlank(groups={"create"})'));
     }
 
     public function structureProvider()

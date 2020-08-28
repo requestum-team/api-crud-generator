@@ -14,9 +14,9 @@ components:
       x-trait:
         - AppBundle\AbsTrait
         - AppBundle\QweTrait
+        - ZaqTrait
       x-annotation:
-        - Assert\NotBlank(groups={"create"})
-        - Assert\NotBlank(groups={"update"})
+        - Gedmo\Mapping\Annotation\SoftDeleteable()
       x-repository-trait:
         - AppBundle\AbsRepositoryTrait
         - AppBundle\QweRepositoryTrait
