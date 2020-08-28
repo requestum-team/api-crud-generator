@@ -42,9 +42,7 @@ class EntityRepositoryGeneratorModelBuilderTest extends TestCase
         $phpGenerator = new PhpGenerator();
         $content =  $phpGenerator->generate($model);
 
-        static::assertNotFalse(
-            strpos($content, 'namespace AppBundle\Repository')
-        );
+        static::assertNotFalse(strpos($content, 'namespace AppBundle\Repository'));
         static::assertNotFalse(
             strpos($content, 'class ' . $elementName . EntityRepositoryGeneratorModelBuilder::NAME_POSTFIX)
         );
