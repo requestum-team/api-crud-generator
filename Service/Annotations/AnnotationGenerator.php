@@ -4,6 +4,7 @@ namespace Requestum\ApiGeneratorBundle\Service\Annotations;
 
 use Requestum\ApiGeneratorBundle\Model\EntityProperty;
 use Requestum\ApiGeneratorBundle\Service\Annotations\Doctrine;
+use Requestum\ApiGeneratorBundle\Service\Annotations\Validation;
 
 /**
  * Class AnnotationGenerator
@@ -13,6 +14,7 @@ use Requestum\ApiGeneratorBundle\Service\Annotations\Doctrine;
 class AnnotationGenerator
 {
     const USE_ORM = 'Doctrine\ORM\Mapping as ORM';
+    const USE_CONSTRAINTS = 'Symfony\Component\Validator\Constraints as Assert';
 
     /**
      * @var array
@@ -28,6 +30,7 @@ class AnnotationGenerator
         Doctrine\ManyToManyAnnotationGenerator::class,
         Doctrine\OneToManyAnnotationGenerator::class,
         Doctrine\OneToOneAnnotationGenerator::class,
+        Validation\UniqueAnnotationGenerator::class,
     ];
 
     /**

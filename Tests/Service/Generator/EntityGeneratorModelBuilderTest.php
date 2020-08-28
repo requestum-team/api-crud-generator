@@ -80,7 +80,7 @@ class EntityGeneratorModelBuilderTest extends TestCase
         static::assertNotFalse(strpos($content, 'Gedmo\Mapping\Annotation\SoftDeleteable()'));
         static::assertNotFalse(strpos($content, 'Assert\NotBlank(groups={"update"})'));
         static::assertNotFalse(strpos($content, 'Assert\NotBlank(groups={"create"})'));
-//        static::assertNotFalse(strpos($content, 'Assert\Unique'));
+        static::assertNotFalse(strpos($content, 'Assert\Unique'));
     }
 
     public function structureProvider()
