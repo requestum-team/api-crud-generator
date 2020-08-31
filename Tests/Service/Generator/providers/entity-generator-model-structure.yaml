@@ -20,6 +20,8 @@ components:
       x-unique:
         - email
         - slug
+      x-reference:
+        - comments
       type: object
       properties:
         id:

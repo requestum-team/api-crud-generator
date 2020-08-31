@@ -87,6 +87,7 @@ class EntityGeneratorModelBuilderTest extends TestCase
         static::assertNotFalse(strpos($content, '@Assert\Unique'));
         static::assertNotFalse(strpos($content, '@Serializer\Groups({"Default", "some_group"})'));
         static::assertNotFalse(strpos($content, '@Serializer\Groups({"Default"})'));
+        static::assertNotFalse(strpos($content, '@Reference()'));
     }
 
     /**
