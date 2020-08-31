@@ -37,7 +37,6 @@ class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
     {
         parent::__construct($bundleName);
 
-        $this->bundleName = $bundleName;
         $this->annotationGenerator = new AnnotationGenerator();
     }
 
