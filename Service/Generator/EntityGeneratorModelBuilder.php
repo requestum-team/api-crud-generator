@@ -3,6 +3,7 @@
 namespace Requestum\ApiGeneratorBundle\Service\Generator;
 
 use Requestum\ApiGeneratorBundle\Exception\AccessLevelException;
+use Requestum\ApiGeneratorBundle\Exception\SubjectTypeException;
 use Requestum\ApiGeneratorBundle\Helper\StringHelper;
 use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\Generator\AccessLevelEnum;
@@ -18,47 +19,15 @@ use Requestum\ApiGeneratorBundle\Service\Annotations\AnnotationGenerator;
  *
  * @package Requestum\ApiGeneratorBundle\Service\Generator
  */
-class EntityGeneratorModelBuilder
+class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
 {
-    /**
-     * @var string
-     */
-    protected string $bundleName;
-
-    /**
-     * @var array
-     */
-    protected array $useSection = [];
-
-    /**
-     * @var array
-     */
-    protected array $annotations = [];
-
-    /**
-     * @var array
-     */
-    protected array $traits = [];
-
-    /**
-     * @var array
-     */
-    protected array $constants = [];
-
-    /**
-     * @var array
-     */
-    protected array $properties = [];
-
-    /**
-     * @var array
-     */
-    protected array $methods = [];
-
     /**
      * @var AnnotationGenerator
      */
     protected AnnotationGenerator $annotationGenerator;
+
+    /** @var array */
+    protected array $annotations = [];
 
     /**
      * EntityGeneratorModelBuilder constructor.
@@ -67,19 +36,24 @@ class EntityGeneratorModelBuilder
      */
     public function __construct(string $bundleName)
     {
-        $this->bundleName = $bundleName;
+        parent::__construct($bundleName);
+
         $this->annotationGenerator = new AnnotationGenerator();
     }
 
     /**
-     * @param Entity $entity
+     * @param Entity|object $entity
      *
      * @return ClassGeneratorModelInterface
      *
      * @throws AccessLevelException
      */
-    public function buildModel(Entity $entity): ClassGeneratorModelInterface
+    public function buildModel(object $entity): ClassGeneratorModelInterface
     {
+        if (!$entity instanceof Entity) {
+            throw new SubjectTypeException($entity, Entity::class);
+        }
+
         $this->baseAnnotations($entity->getName(), $entity->getTableName());
         $this->addAnnotations($entity->getAnnotations());
         $this->addTraits($entity->getTraits());
@@ -134,22 +108,6 @@ class EntityGeneratorModelBuilder
     }
 
     /**
-     * @param array $traits
-     */
-    private function addTraits(array $traits = [])
-    {
-        foreach ($traits as $trait) {
-            $explodeTrait = explode('\\', $trait);
-            if (count($explodeTrait) > 1) {
-                $this->useSection[] = $trait;
-                $trait = array_pop($explodeTrait);
-            }
-
-            $this->traits[] = $trait;
-        }
-    }
-
-    /**
      * @param array $annotations
      */
     private function addAnnotations(array $annotations = [])
@@ -196,7 +154,7 @@ class EntityGeneratorModelBuilder
             $construct = new GeneratorMethodModel();
             $construct
                 ->setName('__construct')
-                ->setAccessLevel(AccessLevelEnum::ACCESS_LELEV_PUBLIC)
+                ->setAccessLevel(AccessLevelEnum::ACCESS_LEVEL_PUBLIC)
                 ->setBody(implode('', $body))
             ;
 
@@ -219,7 +177,6 @@ class EntityGeneratorModelBuilder
      * @param array $properties
      *
      * @throws AccessLevelException
-     *
      * @throws \Exception
      */
     private function prepareProperties(array $properties)
@@ -229,7 +186,7 @@ class EntityGeneratorModelBuilder
             $property = new GeneratorPropertyModel();
             $property
                 ->setName($entityProperty->getName())
-                ->setAccessLevel(AccessLevelEnum::ACCESS_LELEV_PROTECTED)
+                ->setAccessLevel(AccessLevelEnum::ACCESS_LEVEL_PROTECTED)
                 ->setAttributes(
                     $this->getPropertyAttributes($entityProperty)
                 )
@@ -287,7 +244,7 @@ class EntityGeneratorModelBuilder
 
             $setter
                 ->setName(StringHelper::makeSetterName($entityProperty->getName()))
-                ->setAccessLevel(AccessLevelEnum::ACCESS_LELEV_PUBLIC)
+                ->setAccessLevel(AccessLevelEnum::ACCESS_LEVEL_PUBLIC)
                 ->setBody(sprintf('$this->%s = $%s;' . PHP_EOL . PHP_EOL . 'return $this;', $entityProperty->getName(), $entityProperty->getName()))
                 ->addParameters($setterInputParameter)
                 ->addParameters($setterReturnParameter)
@@ -301,7 +258,7 @@ class EntityGeneratorModelBuilder
 
             $getter
                 ->setName(StringHelper::makeGetterName($entityProperty->getName()))
-                ->setAccessLevel(AccessLevelEnum::ACCESS_LELEV_PUBLIC)
+                ->setAccessLevel(AccessLevelEnum::ACCESS_LEVEL_PUBLIC)
                 ->setBody(sprintf('return $this->%s;', $entityProperty->getName()))
                 ->addParameters($getterReturnParameter)
             ;

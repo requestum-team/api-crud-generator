@@ -4,7 +4,9 @@ namespace Requestum\ApiGeneratorBundle\Tests\Service\Generator;
 
 use PHPUnit\Framework\TestCase;
 use Requestum\ApiGeneratorBundle\Exception\AccessLevelException;
+use Requestum\ApiGeneratorBundle\Exception\SubjectTypeException;
 use Requestum\ApiGeneratorBundle\Model\Entity;
+use Requestum\ApiGeneratorBundle\Model\Form;
 use Requestum\ApiGeneratorBundle\Model\Generator\AccessLevelEnum;
 use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorMethodModel;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
@@ -40,7 +42,6 @@ class EntityGeneratorModelBuilderTest extends TestCase
 
         /** @var Entity $structureTest */
         $structureTest = $collection->findElement('StructureTest');
-
         $modelBuilder = new EntityGeneratorModelBuilder('AppBundle');
         $model = $modelBuilder->buildModel($structureTest);
 
@@ -60,12 +61,12 @@ class EntityGeneratorModelBuilderTest extends TestCase
 
         $property = $model->getPropertyByName('id');
         static::assertEquals('id', $property->getName());
-        static::assertEquals(AccessLevelEnum::ACCESS_LELEV_PROTECTED, $property->getAccessLevel());
+        static::assertEquals(AccessLevelEnum::ACCESS_LEVEL_PROTECTED, $property->getAccessLevel());
         static::assertContains(['name' => 'ORM\Id'], $property->getAttributes());
 
         $property = $model->getPropertyByName('name');
         static::assertEquals('name', $property->getName());
-        static::assertEquals(AccessLevelEnum::ACCESS_LELEV_PROTECTED, $property->getAccessLevel());
+        static::assertEquals(AccessLevelEnum::ACCESS_LEVEL_PROTECTED, $property->getAccessLevel());
         static::assertContains(['name' => 'ORM\Column(type="string", name="name")'], $property->getAttributes());
 
         $method = $model->getMethodByName('__construct');
@@ -88,11 +89,49 @@ class EntityGeneratorModelBuilderTest extends TestCase
         static::assertNotFalse(strpos($content, '@Serializer\Groups({"Default"})'));
     }
 
+    /**
+     * @return string[][]
+     */
     public function structureProvider()
     {
         return [
             [
                 'entity-generator-model-structure.yaml'
+            ],
+        ];
+    }
+
+    /**
+     * @param object $subject
+     * @param string $exception
+     * @param string $message
+     *
+     * @throws AccessLevelException
+     * @dataProvider modelTypeBuilderExceptionProvider
+     */
+    public function testModelBuilderTypeException(object $subject, string $exception, string $message)
+    {
+        static::expectException($exception);
+        static::expectExceptionMessage($message);
+
+        $modelBuilder = new EntityGeneratorModelBuilder('AppBundle');
+        $modelBuilder->buildModel($subject);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function modelTypeBuilderExceptionProvider()
+    {
+        return [
+            [
+                new Form(),
+                SubjectTypeException::class,
+                sprintf(
+                    'Wrong subject type: %s. Expected class type: %s.',
+                    Form::class,
+                    Entity::class
+                )
             ],
         ];
     }
