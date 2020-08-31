@@ -22,6 +22,9 @@ components:
         - slug
       x-reference:
         - comments
+      x-repository-trait:
+        - AppBundle\AbsRepositoryTrait
+        - AppBundle\QweRepositoryTrait
       type: object
       properties:
         id:

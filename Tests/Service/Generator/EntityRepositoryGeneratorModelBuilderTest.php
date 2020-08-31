@@ -51,6 +51,8 @@ class EntityRepositoryGeneratorModelBuilderTest extends TestCase
             strpos($content, 'class ' . $elementName . EntityRepositoryGeneratorModelBuilder::NAME_POSTFIX)
         );
         static::assertNotFalse(strpos($content, 'extends ApiRepository'));
+        static::assertNotFalse(strpos($content, 'AppBundle\AbsRepositoryTrait'));
+        static::assertNotFalse(strpos($content, 'AppBundle\QweRepositoryTrait'));
     }
 
     /**
