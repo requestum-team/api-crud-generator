@@ -3,10 +3,12 @@
 namespace Requestum\ApiGeneratorBundle\Tests\Service\Generator;
 
 use PHPUnit\Framework\TestCase;
+use Requestum\ApiGeneratorBundle\Exception\AccessLevelException;
 use Requestum\ApiGeneratorBundle\Exception\SubjectTypeException;
 use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\Form;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
+use Requestum\ApiGeneratorBundle\Service\Generator\EntityGeneratorModelBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\EntityRepositoryGeneratorModelBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\PhpGenerator;
 use Requestum\ApiGeneratorBundle\Tests\TestCaseTrait;
@@ -40,18 +42,7 @@ class EntityRepositoryGeneratorModelBuilderTest extends TestCase
         /** @var Entity $structureTest */
         $structureTest = $collection->findElement($elementName);
         $modelBuilder = (new EntityRepositoryGeneratorModelBuilder('AppBundle'));
-
-        try {
-            $wrongSubjectType = false;
-            $modelBuilder->buildModel(new Form());
-        } catch (SubjectTypeException $e) {
-            $wrongSubjectType = true;
-        }
-
-        static::assertTrue($wrongSubjectType);
-
         $model = $modelBuilder->buildModel($structureTest);
-
         $phpGenerator = new PhpGenerator();
         $content =  $phpGenerator->generate($model);
 
@@ -71,6 +62,41 @@ class EntityRepositoryGeneratorModelBuilderTest extends TestCase
             [
                 'entity-generator-model-structure.yaml',
                 'StructureTest',
+            ],
+        ];
+    }
+
+    /**
+     * @param object $subject
+     * @param string $exception
+     * @param string $message
+     *
+     * @throws AccessLevelException
+     * @dataProvider modelTypeBuilderExceptionProvider
+     */
+    public function testModelBuilderTypeException(object $subject, string $exception, string $message)
+    {
+        static::expectException($exception);
+        static::expectExceptionMessage($message);
+
+        $modelBuilder = new EntityGeneratorModelBuilder('AppBundle');
+        $modelBuilder->buildModel($subject);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function modelTypeBuilderExceptionProvider()
+    {
+        return [
+            [
+                new Form(),
+                SubjectTypeException::class,
+                sprintf(
+                    'Wrong subject type: %s. Expected class type: %s.',
+                    Form::class,
+                    Entity::class
+                )
             ],
         ];
     }

@@ -42,18 +42,7 @@ class EntityGeneratorModelBuilderTest extends TestCase
 
         /** @var Entity $structureTest */
         $structureTest = $collection->findElement('StructureTest');
-
         $modelBuilder = new EntityGeneratorModelBuilder('AppBundle');
-
-        try {
-            $wrongSubjectType = false;
-            $modelBuilder->buildModel(new Form());
-        } catch (SubjectTypeException $e) {
-            $wrongSubjectType = true;
-        }
-
-        static::assertTrue($wrongSubjectType);
-
         $model = $modelBuilder->buildModel($structureTest);
 
         static::assertEquals('StructureTest', $model->getName());
@@ -95,11 +84,49 @@ class EntityGeneratorModelBuilderTest extends TestCase
         static::assertNotFalse(strpos($content, 'Assert\Unique'));
     }
 
+    /**
+     * @return string[][]
+     */
     public function structureProvider()
     {
         return [
             [
                 'entity-generator-model-structure.yaml'
+            ],
+        ];
+    }
+
+    /**
+     * @param object $subject
+     * @param string $exception
+     * @param string $message
+     *
+     * @throws AccessLevelException
+     * @dataProvider modelTypeBuilderExceptionProvider
+     */
+    public function testModelBuilderTypeException(object $subject, string $exception, string $message)
+    {
+        static::expectException($exception);
+        static::expectExceptionMessage($message);
+
+        $modelBuilder = new EntityGeneratorModelBuilder('AppBundle');
+        $modelBuilder->buildModel($subject);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function modelTypeBuilderExceptionProvider()
+    {
+        return [
+            [
+                new Form(),
+                SubjectTypeException::class,
+                sprintf(
+                    'Wrong subject type: %s. Expected class type: %s.',
+                    Form::class,
+                    Entity::class
+                )
             ],
         ];
     }

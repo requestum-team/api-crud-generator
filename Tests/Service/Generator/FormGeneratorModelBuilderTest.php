@@ -30,16 +30,12 @@ class FormGeneratorModelBuilderTest extends TestCase
      * @param string $filename
      * @param string $elementName
      *
-     * @param string $expectedModelSubjectClass
      * @throws CollectionException
      * @throws EntityMissingException
      * @throws FormMissingException
      */
-    public function testStructure(
-        string $filename,
-        string $elementName,
-        string $expectedModelSubjectClass = Form::class
-    ) {
+    public function testStructure(string $filename, string $elementName)
+    {
         $filePath = realpath(__DIR__ . '/providers/' . $filename);
 
         $entityBuilder = new EntityBuilder();
@@ -56,18 +52,7 @@ class FormGeneratorModelBuilderTest extends TestCase
         /** @var Form $structureTest */
         $structureTest = $formCollection->findElement($elementName);
         $modelBuilder = (new FormGeneratorModelBuilder('AppBundle'));
-
-        try {
-            $wrongSubjectType = false;
-            $modelBuilder->buildModel(new Entity());
-        } catch (SubjectTypeException $e) {
-            $wrongSubjectType = true;
-        }
-
-        static::assertTrue($wrongSubjectType);
-
         $model = $modelBuilder->buildModel($structureTest);
-
         $phpGenerator = new PhpGenerator();
         $content =  $phpGenerator->generate($model);
 
@@ -92,6 +77,40 @@ class FormGeneratorModelBuilderTest extends TestCase
             [
                 'form-generator-model-structure.yaml',
                 'UserCreate',
+            ],
+        ];
+    }
+
+    /**
+     * @param object $subject
+     * @param string $exception
+     * @param string $message
+     *
+     * @dataProvider modelTypeBuilderExceptionProvider
+     */
+    public function testModelBuilderTypeException(object $subject, string $exception, string $message)
+    {
+        static::expectException($exception);
+        static::expectExceptionMessage($message);
+
+        $modelBuilder = new FormGeneratorModelBuilder('AppBundle');
+        $modelBuilder->buildModel($subject);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function modelTypeBuilderExceptionProvider()
+    {
+        return [
+            [
+                new Entity(),
+                SubjectTypeException::class,
+                sprintf(
+                    'Wrong subject type: %s. Expected class type: %s.',
+                    Entity::class,
+                    Form::class
+                )
             ],
         ];
     }
