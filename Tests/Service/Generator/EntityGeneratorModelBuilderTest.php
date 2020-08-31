@@ -77,10 +77,15 @@ class EntityGeneratorModelBuilderTest extends TestCase
 
         static::assertNotFalse(strpos($content, 'AppBundle\AbsTrait'));
         static::assertNotFalse(strpos($content, 'AppBundle\QweTrait'));
-        static::assertNotFalse(strpos($content, 'Gedmo\Mapping\Annotation\SoftDeleteable()'));
-        static::assertNotFalse(strpos($content, 'Assert\NotBlank(groups={"update"})'));
-        static::assertNotFalse(strpos($content, 'Assert\NotBlank(groups={"create"})'));
-        static::assertNotFalse(strpos($content, 'Assert\Unique'));
+        static::assertNotFalse(strpos($content, 'use Doctrine\ORM\Mapping as ORM'));
+        static::assertNotFalse(strpos($content, 'use Symfony\Component\Serializer\Annotation as Serializer'));
+        static::assertNotFalse(strpos($content, 'use Symfony\Component\Validator\Constraints as Assert'));
+        static::assertNotFalse(strpos($content, '@Gedmo\Mapping\Annotation\SoftDeleteable()'));
+        static::assertNotFalse(strpos($content, '@Assert\NotBlank(groups={"update"})'));
+        static::assertNotFalse(strpos($content, '@Assert\NotBlank(groups={"create"})'));
+        static::assertNotFalse(strpos($content, '@Assert\Unique'));
+        static::assertNotFalse(strpos($content, '@Serializer\Groups({"Default", "some_group"})'));
+        static::assertNotFalse(strpos($content, '@Serializer\Groups({"Default"})'));
     }
 
     public function structureProvider()

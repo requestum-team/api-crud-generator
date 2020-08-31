@@ -58,7 +58,7 @@ class StringHelper
      *
      * @return bool
      */
-    public static function hasAttributs(string $url): bool
+    public static function hasAttributes(string $url): bool
     {
         return preg_match(self::ATTRIBUT_PATTERN, $url);
     }
@@ -76,7 +76,7 @@ class StringHelper
     }
 
     /**
-     * @param string $url
+     * @param string $objectName
      *
      * @return string | null
      */
@@ -90,7 +90,7 @@ class StringHelper
     }
 
     /**
-     * @param string $url
+     * @param string $objectName
      *
      * @return string | null
      */
@@ -143,5 +143,16 @@ class StringHelper
         }
 
         return implode(', ', $result);
+    }
+
+    /**
+     * @param array $pieces
+     * @param string $glue
+     *
+     * @return string
+     */
+    public static function transformToDelimitedString(array $pieces, string $glue = ', ')
+    {
+        return implode($glue, array_map(function($val) {return sprintf("\"%s\"", $val);}, $pieces));
     }
 }
