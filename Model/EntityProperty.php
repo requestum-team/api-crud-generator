@@ -185,9 +185,9 @@ class EntityProperty extends BaseAbstractProperty
     protected array $serializers = ['Default'];
 
     /**
-     * @var bool|null
+     * @var bool
      */
-    protected ?bool $needSerializer = null;
+    protected bool $needSerializer = true;
 
     /**
      * @var bool
@@ -850,9 +850,9 @@ class EntityProperty extends BaseAbstractProperty
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function isNeedSerializer(): ?bool
+    public function isNeedSerializer(): bool
     {
         return $this->needSerializer;
     }
