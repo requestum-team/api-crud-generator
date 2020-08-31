@@ -20,6 +20,8 @@ components:
       x-unique:
         - email
         - slug
+      x-reference:
+        - comments
       x-repository-trait:
         - AppBundle\AbsRepositoryTrait
         - AppBundle\QweRepositoryTrait

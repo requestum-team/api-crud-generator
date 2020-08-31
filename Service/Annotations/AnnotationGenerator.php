@@ -6,6 +6,7 @@ use Requestum\ApiGeneratorBundle\Model\EntityProperty;
 use Requestum\ApiGeneratorBundle\Service\Annotations\Doctrine;
 use Requestum\ApiGeneratorBundle\Service\Annotations\Validation;
 use Requestum\ApiGeneratorBundle\Service\Annotations\Serializer;
+use Requestum\ApiGeneratorBundle\Service\Annotations\Custom;
 
 /**
  * Class AnnotationGenerator
@@ -17,6 +18,7 @@ class AnnotationGenerator
     const USE_ORM = 'Doctrine\ORM\Mapping as ORM';
     const USE_CONSTRAINTS = 'Symfony\Component\Validator\Constraints as Assert';
     const USE_SERIALIZER  = 'Symfony\Component\Serializer\Annotation as Serializer';
+    const USE_REFERENCE   = 'Requestum\ApiBundle\Rest\Metadata\Reference';
 
     /**
      * @var array
@@ -34,6 +36,7 @@ class AnnotationGenerator
         Doctrine\OneToOneAnnotationGenerator::class,
         Validation\UniqueAnnotationGenerator::class,
         Serializer\SerializerAnnotationGenerator::class,
+        Custom\ReferenceAnnotationGenerator::class,
     ];
 
     /**
