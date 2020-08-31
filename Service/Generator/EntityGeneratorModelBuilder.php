@@ -11,8 +11,7 @@ use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorParameterModel;
 use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorPropertyModel;
 use Requestum\ApiGeneratorBundle\Model\EntityProperty;
 use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
-use Requestum\ApiGeneratorBundle\Service\Annotations\AnnotationRecord;
-use Requestum\ApiGeneratorBundle\Service\Annotations\Doctrine\DoctrineAnnotationGeneratorStrategy;
+use Requestum\ApiGeneratorBundle\Service\Annotations\AnnotationGenerator;
 
 /**
  * Class EntityGeneratorModelBuilder
@@ -21,8 +20,10 @@ use Requestum\ApiGeneratorBundle\Service\Annotations\Doctrine\DoctrineAnnotation
  */
 class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
 {
-    /** @var DoctrineAnnotationGeneratorStrategy */
-    protected DoctrineAnnotationGeneratorStrategy $doctrineAnnotationGeneratorStrategy;
+    /**
+     * @var AnnotationGenerator
+     */
+    protected AnnotationGenerator $annotationGenerator;
 
     /** @var array */
     protected array $annotations = [];
@@ -36,7 +37,8 @@ class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
     {
         parent::__construct($bundleName);
 
-        $this->doctrineAnnotationGeneratorStrategy = new DoctrineAnnotationGeneratorStrategy();
+        $this->bundleName = $bundleName;
+        $this->annotationGenerator = new AnnotationGenerator();
     }
 
     /**
@@ -52,10 +54,9 @@ class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
             throw new \LogicException('Wrong subject type');
         }
 
-        $this->baseUseSection($entity->getName());
         $this->baseAnnotations($entity->getName(), $entity->getTableName());
-        $this->addTraits($entity->getTraits());
         $this->addAnnotations($entity->getAnnotations());
+        $this->addTraits($entity->getTraits());
         $this->detectConstructor($entity);
         $this->prepareConstants($entity);
         $this->prepareProperties($entity->getProperties());
@@ -82,12 +83,15 @@ class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
     }
 
     /**
-     * @param string $entityName
+     * @param array $useSections
      */
-    private function baseUseSection(string $entityName)
+    private function addUseSections(array $useSections)
     {
-        $this->useSection[] = 'Doctrine\ORM\Mapping as ORM';
-        $this->useSection[] = 'Symfony\Component\Serializer\Annotation\Groups';
+        foreach ($useSections as $useSection) {
+            if (!in_array($useSection, $this->useSection)) {
+                $this->useSection[] = $useSection;
+            }
+        }
     }
 
     /**
@@ -183,7 +187,7 @@ class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
             $property
                 ->setName($entityProperty->getName())
                 ->setAccessLevel(AccessLevelEnum::ACCESS_LEVEL_PROTECTED)
-                ->setAttributs(
+                ->setAttributes(
                     $this->getPropertyAttributes($entityProperty)
                 )
             ;
@@ -201,17 +205,17 @@ class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
      */
     private function getPropertyAttributes(EntityProperty $entityProperty): array
     {
-        $result[] = [
-            'name' => 'var',
-            'description' => sprintf('%s $%s', $entityProperty->getType(), $entityProperty->getName())
-        ];
+        $annotationRecord = $this->annotationGenerator->getAnnotationRecord($entityProperty);
+        $annotationRecord->addAnnotations($entityProperty->getAnnotations());
+        $annotationRecord->addAnnotations(
+                [
+                    sprintf('var %s $%s', $entityProperty->getType(), $entityProperty->getName())
+                ]
+        );
 
-        $generator = $this->doctrineAnnotationGeneratorStrategy->getAnnotationGenerator($entityProperty);
-        $result = array_merge($result, $generator->generate($entityProperty)->getAnnotation());
-        $annotationRecord = new AnnotationRecord($entityProperty->getAnnotations());
-        $result = array_merge($result, $annotationRecord->getAnnotation());
+        $this->addUseSections($annotationRecord->getUseSection());
 
-        return $result;
+        return $annotationRecord->getAnnotation();
     }
 
     /**

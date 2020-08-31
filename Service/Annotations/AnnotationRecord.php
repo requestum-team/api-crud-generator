@@ -25,7 +25,7 @@ class AnnotationRecord
      * @param array $annotation
      * @param array $useSection
      */
-    public function __construct(array $annotation, array $useSection = [])
+    public function __construct(array $annotation = [], array $useSection = [])
     {
         $this->annotation = $annotation;
         $this->useSection = $useSection;
@@ -46,9 +46,9 @@ class AnnotationRecord
      *
      * @return AnnotationRecord
      */
-    public function setAnnotation(array $annotation)
+    public function addAnnotations(array $annotation)
     {
-        $this->annotation = $annotation;
+        $this->annotation = array_merge($this->annotation, $annotation);
 
         return $this;
     }
@@ -62,13 +62,13 @@ class AnnotationRecord
     }
 
     /**
-     * @param array $useSection
+     * @param array $useSections
      *
      * @return AnnotationRecord
      */
-    public function setUseSection(array $useSection)
+    public function addUseSections(array $useSections)
     {
-        $this->useSection = $useSection;
+        $this->useSection = array_merge($this->useSection, $useSections);
 
         return $this;
     }

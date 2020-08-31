@@ -3,6 +3,7 @@
 namespace Requestum\ApiGeneratorBundle\Tests\Service\Generator;
 
 use PHPUnit\Framework\TestCase;
+use Requestum\ApiGeneratorBundle\Exception\AccessLevelException;
 use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\Generator\AccessLevelEnum;
 use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorMethodModel;
@@ -22,6 +23,11 @@ class EntityGeneratorModelBuilderTest extends TestCase
 
     /**
      * @dataProvider structureProvider
+     *
+     * @param string $filename
+     *
+     * @throws AccessLevelException
+     * @throws \Exception
      */
     public function testStructure(string $filename)
     {
@@ -55,12 +61,12 @@ class EntityGeneratorModelBuilderTest extends TestCase
         $property = $model->getPropertyByName('id');
         static::assertEquals('id', $property->getName());
         static::assertEquals(AccessLevelEnum::ACCESS_LEVEL_PROTECTED, $property->getAccessLevel());
-        static::assertContains(['name' => 'ORM\Id'], $property->getAttributs());
+        static::assertContains(['name' => 'ORM\Id'], $property->getAttributes());
 
         $property = $model->getPropertyByName('name');
         static::assertEquals('name', $property->getName());
         static::assertEquals(AccessLevelEnum::ACCESS_LEVEL_PROTECTED, $property->getAccessLevel());
-        static::assertContains(['name' => 'ORM\Column(type="string", name="name")'], $property->getAttributs());
+        static::assertContains(['name' => 'ORM\Column(type="string", name="name")'], $property->getAttributes());
 
         $method = $model->getMethodByName('__construct');
         static::assertInstanceOf(GeneratorMethodModel::class, $method);
@@ -74,6 +80,7 @@ class EntityGeneratorModelBuilderTest extends TestCase
         static::assertNotFalse(strpos($content, 'Gedmo\Mapping\Annotation\SoftDeleteable()'));
         static::assertNotFalse(strpos($content, 'Assert\NotBlank(groups={"update"})'));
         static::assertNotFalse(strpos($content, 'Assert\NotBlank(groups={"create"})'));
+        static::assertNotFalse(strpos($content, 'Assert\Unique'));
     }
 
     public function structureProvider()

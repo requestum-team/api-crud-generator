@@ -99,9 +99,9 @@ class PhpGenerator
                 $propertyGenerator->omitDefaultValue(true);
             }
 
-            if (!empty($property->getAttributs()) && is_array($property->getAttributs())) {
+            if (!empty($property->getAttributes()) && is_array($property->getAttributes())) {
                 $docblock = DocBlockGenerator::fromArray([
-                    'tags' => $property->getAttributs(),
+                    'tags' => $property->getAttributes(),
                 ]);
                 $propertyGenerator->setDocBlock($docblock);
             }
@@ -114,7 +114,7 @@ class PhpGenerator
     }
 
     /**
-     * @param array $properties
+     * @param array $methods
      *
      * @return array
      */

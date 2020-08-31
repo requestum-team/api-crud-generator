@@ -20,7 +20,7 @@ class GeneratorPropertyModel
     /**
      * @var array
      */
-    protected array $attributs = [];
+    protected array $attributes = [];
 
     /**
      * @var string
@@ -62,19 +62,19 @@ class GeneratorPropertyModel
     /**
      * @return array
      */
-    public function getAttributs(): array
+    public function getAttributes(): array
     {
-        return $this->attributs;
+        return $this->attributes;
     }
 
     /**
-     * @param array $attributs
+     * @param array $attributes
      *
      * @return GeneratorPropertyModel
      */
-    public function setAttributs(array $attributs)
+    public function setAttributes(array $attributes)
     {
-        $this->attributs = $attributs;
+        $this->attributes = $attributes;
 
         return $this;
     }
@@ -86,8 +86,8 @@ class GeneratorPropertyModel
      */
     public function addAttribut(string $attribut)
     {
-        if (!in_array($attribut, $this->attributs)) {
-            $this->attributs[] = $attribut;
+        if (!in_array($attribut, $this->attributes)) {
+            $this->attributes[] = $attribut;
         }
 
         return $this;

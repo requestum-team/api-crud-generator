@@ -7,6 +7,7 @@ use Requestum\ApiGeneratorBundle\Model\EntityProperty;
 use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
 use Requestum\ApiGeneratorBundle\Service\Annotations\AnnotationGeneratorInterface;
 use Requestum\ApiGeneratorBundle\Service\Annotations\AnnotationRecord;
+use Requestum\ApiGeneratorBundle\Service\Annotations\AnnotationGenerator;
 
 /**
  * Class StringAnnotationGenerator
@@ -17,10 +18,11 @@ class StringAnnotationGenerator implements AnnotationGeneratorInterface
 {
     /**
      * @param EntityProperty $entityProperty
+     * @param AnnotationRecord $annotationRecord
      *
-     * @return string[]
+     * @return AnnotationRecord
      */
-    public function generate(EntityProperty $entityProperty): AnnotationRecord
+    public function generate(EntityProperty $entityProperty, AnnotationRecord $annotationRecord): AnnotationRecord
     {
         $params = [
             'type' => PropertyTypeEnum::TYPE_STRING,
@@ -39,12 +41,18 @@ class StringAnnotationGenerator implements AnnotationGeneratorInterface
             $params['length'] = $entityProperty->getMaxLength();
         }
 
-        return new AnnotationRecord([
-            sprintf(
-                'ORM\Column(%s)',
-                StringHelper::transformToEntityColumnParameters ($params)
+        return $annotationRecord
+            ->addAnnotations(
+                [
+                    sprintf('ORM\Column(%s)', StringHelper::transformToEntityColumnParameters($params)),
+                ]
             )
-        ]);
+            ->addUseSections(
+                [
+                    AnnotationGenerator::USE_ORM,
+                ]
+            )
+        ;
     }
 
     /**

@@ -17,6 +17,9 @@ components:
         - ZaqTrait
       x-annotation:
         - Gedmo\Mapping\Annotation\SoftDeleteable()
+      x-unique:
+        - email
+        - slug
       type: object
       properties:
         id:
