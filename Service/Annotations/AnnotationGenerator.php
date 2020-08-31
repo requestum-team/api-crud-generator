@@ -24,6 +24,7 @@ class AnnotationGenerator
      * @var array
      */
     private array $generators = [
+        //ORM
         Doctrine\ArrayAnnotationGenerator::class,
         Doctrine\DecimalAnnotationGenerator::class,
         Doctrine\FloatAnnotationGenerator::class,
@@ -34,8 +35,12 @@ class AnnotationGenerator
         Doctrine\ManyToManyAnnotationGenerator::class,
         Doctrine\OneToManyAnnotationGenerator::class,
         Doctrine\OneToOneAnnotationGenerator::class,
+        //Validation
         Validation\UniqueAnnotationGenerator::class,
+        Validation\NotBlankAnnotationGenerator::class,
+        //Serializer
         Serializer\SerializerAnnotationGenerator::class,
+        //Custom
         Custom\ReferenceAnnotationGenerator::class,
     ];
 
