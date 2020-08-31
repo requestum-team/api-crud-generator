@@ -28,13 +28,14 @@ class EntityRepositoryGeneratorModelBuilder extends GeneratorModelBuilderAbstrac
 
         $nameSpace = implode('\\', [$this->bundleName, self::NAME_POSTFIX]);
 
-        $this->baseTraits($entity->getRepositoryTraits());
+        $this->addTraits($entity->getRepositoryTraits());
 
         return (new ClassGeneratorModel())
             ->setName($entity->getName() . self::NAME_POSTFIX)
             ->setNameSpace($nameSpace)
             ->setFilePath($this->prepareFilePath($entity->getName()))
             ->setExtendsClass('ApiRepository')
+            ->setUseSection($this->useSection)
             ->setTraits($this->traits)
         ;
     }
@@ -47,17 +48,5 @@ class EntityRepositoryGeneratorModelBuilder extends GeneratorModelBuilderAbstrac
     private function prepareFilePath(string $entityName): string
     {
         return implode('.', [$entityName . self::NAME_POSTFIX, 'php']);
-    }
-
-    /**
-     * @param array $traits
-     *
-     * @return $this
-     */
-    private function baseTraits(array $traits = []): self
-    {
-        array_push($this->traits, ...$traits);
-
-        return $this;
     }
 }
