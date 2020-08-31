@@ -3,6 +3,7 @@
 namespace Requestum\ApiGeneratorBundle\Service\Generator;
 
 use Requestum\ApiGeneratorBundle\Exception\AccessLevelException;
+use Requestum\ApiGeneratorBundle\Exception\SubjectTypeException;
 use Requestum\ApiGeneratorBundle\Helper\StringHelper;
 use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\Generator\AccessLevelEnum;
@@ -50,7 +51,7 @@ class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
     public function buildModel(object $entity): ClassGeneratorModelInterface
     {
         if (!$entity instanceof Entity) {
-            throw new \LogicException('Wrong subject type');
+            throw new SubjectTypeException($entity, Entity::class);
         }
 
         $this->baseAnnotations($entity->getName(), $entity->getTableName());

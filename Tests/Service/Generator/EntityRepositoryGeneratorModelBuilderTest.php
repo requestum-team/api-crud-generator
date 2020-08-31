@@ -3,7 +3,9 @@
 namespace Requestum\ApiGeneratorBundle\Tests\Service\Generator;
 
 use PHPUnit\Framework\TestCase;
+use Requestum\ApiGeneratorBundle\Exception\SubjectTypeException;
 use Requestum\ApiGeneratorBundle\Model\Entity;
+use Requestum\ApiGeneratorBundle\Model\Form;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\EntityRepositoryGeneratorModelBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\PhpGenerator;
@@ -38,7 +40,18 @@ class EntityRepositoryGeneratorModelBuilderTest extends TestCase
         /** @var Entity $structureTest */
         $structureTest = $collection->findElement($elementName);
         $modelBuilder = (new EntityRepositoryGeneratorModelBuilder('AppBundle'));
+
+        try {
+            $wrongSubjectType = false;
+            $modelBuilder->buildModel(new Form());
+        } catch (SubjectTypeException $e) {
+            $wrongSubjectType = true;
+        }
+
+        static::assertTrue($wrongSubjectType);
+
         $model = $modelBuilder->buildModel($structureTest);
+
         $phpGenerator = new PhpGenerator();
         $content =  $phpGenerator->generate($model);
 

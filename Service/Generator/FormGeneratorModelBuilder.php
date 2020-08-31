@@ -2,6 +2,7 @@
 
 namespace Requestum\ApiGeneratorBundle\Service\Generator;
 
+use Requestum\ApiGeneratorBundle\Exception\SubjectTypeException;
 use Requestum\ApiGeneratorBundle\Model\Form;
 use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorMethodModel;
 use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorParameterModel;
@@ -24,7 +25,7 @@ class FormGeneratorModelBuilder extends GeneratorModelBuilderAbstract
     public function buildModel(object $form): ClassGeneratorModelInterface
     {
         if (!$form instanceof Form) {
-            throw new \LogicException('Wrong subject type');
+            throw new SubjectTypeException($form, Form::class);
         }
 
         $entity = $form->getEntity();

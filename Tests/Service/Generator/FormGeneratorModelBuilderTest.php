@@ -3,6 +3,11 @@
 namespace Requestum\ApiGeneratorBundle\Tests\Service\Generator;
 
 use PHPUnit\Framework\TestCase;
+use Requestum\ApiGeneratorBundle\Exception\CollectionException;
+use Requestum\ApiGeneratorBundle\Exception\EntityMissingException;
+use Requestum\ApiGeneratorBundle\Exception\FormMissingException;
+use Requestum\ApiGeneratorBundle\Exception\SubjectTypeException;
+use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\Form;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
@@ -25,10 +30,16 @@ class FormGeneratorModelBuilderTest extends TestCase
      * @param string $filename
      * @param string $elementName
      *
-     * @throws \Exception
+     * @param string $expectedModelSubjectClass
+     * @throws CollectionException
+     * @throws EntityMissingException
+     * @throws FormMissingException
      */
-    public function testStructure(string $filename, string $elementName)
-    {
+    public function testStructure(
+        string $filename,
+        string $elementName,
+        string $expectedModelSubjectClass = Form::class
+    ) {
         $filePath = realpath(__DIR__ . '/providers/' . $filename);
 
         $entityBuilder = new EntityBuilder();
@@ -37,15 +48,26 @@ class FormGeneratorModelBuilderTest extends TestCase
         );
 
         $formBuilder = new FormBuilder();
-        $collection = $formBuilder->build(
+        $formCollection = $formBuilder->build(
             $this->getSchemasAndRequestBodiesCollection($filePath),
             $entityCollection
         );
 
         /** @var Form $structureTest */
-        $structureTest = $collection->findElement($elementName);
+        $structureTest = $formCollection->findElement($elementName);
         $modelBuilder = (new FormGeneratorModelBuilder('AppBundle'));
+
+        try {
+            $wrongSubjectType = false;
+            $modelBuilder->buildModel(new Entity());
+        } catch (SubjectTypeException $e) {
+            $wrongSubjectType = true;
+        }
+
+        static::assertTrue($wrongSubjectType);
+
         $model = $modelBuilder->buildModel($structureTest);
+
         $phpGenerator = new PhpGenerator();
         $content =  $phpGenerator->generate($model);
 

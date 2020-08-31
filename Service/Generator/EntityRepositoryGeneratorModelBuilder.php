@@ -2,6 +2,7 @@
 
 namespace Requestum\ApiGeneratorBundle\Service\Generator;
 
+use Requestum\ApiGeneratorBundle\Exception\SubjectTypeException;
 use Requestum\ApiGeneratorBundle\Model\Entity;
 
 /**
@@ -22,7 +23,7 @@ class EntityRepositoryGeneratorModelBuilder extends GeneratorModelBuilderAbstrac
     public function buildModel(object $entity): ClassGeneratorModelInterface
     {
         if (!$entity instanceof Entity) {
-            throw new \LogicException('Wrong subject type');
+            throw new SubjectTypeException($entity, Entity::class);
         }
 
         $nameSpace = implode('\\', [$this->bundleName, self::NAME_POSTFIX]);
