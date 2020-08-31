@@ -9,11 +9,9 @@ namespace Requestum\ApiGeneratorBundle\Model\Generator;
  */
 final class AccessLevelEnum
 {
-    const ACCESS_LELEV_PUBLIC = 'public';
-
-    const ACCESS_LELEV_PROTECTED = 'protected';
-
-    const ACCESS_LELEV_PRIVATE = 'private';
+    const ACCESS_LEVEL_PUBLIC = 'public';
+    const ACCESS_LEVEL_PROTECTED = 'protected';
+    const ACCESS_LEVEL_PRIVATE = 'private';
 
     /**
      * @return array
@@ -21,9 +19,9 @@ final class AccessLevelEnum
     public static function getAccessLevels(): array
     {
         return [
-            AccessLevelEnum::ACCESS_LELEV_PUBLIC,
-            AccessLevelEnum::ACCESS_LELEV_PROTECTED,
-            AccessLevelEnum::ACCESS_LELEV_PRIVATE
+            AccessLevelEnum::ACCESS_LEVEL_PUBLIC,
+            AccessLevelEnum::ACCESS_LEVEL_PROTECTED,
+            AccessLevelEnum::ACCESS_LEVEL_PRIVATE
         ];
     }
 }

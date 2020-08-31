@@ -34,6 +34,9 @@ components:
           x-annotation:
             - Assert\NotBlank(groups={"create"})
             - Assert\NotBlank(groups={"update"})
+          x-serializer:
+            - Default
+            - some_group
         email:
           description: ""
           type: string

@@ -3,22 +3,24 @@
 namespace Requestum\ApiGeneratorBundle\Tests\Service\Generator;
 
 use PHPUnit\Framework\TestCase;
-use Requestum\ApiGeneratorBundle\Exception\AccessLevelException;
+use Requestum\ApiGeneratorBundle\Exception\CollectionException;
+use Requestum\ApiGeneratorBundle\Exception\EntityMissingException;
+use Requestum\ApiGeneratorBundle\Exception\FormMissingException;
 use Requestum\ApiGeneratorBundle\Exception\SubjectTypeException;
 use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\Form;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
-use Requestum\ApiGeneratorBundle\Service\Generator\EntityGeneratorModelBuilder;
-use Requestum\ApiGeneratorBundle\Service\Generator\EntityRepositoryGeneratorModelBuilder;
+use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
+use Requestum\ApiGeneratorBundle\Service\Generator\FormGeneratorModelBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\PhpGenerator;
 use Requestum\ApiGeneratorBundle\Tests\TestCaseTrait;
 
 /**
- * Class EntityRepositoryGeneratorModelBuilderTest
+ * Class FormGeneratorModelBuilderTest
  *
  * @package Requestum\ApiGeneratorBundle\Tests\Service\Generator
  */
-class EntityRepositoryGeneratorModelBuilderTest extends TestCase
+class FormGeneratorModelBuilderTest extends TestCase
 {
     use TestCaseTrait;
 
@@ -28,31 +30,42 @@ class EntityRepositoryGeneratorModelBuilderTest extends TestCase
      * @param string $filename
      * @param string $elementName
      *
-     * @throws \Exception
+     * @throws CollectionException
+     * @throws EntityMissingException
+     * @throws FormMissingException
      */
     public function testStructure(string $filename, string $elementName)
     {
         $filePath = realpath(__DIR__ . '/providers/' . $filename);
 
-        $builder = new EntityBuilder();
-        $collection = $builder->build(
+        $entityBuilder = new EntityBuilder();
+        $entityCollection = $entityBuilder->build(
             $this->getSchemasAndRequestBodiesCollection($filePath)
         );
 
-        /** @var Entity $structureTest */
-        $structureTest = $collection->findElement($elementName);
-        $modelBuilder = (new EntityRepositoryGeneratorModelBuilder('AppBundle'));
+        $formBuilder = new FormBuilder();
+        $formCollection = $formBuilder->build(
+            $this->getSchemasAndRequestBodiesCollection($filePath),
+            $entityCollection
+        );
+
+        /** @var Form $structureTest */
+        $structureTest = $formCollection->findElement($elementName);
+        $modelBuilder = (new FormGeneratorModelBuilder('AppBundle'));
         $model = $modelBuilder->buildModel($structureTest);
         $phpGenerator = new PhpGenerator();
         $content =  $phpGenerator->generate($model);
 
-        static::assertNotFalse(strpos($content, 'namespace AppBundle\Repository'));
         static::assertNotFalse(
-            strpos($content, 'class ' . $elementName . EntityRepositoryGeneratorModelBuilder::NAME_POSTFIX)
+            strpos($content, 'namespace AppBundle\Form\\' . $structureTest->getEntity()->getName())
         );
-        static::assertNotFalse(strpos($content, 'extends ApiRepository'));
-        static::assertNotFalse(strpos($content, 'AppBundle\AbsRepositoryTrait'));
-        static::assertNotFalse(strpos($content, 'AppBundle\QweRepositoryTrait'));
+        static::assertNotFalse(
+            strpos($content, 'class ' . $elementName . FormGeneratorModelBuilder::NAME_POSTFIX)
+        );
+        static::assertNotFalse(strpos($content, 'extends AbstractApiType'));
+        static::assertNotFalse(
+            strpos($content, "'data_class' => {$structureTest->getEntity()->getName()}::class,")
+        );
     }
 
     /**
@@ -62,8 +75,8 @@ class EntityRepositoryGeneratorModelBuilderTest extends TestCase
     {
         return [
             [
-                'entity-generator-model-structure.yaml',
-                'StructureTest',
+                'form-generator-model-structure.yaml',
+                'UserCreate',
             ],
         ];
     }
@@ -73,7 +86,6 @@ class EntityRepositoryGeneratorModelBuilderTest extends TestCase
      * @param string $exception
      * @param string $message
      *
-     * @throws AccessLevelException
      * @dataProvider modelTypeBuilderExceptionProvider
      */
     public function testModelBuilderTypeException(object $subject, string $exception, string $message)
@@ -81,7 +93,7 @@ class EntityRepositoryGeneratorModelBuilderTest extends TestCase
         static::expectException($exception);
         static::expectExceptionMessage($message);
 
-        $modelBuilder = new EntityGeneratorModelBuilder('AppBundle');
+        $modelBuilder = new FormGeneratorModelBuilder('AppBundle');
         $modelBuilder->buildModel($subject);
     }
 
@@ -92,12 +104,12 @@ class EntityRepositoryGeneratorModelBuilderTest extends TestCase
     {
         return [
             [
-                new Form(),
+                new Entity(),
                 SubjectTypeException::class,
                 sprintf(
                     'Wrong subject type: %s. Expected class type: %s.',
-                    Form::class,
-                    Entity::class
+                    Entity::class,
+                    Form::class
                 )
             ],
         ];
