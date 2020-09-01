@@ -11,7 +11,6 @@ use Requestum\ApiGeneratorBundle\Helper\CommonHelper;
  */
 class Entity implements ModelInterface
 {
-
     /**
      * @var string
      */

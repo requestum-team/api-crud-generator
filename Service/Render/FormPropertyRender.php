@@ -99,11 +99,19 @@ EOF;
      */
     protected function renderTypeString(): string
     {
-        $this->useSections[] = 'Symfony\Component\Form\Extension\Core\Type\TextType';
+        switch ($this->formProperty->getFormat()) {
+            case 'email':
+                $this->useSections[] = 'Symfony\Component\Form\Extension\Core\Type\EmailType';
+                $typeClass = 'EmailType';
+                break;
+            default:
+                $this->useSections[] = 'Symfony\Component\Form\Extension\Core\Type\TextType';
+                $typeClass = 'TextType';
+        }
 
         return $this->getPropertyWrapper(
             $this->formProperty->getNameCamelCase(),
-            'TextType'
+            $typeClass
         );
     }
 

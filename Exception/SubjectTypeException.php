@@ -12,7 +12,7 @@ use Throwable;
 class SubjectTypeException extends \LogicException
 {
     /**
-     * ModelTypeException constructor.
+     * SubjectTypeException constructor.
      *
      * @param object $subject
      * @param string $expectedClass
