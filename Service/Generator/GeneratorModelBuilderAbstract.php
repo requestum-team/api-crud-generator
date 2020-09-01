@@ -45,6 +45,23 @@ abstract class GeneratorModelBuilderAbstract
     abstract public function buildModel(object $subject): ClassGeneratorModelInterface;
 
     /**
+     * @param array $useSections
+     * @return $this
+     */
+    protected function addUseSections(array $useSections = []): self
+    {
+        foreach ($useSections as $useSection) {
+            if (in_array($useSection, $this->useSection)) {
+                continue;
+            }
+
+            $this->useSection[] = $useSection;
+        }
+
+        return $this;
+    }
+
+    /**
      * @param array $traits
      *
      * @return $this
@@ -55,7 +72,7 @@ abstract class GeneratorModelBuilderAbstract
             $explodeTrait = explode('\\', $trait);
 
             if (count($explodeTrait) > 1) {
-                $this->useSection[] = $trait;
+                $this->addUseSections([$trait]);
                 $trait = array_pop($explodeTrait);
             }
 
