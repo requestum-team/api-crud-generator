@@ -76,7 +76,7 @@ class FormPropertyRender
     protected function getPropertyWrapper(string $name, string $typeClass, string $options = null): string
     {
         $content = <<<EOF
-\n    ->add('{$name}', {$typeClass}:class
+\n    ->add('{$name}', {$typeClass}::class
 EOF;
 
         if (!empty($options)) {
@@ -160,7 +160,7 @@ EOF                 ;
             $this->formProperty->getNameCamelCase(),
             'EntityType',
             <<<EOF
-    'class' => {$entityName}:class,
+    'class' => {$entityName}::class,
 EOF
         );
     }
