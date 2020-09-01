@@ -99,19 +99,34 @@ EOF;
      */
     protected function renderTypeString(): string
     {
+        $options = '';
+
         switch ($this->formProperty->getFormat()) {
             case 'email':
                 $this->useSections[] = 'Symfony\Component\Form\Extension\Core\Type\EmailType';
                 $typeClass = 'EmailType';
                 break;
             default:
-                $this->useSections[] = 'Symfony\Component\Form\Extension\Core\Type\TextType';
-                $typeClass = 'TextType';
+                if (!empty($enum = $this->formProperty->getEnum())) {
+                    $this->useSections[] = 'Symfony\Component\Form\Extension\Core\Type\ChoiceType';
+                    $typeClass = 'ChoiceType';
+                    $enum = "'" . implode("', '", $enum) . "',";
+                    $options = <<<EOF
+    'choices' => [
+            {$enum}
+        ],
+EOF                 ;
+
+                } else {
+                    $this->useSections[] = 'Symfony\Component\Form\Extension\Core\Type\TextType';
+                    $typeClass = 'TextType';
+                }
         }
 
         return $this->getPropertyWrapper(
             $this->formProperty->getNameCamelCase(),
-            $typeClass
+            $typeClass,
+            $options
         );
     }
 
