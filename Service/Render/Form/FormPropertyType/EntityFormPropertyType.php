@@ -46,9 +46,10 @@ EOF;
                 'Symfony\Component\Form\Extension\Core\Type\EntityType',
                 sprintf('%s\Entity\%s', $this->bundleName, $entityName),
             ])
-            ->setContent($this->getPropertyWrapper(
+            ->setContent($this->wrapProperty(
                 $formProperty->getNameCamelCase(),
                     'EntityType',
+                    $this->getNeededConstraints($formProperty),
                     $optionsContent
                 )
             )

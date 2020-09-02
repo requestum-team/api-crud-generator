@@ -42,9 +42,10 @@ EOF;
                 'Symfony\Component\Form\Extension\Core\Type\TimeType',
             ])
             ->setContent(
-                $this->getPropertyWrapper(
+                $this->wrapProperty(
                     $formProperty->getNameCamelCase(),
                     'TimeType',
+                    $this->getNeededConstraints($formProperty),
                     $optionsContent
                 )
             )

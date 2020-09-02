@@ -37,9 +37,10 @@ class EmailFormPropertyType extends FormPropertyTypeAbstract
                 'Symfony\Component\Form\Extension\Core\Type\EmailType',
             ])
             ->setContent(
-                $this->getPropertyWrapper(
+                $this->wrapProperty(
                     $formProperty->getNameCamelCase(),
-                    'EmailType'
+                    'EmailType',
+                    $this->getNeededConstraints($formProperty)
                 )
             )
         ;

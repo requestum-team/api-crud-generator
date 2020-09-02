@@ -182,13 +182,21 @@ class FormGeneratorModelBuilderTest extends TestCase
                     [
                         'Symfony\Component\Form\Extension\Core\Type\TextType',
                         <<<EOF
-->add('firstName', TextType::class)
+->add('firstName', TextType::class, [
+    'constraints' => [
+        new NotBlank(),
+    ]
+])
 EOF
                     ],
                     [
                         'Symfony\Component\Form\Extension\Core\Type\EmailType',
                         <<<EOF
-->add('email', EmailType::class)
+->add('email', EmailType::class, [
+    'constraints' => [
+        new NotBlank(),
+    ]
+])
 EOF
                     ],
                     [

@@ -37,9 +37,10 @@ class TextareaFormPropertyType extends FormPropertyTypeAbstract
                 'Symfony\Component\Form\Extension\Core\Type\TextareaType',
             ])
             ->setContent(
-                $this->getPropertyWrapper(
+                $this->wrapProperty(
                     $formProperty->getNameCamelCase(),
-                    'TextareaType'
+                    'TextareaType',
+                    $this->getNeededConstraints($formProperty)
                 )
             )
         ;

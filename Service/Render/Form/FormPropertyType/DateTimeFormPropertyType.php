@@ -42,9 +42,10 @@ EOF;
                 'Symfony\Component\Form\Extension\Core\Type\DateTimeType',
             ])
             ->setContent(
-                $this->getPropertyWrapper(
+                $this->wrapProperty(
                     $formProperty->getNameCamelCase(),
                     'DateTimeType',
+                    $this->getNeededConstraints($formProperty),
                     $optionsContent
                 )
             )

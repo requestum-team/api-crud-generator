@@ -3,6 +3,7 @@
 namespace Requestum\ApiGeneratorBundle\Service\Render\Form;
 
 use Requestum\ApiGeneratorBundle\Model\FormProperty;
+use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyConstraint\NotBlankFormPropertyConstraint;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\ArrayFormPropertyType;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\DateFormPropertyType;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\DateTimeFormPropertyType;
@@ -38,6 +39,11 @@ class FormPropertyRender
         DateTimeFormPropertyType::class,
     ];
 
+    /** @var string[] */
+    protected array $constraints = [
+        NotBlankFormPropertyConstraint::class,
+    ];
+
     /** @var FormPropertyTypeInterface */
     protected FormPropertyTypeInterface $render;
 
@@ -63,7 +69,7 @@ class FormPropertyRender
     {
         foreach ($this->renders as $render) {
             if ($render::isSupport($formProperty)) {
-                return new $render($this->bundleName);
+                return new $render($this->bundleName, $this->constraints);
             }
         }
 

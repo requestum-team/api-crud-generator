@@ -40,9 +40,10 @@ class StringFormPropertyType extends FormPropertyTypeAbstract
                 'Symfony\Component\Form\Extension\Core\Type\TextType',
             ])
             ->setContent(
-                $this->getPropertyWrapper(
+                $this->wrapProperty(
                     $formProperty->getNameCamelCase(),
-                    'TextType'
+                    'TextType',
+                    $this->getNeededConstraints($formProperty)
                 )
             )
         ;

@@ -34,9 +34,10 @@ class IntegerFormPropertyType extends FormPropertyTypeAbstract
                 'Symfony\Component\Form\Extension\Core\Type\NumberType',
             ])
             ->setContent(
-                $this->getPropertyWrapper(
+                $this->wrapProperty(
                     $formProperty->getNameCamelCase(),
-                    'NumberType'
+                    'NumberType',
+                    $this->getNeededConstraints($formProperty)
                 )
             )
         ;

@@ -46,9 +46,10 @@ EOF     ;
                 'Symfony\Component\Form\Extension\Core\Type\ChoiceType',
             ])
             ->setContent(
-                $this->getPropertyWrapper(
+                $this->wrapProperty(
                     $formProperty->getNameCamelCase(),
                     'ChoiceType',
+                    $this->getNeededConstraints($formProperty),
                     $optionsContent
                 )
             )
