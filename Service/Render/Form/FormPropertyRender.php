@@ -12,6 +12,7 @@ use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\FormFormPr
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\FormPropertyTypeInterface;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\IntegerFormPropertyType;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\StringFormPropertyType;
+use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\TextareaFormPropertyType;
 
 /**
  * Class FormPropertyRender
@@ -23,6 +24,7 @@ class FormPropertyRender
     /** @var string[] */
     protected array $renders = [
         StringFormPropertyType::class,
+        TextareaFormPropertyType::class,
         EmailFormPropertyType::class,
         EnumStringFormPropertyType::class,
         IntegerFormPropertyType::class,

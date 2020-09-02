@@ -115,6 +115,10 @@ components:
                                 description: ""
                                 type: string
                                 format: date
+                            biography:
+                                description: ""
+                                type: string
+                                format: text
         AddressInput:
             content:
                 application/json:

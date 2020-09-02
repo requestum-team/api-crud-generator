@@ -203,7 +203,9 @@ EOF                 ,
     'widget' => 'single_text',
 ])
 EOF                 ,
-
+                    <<<EOF
+->add('biography', TextareaType::class)
+EOF                 ,
                 ],
             ],
         ];
