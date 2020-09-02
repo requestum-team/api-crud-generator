@@ -23,7 +23,7 @@ class DateFormPropertyType extends FormPropertyTypeAbstract
     {
         return
             $formProperty->getType() === PropertyTypeEnum::TYPE_STRING
-            && $formProperty->getFormat() === PropertyFormatEnum::TYPE_DATE
+            && $formProperty->getFormat() === PropertyFormatEnum::FORMAT_DATE
         ;
     }
 

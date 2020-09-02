@@ -23,7 +23,7 @@ class EmailFormPropertyType extends FormPropertyTypeAbstract
     {
         return
             $formProperty->getType() === PropertyTypeEnum::TYPE_STRING
-            && $formProperty->getFormat() === PropertyFormatEnum::TYPE_EMAIL
+            && $formProperty->getFormat() === PropertyFormatEnum::FORMAT_EMAIL
         ;
     }
 

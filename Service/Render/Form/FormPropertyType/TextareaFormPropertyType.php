@@ -23,7 +23,7 @@ class TextareaFormPropertyType extends FormPropertyTypeAbstract
     {
         return
             $formProperty->getType() === PropertyTypeEnum::TYPE_STRING
-            && $formProperty->getFormat() === PropertyFormatEnum::TYPE_TEXT
+            && $formProperty->getFormat() === PropertyFormatEnum::FORMAT_TEXT
         ;
     }
 
