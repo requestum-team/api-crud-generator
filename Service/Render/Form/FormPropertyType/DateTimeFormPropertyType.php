@@ -2,6 +2,8 @@
 
 namespace Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType;
 
+use Requestum\ApiGeneratorBundle\Model\Enum\PropertyFormatEnum;
+use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
 use Requestum\ApiGeneratorBundle\Model\FormProperty;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyRenderOutput;
 
@@ -20,8 +22,8 @@ class DateTimeFormPropertyType extends FormPropertyTypeAbstract
     public static function isSupport(FormProperty $formProperty): bool
     {
         return
-            $formProperty->getType() === 'string'
-            && $formProperty->getFormat() === 'date-time'
+            $formProperty->getType() === PropertyTypeEnum::TYPE_STRING
+            && $formProperty->getFormat() === PropertyFormatEnum::TYPE_DATETIME
         ;
     }
 

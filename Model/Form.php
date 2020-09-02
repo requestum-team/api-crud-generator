@@ -93,9 +93,9 @@ class Form implements ModelInterface
     /**
      * @param string $nameSpace
      *
-     * @return Form
+     * @return $this
      */
-    public function setNameSpace(string $nameSpace)
+    public function setNameSpace(string $nameSpace): self
     {
         $this->nameSpace = $nameSpace;
 

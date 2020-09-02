@@ -2,6 +2,7 @@
 
 namespace Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType;
 
+use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
 use Requestum\ApiGeneratorBundle\Model\FormProperty;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyRenderOutput;
 
@@ -19,7 +20,7 @@ class ArrayFormPropertyType extends FormPropertyTypeAbstract
      */
     public static function isSupport(FormProperty $formProperty): bool
     {
-        return $formProperty->getType() === 'array';
+        return $formProperty->getType() === PropertyTypeEnum::TYPE_ARRAY;
     }
 
     /**

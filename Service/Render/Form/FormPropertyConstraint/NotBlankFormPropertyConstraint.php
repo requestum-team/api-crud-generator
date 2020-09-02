@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyConstraint;
 
 use Requestum\ApiGeneratorBundle\Model\FormProperty;

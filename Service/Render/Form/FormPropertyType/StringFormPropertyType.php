@@ -2,6 +2,7 @@
 
 namespace Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType;
 
+use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
 use Requestum\ApiGeneratorBundle\Model\FormProperty;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyRenderOutput;
 
@@ -20,7 +21,7 @@ class StringFormPropertyType extends FormPropertyTypeAbstract
     public static function isSupport(FormProperty $formProperty): bool
     {
         return
-            $formProperty->getType() === 'string'
+            $formProperty->getType() === PropertyTypeEnum::TYPE_STRING
             && empty($formProperty->getFormat())
             && empty($formProperty->getEnum())
             && !$formProperty->isEntity()

@@ -32,19 +32,16 @@ class EntityFormPropertyType extends FormPropertyTypeAbstract
      */
     public function render(FormProperty $formProperty): FormPropertyRenderOutput
     {
-        $entityName = $formProperty
-            ->getReferencedObject()
-            ->getName()
-        ;
+        $entity = $formProperty->getReferencedObject();
 
         $optionsContent = <<<EOF
-    'class' => {$entityName}::class,
+    'class' => {$entity->getName()}::class,
 EOF;
 
         return (new FormPropertyRenderOutput())
             ->setUseSections([
                 'Symfony\Component\Form\Extension\Core\Type\EntityType',
-                sprintf('%s\Entity\%s', $this->bundleName, $entityName),
+                sprintf('%s\%s', $this->bundleName, $entity->getNameSpace()),
             ])
             ->setContent($this->wrapProperty(
                 $formProperty->getNameCamelCase(),
