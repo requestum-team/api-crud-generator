@@ -212,6 +212,12 @@ EOF                 ,
     'widget' => 'single_text',
 ])
 EOF                 ,
+                    <<<EOF
+->add('someFieldForTime', TimeType::class, [
+    'input' => 'string',
+    'widget' => 'single_text',
+])
+EOF                 ,
                 ],
             ],
         ];

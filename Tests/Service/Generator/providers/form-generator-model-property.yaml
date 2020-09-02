@@ -123,6 +123,10 @@ components:
                                 description: ""
                                 type: string
                                 format: date-time
+                            someFieldForTime:
+                                description: ""
+                                type: string
+                                format: time
         AddressInput:
             content:
                 application/json:

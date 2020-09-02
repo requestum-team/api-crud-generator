@@ -1,0 +1,53 @@
+<?php
+
+namespace Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType;
+
+use Requestum\ApiGeneratorBundle\Model\FormProperty;
+use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyRenderOutput;
+
+/**
+ * Class TimeFormPropertyType
+ *
+ * @package Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType
+ */
+class TimeFormPropertyType extends FormPropertyTypeAbstract
+{
+    /**
+     * @param FormProperty $formProperty
+     *
+     * @return bool
+     */
+    public static function isSupport(FormProperty $formProperty): bool
+    {
+        return
+            $formProperty->getType() === 'string'
+            && $formProperty->getFormat() === 'time'
+        ;
+    }
+
+    /**
+     * @param FormProperty $formProperty
+     *
+     * @return FormPropertyRenderOutput
+     */
+    public function render(FormProperty $formProperty): FormPropertyRenderOutput
+    {
+        $optionsContent = <<<EOF
+    'input' => 'string',
+        'widget' => 'single_text',
+EOF;
+
+        return (new FormPropertyRenderOutput())
+            ->setUseSections([
+                'Symfony\Component\Form\Extension\Core\Type\TimeType',
+            ])
+            ->setContent(
+                $this->getPropertyWrapper(
+                    $formProperty->getNameCamelCase(),
+                    'TimeType',
+                    $optionsContent
+                )
+            )
+        ;
+    }
+}

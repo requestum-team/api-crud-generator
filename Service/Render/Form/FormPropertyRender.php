@@ -14,6 +14,7 @@ use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\FormProper
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\IntegerFormPropertyType;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\StringFormPropertyType;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\TextareaFormPropertyType;
+use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\TimeFormPropertyType;
 
 /**
  * Class FormPropertyRender
@@ -33,6 +34,7 @@ class FormPropertyRender
         ArrayFormPropertyType::class,
         FormFormPropertyType::class,
         DateFormPropertyType::class,
+        TimeFormPropertyType::class,
         DateTimeFormPropertyType::class,
     ];
 
