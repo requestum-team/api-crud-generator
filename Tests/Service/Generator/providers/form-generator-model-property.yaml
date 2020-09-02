@@ -119,6 +119,10 @@ components:
                                 description: ""
                                 type: string
                                 format: text
+                            someFieldForDateTime:
+                                description: ""
+                                type: string
+                                format: date-time
         AddressInput:
             content:
                 application/json:

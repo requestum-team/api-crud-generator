@@ -206,6 +206,12 @@ EOF                 ,
                     <<<EOF
 ->add('biography', TextareaType::class)
 EOF                 ,
+                    <<<EOF
+->add('someFieldForDateTime', DateTimeType::class, [
+    'format' => DateTimeType::HTML5_FORMAT,
+    'widget' => 'single_text',
+])
+EOF                 ,
                 ],
             ],
         ];
