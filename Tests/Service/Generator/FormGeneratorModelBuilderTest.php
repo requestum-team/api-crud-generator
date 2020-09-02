@@ -196,4 +196,39 @@ EOF                 ,
             ],
         ];
     }
+
+    /**
+     * @param string $filename
+     * @param string $elementName
+     * @param string $exception
+     * @param string $message
+     *
+     * @throws CollectionException
+     * @throws EntityMissingException
+     * @throws FormMissingException
+     *
+     * @dataProvider propertiesExceptionProvider
+     */
+    public function testPropertiesException(string $filename, string $elementName, string $exception, string $message)
+    {
+        static::expectException($exception);
+        static::expectExceptionMessage($message);
+
+        $this->generateModel($this->getFormCollection($filename)->findElement($elementName));
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function propertiesExceptionProvider()
+    {
+        return [
+            [
+                'form-generator-model-property.yaml',
+                'TestErrorExceptionInput',
+                \LogicException::class,
+                sprintf("Form property type '%s' cannot get supported render", 'wrong'),
+            ],
+        ];
+    }
 }

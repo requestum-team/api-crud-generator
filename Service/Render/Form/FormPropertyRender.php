@@ -60,7 +60,7 @@ class FormPropertyRender
         }
 
         throw new \LogicException(
-            sprintf("Form property '%s' cannot get supported render", get_class($formProperty))
+            sprintf("Form property type '%s' cannot get supported render", $formProperty->getType())
         );
     }
 

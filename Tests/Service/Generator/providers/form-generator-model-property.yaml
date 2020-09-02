@@ -125,3 +125,17 @@ components:
                             name:
                                 description: ""
                                 type: string
+        TestErrorExceptionInput:
+            content:
+                application/json:
+                    schema:
+                        description: ""
+                        x-entity:
+                            $ref: '#/components/schemas/AddressEntity'
+                        required:
+                            - test
+                        type: object
+                        properties:
+                            test:
+                                description: ""
+                                type: wrong

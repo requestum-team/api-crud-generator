@@ -109,12 +109,14 @@ EOF         )
      */
     private function renderFormBuilder(array $properties): string
     {
+        $formPropertyRender = new FormPropertyRender($this->bundleName);
+
         $content = <<<EOF
 \$builder
 EOF     ;
 
         foreach ($properties as $property) {
-            $output = (new FormPropertyRender($this->bundleName))->render($property);
+            $output = $formPropertyRender->render($property);
 
             $this->addUseSections($output->getUseSections());
             $content .= $output->getContent();
