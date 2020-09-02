@@ -19,7 +19,10 @@ class FormFormPropertyType extends FormPropertyTypeAbstract
      */
     public static function isSupport(FormProperty $formProperty): bool
     {
-        return $formProperty->isForm() && empty($formProperty->getType());
+        return
+            $formProperty->isForm()
+            && empty($formProperty->getType())
+        ;
     }
 
     /**

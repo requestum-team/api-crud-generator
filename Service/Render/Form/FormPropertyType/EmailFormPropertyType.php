@@ -19,7 +19,10 @@ class EmailFormPropertyType extends FormPropertyTypeAbstract
      */
     public static function isSupport(FormProperty $formProperty): bool
     {
-        return $formProperty->getType() === 'string' && $formProperty->getFormat() === 'email';
+        return
+            $formProperty->getType() === 'string'
+            && $formProperty->getFormat() === 'email'
+        ;
     }
 
     /**

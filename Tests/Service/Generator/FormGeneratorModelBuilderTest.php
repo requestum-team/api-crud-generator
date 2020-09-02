@@ -162,7 +162,10 @@ class FormGeneratorModelBuilderTest extends TestCase
         $content = preg_replace($replace[0], $replace[1], $content);
 
         foreach ($propertiesExpectedContent as $propertyExpectedContent) {
-            static::assertNotFalse(strpos($content, preg_replace($replace[0], $replace[1], $propertyExpectedContent)));
+            static::assertNotFalse(strpos($content, 'use ' . $propertyExpectedContent[0]));
+            static::assertNotFalse(
+                strpos($content, preg_replace($replace[0], $replace[1], $propertyExpectedContent[1]))
+            );
         }
     }
 
@@ -176,48 +179,75 @@ class FormGeneratorModelBuilderTest extends TestCase
                 'form-generator-model-property.yaml',
                 'UserCreate',
                 [
-                    <<<EOF
+                    [
+                        'Symfony\Component\Form\Extension\Core\Type\TextType',
+                        <<<EOF
 ->add('firstName', TextType::class)
-EOF                 ,
-                    <<<EOF
+EOF
+                    ],
+                    [
+                        'Symfony\Component\Form\Extension\Core\Type\EmailType',
+                        <<<EOF
 ->add('email', EmailType::class)
-EOF                 ,
-                    <<<EOF
+EOF
+                    ],
+                    [
+                        'Symfony\Component\Form\Extension\Core\Type\NumberType',
+                        <<<EOF
 ->add('age', NumberType::class)
-EOF                 ,
-                    <<<EOF
+EOF
+                    ],
+                    [
+                        'Symfony\Component\Form\Extension\Core\Type\ChoiceType',
+                        <<<EOF
 ->add('type', ChoiceType::class, [
     'choices' => [
         'user', 'manager', 'admin',
     ],
 ])
-EOF                 ,
-                    <<<EOF
+EOF
+                    ],
+                    [
+                        'Symfony\Component\Form\Extension\Core\Type\EntityType',
+                        <<<EOF
 ->add('shopId', EntityType::class, [
     'class' => Shop::class,
 ])
-EOF                 ,
-                    <<<EOF
+EOF
+                    ],
+                    [
+                        'Symfony\Component\Form\Extension\Core\Type\DateType',
+                        <<<EOF
 ->add('birthDate', DateType::class, [
     'format' => DateType::HTML5_FORMAT,
     'widget' => 'single_text',
 ])
-EOF                 ,
-                    <<<EOF
+EOF
+                    ],
+                    [
+                        'Symfony\Component\Form\Extension\Core\Type\TextareaType',
+                        <<<EOF
 ->add('biography', TextareaType::class)
-EOF                 ,
-                    <<<EOF
+EOF
+                    ],
+                    [
+                        'Symfony\Component\Form\Extension\Core\Type\DateTimeType',
+                        <<<EOF
 ->add('someFieldForDateTime', DateTimeType::class, [
     'format' => DateTimeType::HTML5_FORMAT,
     'widget' => 'single_text',
 ])
-EOF                 ,
-                    <<<EOF
+EOF
+                    ],
+                    [
+                        'Symfony\Component\Form\Extension\Core\Type\TimeType',
+                        <<<EOF
 ->add('someFieldForTime', TimeType::class, [
     'input' => 'string',
     'widget' => 'single_text',
 ])
-EOF                 ,
+EOF
+                    ],
                 ],
             ],
         ];

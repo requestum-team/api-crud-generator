@@ -19,7 +19,10 @@ class EntityFormPropertyType extends FormPropertyTypeAbstract
      */
     public static function isSupport(FormProperty $formProperty): bool
     {
-        return $formProperty->isEntity() && empty($formProperty->getType());
+        return
+            $formProperty->isEntity()
+            && empty($formProperty->getType())
+        ;
     }
 
     /**
