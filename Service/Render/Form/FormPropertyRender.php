@@ -4,6 +4,7 @@ namespace Requestum\ApiGeneratorBundle\Service\Render\Form;
 
 use Requestum\ApiGeneratorBundle\Model\FormProperty;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\ArrayFormPropertyType;
+use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\DateFormPropertyType;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\EmailFormPropertyType;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\EntityFormPropertyType;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\EnumStringFormPropertyType;
@@ -28,6 +29,7 @@ class FormPropertyRender
         EntityFormPropertyType::class,
         ArrayFormPropertyType::class,
         FormFormPropertyType::class,
+        DateFormPropertyType::class,
     ];
 
     /** @var FormPropertyTypeInterface */

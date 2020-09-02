@@ -192,6 +192,18 @@ EOF                 ,
     ],
 ])
 EOF                 ,
+                    <<<EOF
+->add('shopId', EntityType::class, [
+    'class' => Shop::class,
+])
+EOF                 ,
+                    <<<EOF
+->add('birthDate', DateType::class, [
+    'format' => DateType::HTML5_FORMAT,
+    'widget' => 'single_text',
+])
+EOF                 ,
+
                 ],
             ],
         ];

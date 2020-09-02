@@ -111,6 +111,10 @@ components:
                                 type: array
                                 items:
                                     $ref: '#/components/requestBodies/AddressInput'
+                            birthDate:
+                                description: ""
+                                type: string
+                                format: date
         AddressInput:
             content:
                 application/json:

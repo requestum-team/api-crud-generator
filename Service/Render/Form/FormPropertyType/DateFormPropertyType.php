@@ -6,11 +6,11 @@ use Requestum\ApiGeneratorBundle\Model\FormProperty;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyRenderOutput;
 
 /**
- * Class EntityFormPropertyType
+ * Class DateFormPropertyType
  *
  * @package Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType
  */
-class EntityFormPropertyType extends FormPropertyTypeAbstract
+class DateFormPropertyType extends FormPropertyTypeAbstract
 {
     /**
      * @param FormProperty $formProperty
@@ -19,7 +19,10 @@ class EntityFormPropertyType extends FormPropertyTypeAbstract
      */
     public static function isSupport(FormProperty $formProperty): bool
     {
-        return $formProperty->isEntity() && empty($formProperty->getType());
+        return
+            $formProperty->getType() === 'string'
+            && $formProperty->getFormat() === 'date'
+        ;
     }
 
     /**
@@ -29,23 +32,19 @@ class EntityFormPropertyType extends FormPropertyTypeAbstract
      */
     public function render(FormProperty $formProperty): FormPropertyRenderOutput
     {
-        $entityName = $formProperty
-            ->getReferencedObject()
-            ->getName()
-        ;
-
         $optionsContent = <<<EOF
-    'class' => {$entityName}::class,
+    'format' => DateType::HTML5_FORMAT,
+        'widget' => 'single_text',
 EOF;
 
         return (new FormPropertyRenderOutput())
             ->setUseSections([
-                'Symfony\Component\Form\Extension\Core\Type\EntityType',
-                sprintf('%s\Entity\%s', $this->bundleName, $entityName),
+                'Symfony\Component\Form\Extension\Core\Type\DateType',
             ])
-            ->setContent($this->getPropertyWrapper(
-                $formProperty->getNameCamelCase(),
-                    'EntityType',
+            ->setContent(
+                $this->getPropertyWrapper(
+                    $formProperty->getNameCamelCase(),
+                    'DateType',
                     $optionsContent
                 )
             )
