@@ -7,7 +7,7 @@ use Requestum\ApiGeneratorBundle\Model\Form;
 use Requestum\ApiGeneratorBundle\Model\FormProperty;
 use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorMethodModel;
 use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorParameterModel;
-use Requestum\ApiGeneratorBundle\Service\Render\FormPropertyRender;
+use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyRender;
 
 /**
  * Class FormGeneratorModelBuilder
@@ -114,9 +114,10 @@ EOF         )
 EOF     ;
 
         foreach ($properties as $property) {
-            $formPropertyRender = new FormPropertyRender($this->bundleName, $property);
-            $content .= $formPropertyRender->render();
-            $this->addUseSections($formPropertyRender->getUseSections());
+            $output = (new FormPropertyRender($this->bundleName))->render($property);
+
+            $this->addUseSections($output->getUseSections());
+            $content .= $output->getContent();
         }
 
         $content .= <<<EOF
