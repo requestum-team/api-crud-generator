@@ -3,6 +3,7 @@
 namespace Requestum\ApiGeneratorBundle\Service\Generator;
 
 use Requestum\ApiGeneratorBundle\Exception\SubjectTypeException;
+use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\Form;
 use Requestum\ApiGeneratorBundle\Model\FormProperty;
 use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorMethodModel;
@@ -33,7 +34,7 @@ class FormGeneratorModelBuilder extends GeneratorModelBuilderAbstract
         $entity = $form->getEntity();
         $nameSpace = implode('\\', [$this->bundleName, 'Form', $entity->getName(),]);
 
-        $this->baseUseSection($entity->getName());
+        $this->baseUseSection($entity);
         $this->prepareMethods($form);
 
         return (new ClassGeneratorModel())
@@ -57,12 +58,12 @@ class FormGeneratorModelBuilder extends GeneratorModelBuilderAbstract
     }
 
     /**
-     * @param string $entityName
+     * @param Entity $entity
      */
-    private function baseUseSection(string $entityName)
+    private function baseUseSection(Entity $entity)
     {
         $this->addUseSections([
-            'AppBundle\Entity\\' . $entityName,
+            $this->bundleName . '\\' . $entity->getNameSpace(),
         ]);
     }
 
