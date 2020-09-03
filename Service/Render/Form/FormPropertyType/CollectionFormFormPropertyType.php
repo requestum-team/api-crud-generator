@@ -43,6 +43,9 @@ class CollectionFormFormPropertyType extends FormPropertyTypeAbstract
 
         $optionsContent = <<<EOF
     'entry_type' => {$subFormClass}::class,
+        'allow_add' => true,
+        'allow_delete' => true,
+        'by_reference' => false,
 EOF;
 
         return (new FormPropertyRenderOutput())
