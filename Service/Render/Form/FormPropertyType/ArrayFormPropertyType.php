@@ -20,7 +20,13 @@ class ArrayFormPropertyType extends FormPropertyTypeAbstract
      */
     public static function isSupport(FormProperty $formProperty): bool
     {
-        return $formProperty->getType() === PropertyTypeEnum::TYPE_ARRAY;
+        return
+            $formProperty->getType() === PropertyTypeEnum::TYPE_ARRAY
+            && empty($formProperty->getFormat())
+            && empty($formProperty->getEnum())
+            && !$formProperty->isEntity()
+            && !$formProperty->isForm()
+        ;
     }
 
     /**
@@ -30,7 +36,7 @@ class ArrayFormPropertyType extends FormPropertyTypeAbstract
      */
     public function render(FormProperty $formProperty): FormPropertyRenderOutput
     {
-        // todo renderTypeArray
+        // todo ArrayFormPropertyType
         return (new FormPropertyRenderOutput())
             ->setUseSections([])
             ->setContent('')

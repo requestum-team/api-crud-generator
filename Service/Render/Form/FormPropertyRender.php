@@ -5,6 +5,7 @@ namespace Requestum\ApiGeneratorBundle\Service\Render\Form;
 use Requestum\ApiGeneratorBundle\Model\FormProperty;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyConstraint\NotBlankFormPropertyConstraint;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\ArrayFormPropertyType;
+use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\CollectionFormFormPropertyType;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\DateFormPropertyType;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\DateTimeFormPropertyType;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\EmailFormPropertyType;
@@ -34,6 +35,7 @@ class FormPropertyRender
         EntityFormPropertyType::class,
         ArrayFormPropertyType::class,
         FormFormPropertyType::class,
+        CollectionFormFormPropertyType::class,
         DateFormPropertyType::class,
         TimeFormPropertyType::class,
         DateTimeFormPropertyType::class,

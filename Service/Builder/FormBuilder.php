@@ -141,7 +141,16 @@ class FormBuilder implements BuilderInterface
         return $properties;
     }
 
-    private function processRelations(?BaseAbstractCollection $relatedCollection = null)
+    /**
+     * @param BaseAbstractCollection|null $relatedCollection
+     *
+     * @return $this
+     *
+     * @throws CollectionException
+     * @throws EntityMissingException
+     * @throws FormMissingException
+     */
+    private function processRelations(?BaseAbstractCollection $relatedCollection = null): self
     {
         /**
          * @var string $formName
@@ -191,6 +200,8 @@ class FormBuilder implements BuilderInterface
                 }
             }
         }
+
+        return $this;
     }
 
     /**

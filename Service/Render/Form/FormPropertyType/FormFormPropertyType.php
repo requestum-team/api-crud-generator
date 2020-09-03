@@ -32,7 +32,7 @@ class FormFormPropertyType extends FormPropertyTypeAbstract
      */
     public function render(FormProperty $formProperty): FormPropertyRenderOutput
     {
-        // todo renderTypeArray
+        // todo FormFormPropertyType
         return (new FormPropertyRenderOutput())
             ->setUseSections([])
             ->setContent('')

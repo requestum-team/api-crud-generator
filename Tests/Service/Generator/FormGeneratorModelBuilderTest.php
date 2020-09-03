@@ -162,7 +162,16 @@ class FormGeneratorModelBuilderTest extends TestCase
         $content = preg_replace($replace[0], $replace[1], $content);
 
         foreach ($propertiesExpectedContent as $propertyExpectedContent) {
-            static::assertNotFalse(strpos($content, 'use ' . $propertyExpectedContent[0]));
+            $useSections =
+                is_array($propertyExpectedContent[0])
+                    ? $propertyExpectedContent[0]
+                    : [$propertyExpectedContent[0]]
+            ;
+
+            foreach ($useSections as $useSection) {
+                static::assertNotFalse(strpos($content, 'use ' . $useSection));
+            }
+
             static::assertNotFalse(
                 strpos($content, preg_replace($replace[0], $replace[1], $propertyExpectedContent[1]))
             );
@@ -216,7 +225,10 @@ EOF
 EOF
                     ],
                     [
-                        'Symfony\Component\Form\Extension\Core\Type\EntityType',
+                        [
+                            'Symfony\Component\Form\Extension\Core\Type\EntityType',
+                            'AppBundle\Entity\Shop',
+                        ],
                         <<<EOF
 ->add('shopId', EntityType::class, [
     'class' => Shop::class,
@@ -253,6 +265,23 @@ EOF
 ->add('someFieldForTime', TimeType::class, [
     'input' => 'string',
     'widget' => 'single_text',
+])
+EOF
+                    ],
+                ],
+            ],
+            [
+                'form-generator-model-property.yaml',
+                'TestAddressFormWithCollectionSubFormInput',
+                [
+                    [
+                        [
+                            'Symfony\Component\Form\Extension\Core\Type\CollectionType',
+                            'AppBundle\Form\User\UserType',
+                        ],
+                        <<<EOF
+->add('users', CollectionType::class, [
+    'entry_type' => UserType::class,
 ])
 EOF
                     ],
