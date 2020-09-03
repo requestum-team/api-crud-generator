@@ -11,7 +11,6 @@ use Requestum\ApiGeneratorBundle\Helper\CommonHelper;
  */
 class Entity implements ModelInterface
 {
-
     /**
      * @var string
      */
@@ -31,6 +30,11 @@ class Entity implements ModelInterface
      * @var string
      */
     private ?string $description = null;
+
+    /**
+     * @var string
+     */
+    private string $nameSpace = 'Entity';
 
     /**
      * @var EntityProperty[]
@@ -157,6 +161,26 @@ class Entity implements ModelInterface
     public function setDescription(?string $description)
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameSpace(): string
+    {
+        return $this->nameSpace . '\\' . $this->getName();
+    }
+
+    /**
+     * @param string $nameSpace
+     *
+     * @return $this
+     */
+    public function setNameSpace(string $nameSpace): self
+    {
+        $this->nameSpace = $nameSpace;
 
         return $this;
     }
