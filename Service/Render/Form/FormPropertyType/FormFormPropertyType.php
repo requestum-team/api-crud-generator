@@ -2,7 +2,9 @@
 
 namespace Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType;
 
+use Requestum\ApiGeneratorBundle\Model\Form;
 use Requestum\ApiGeneratorBundle\Model\FormProperty;
+use Requestum\ApiGeneratorBundle\Service\Generator\FormGeneratorModelBuilder;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyRenderOutput;
 
 /**
@@ -32,10 +34,22 @@ class FormFormPropertyType extends FormPropertyTypeAbstract
      */
     public function render(FormProperty $formProperty): FormPropertyRenderOutput
     {
+        /** @var Form $form */
+        $form = $formProperty->getReferencedObject();
+        $entity = $form->getEntity();
+        $subFormClass = $entity->getName() . FormGeneratorModelBuilder::NAME_POSTFIX;
+        $subFormNameSpace = sprintf('%s\%s\%s', $this->bundleName, $form->getNameSpace(), $subFormClass);
+
         // todo FormFormPropertyType
         return (new FormPropertyRenderOutput())
-            ->setUseSections([])
-            ->setContent('')
+            ->setUseSections([
+                $subFormNameSpace,
+            ])
+            ->setContent($this->wrapProperty(
+                $formProperty->getNameCamelCase(),
+                $subFormClass,
+                $this->getNeededConstraints($formProperty)
+            ))
         ;
     }
 }

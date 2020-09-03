@@ -160,6 +160,22 @@ components:
                                 type: array
                                 items:
                                     $ref: '#/components/requestBodies/UserCreate'
+        TestAddressFormWithSubFormInput:
+            content:
+                application/json:
+                    schema:
+                        description: ""
+                        x-entity:
+                            $ref: '#/components/schemas/AddressEntity'
+                        required:
+                            - name
+                        type: object
+                        properties:
+                            name:
+                                description: ""
+                                type: string
+                            user:
+                                $ref: '#/components/requestBodies/UserCreate'
         TestErrorExceptionInput:
             content:
                 application/json:

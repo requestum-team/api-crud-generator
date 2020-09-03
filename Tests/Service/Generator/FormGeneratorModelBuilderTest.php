@@ -290,6 +290,18 @@ EOF
                     ],
                 ],
             ],
+            [
+                'form-generator-model-property.yaml',
+                'TestAddressFormWithSubFormInput',
+                [
+                    [
+                        'AppBundle\Form\User\UserType',
+                        <<<EOF
+->add('user', UserType::class)
+EOF
+                    ],
+                ],
+            ],
         ];
     }
 
