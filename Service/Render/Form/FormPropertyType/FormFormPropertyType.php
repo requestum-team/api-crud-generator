@@ -40,7 +40,6 @@ class FormFormPropertyType extends FormPropertyTypeAbstract
         $subFormClass = $entity->getName() . FormGeneratorModelBuilder::NAME_POSTFIX;
         $subFormNameSpace = sprintf('%s\%s\%s', $this->bundleName, $form->getNameSpace(), $subFormClass);
 
-        // todo FormFormPropertyType
         return (new FormPropertyRenderOutput())
             ->setUseSections([
                 $subFormNameSpace,
