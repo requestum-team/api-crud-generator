@@ -3,9 +3,12 @@
 namespace Requestum\ApiGeneratorBundle\Service\Generator;
 
 use Requestum\ApiGeneratorBundle\Exception\SubjectTypeException;
+use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\Form;
+use Requestum\ApiGeneratorBundle\Model\FormProperty;
 use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorMethodModel;
 use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorParameterModel;
+use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyRender;
 
 /**
  * Class FormGeneratorModelBuilder
@@ -31,8 +34,8 @@ class FormGeneratorModelBuilder extends GeneratorModelBuilderAbstract
         $entity = $form->getEntity();
         $nameSpace = implode('\\', [$this->bundleName, 'Form', $entity->getName(),]);
 
-        $this->baseUseSection($entity->getName());
-        $this->prepareMethods($entity->getName());
+        $this->baseUseSection($entity);
+        $this->prepareMethods($form);
 
         return (new ClassGeneratorModel())
             ->setName($form->getName() . self::NAME_POSTFIX)
@@ -55,17 +58,19 @@ class FormGeneratorModelBuilder extends GeneratorModelBuilderAbstract
     }
 
     /**
-     * @param string $entityName
+     * @param Entity $entity
      */
-    private function baseUseSection(string $entityName)
+    private function baseUseSection(Entity $entity)
     {
-        $this->useSection[] = 'AppBundle\Entity\\' . $entityName;
+        $this->addUseSections([
+            $this->bundleName . '\\' . $entity->getNameSpace(),
+        ]);
     }
 
     /**
-     * @param string $entityName
+     * @param Form $form
      */
-    private function prepareMethods(string $entityName)
+    private function prepareMethods(Form $form)
     {
         $this->methods[] = (new GeneratorMethodModel())
             ->setAccessLevel('public')
@@ -78,7 +83,7 @@ class FormGeneratorModelBuilder extends GeneratorModelBuilderAbstract
                 ->setType('array')
                 ->setName('options')
             )
-            ->setBody('')
+            ->setBody($this->renderFormBuilder($form->getProperties()))
         ;
 
         $this->methods[] = (new GeneratorMethodModel())
@@ -91,10 +96,37 @@ class FormGeneratorModelBuilder extends GeneratorModelBuilderAbstract
             ->setBody(<<<EOF
 \$resolver
     ->setDefaults([
-        'data_class' => {$entityName}::class,
+        'data_class' => {$form->getEntity()->getName()}::class,
     ])
 ;
 EOF         )
         ;
+    }
+
+    /**
+     * @param FormProperty[] $properties
+     *
+     * @return string
+     */
+    private function renderFormBuilder(array $properties): string
+    {
+        $formPropertyRender = new FormPropertyRender($this->bundleName);
+
+        $content = <<<EOF
+\$builder
+EOF     ;
+
+        foreach ($properties as $property) {
+            $output = $formPropertyRender->render($property);
+
+            $this->addUseSections($output->getUseSections());
+            $content .= $output->getContent();
+        }
+
+        $content .= <<<EOF
+\n;
+EOF     ;
+
+        return $content;
     }
 }

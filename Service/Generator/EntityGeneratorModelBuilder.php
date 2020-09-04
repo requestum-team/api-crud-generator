@@ -83,18 +83,6 @@ class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
     }
 
     /**
-     * @param array $useSections
-     */
-    private function addUseSections(array $useSections)
-    {
-        foreach ($useSections as $useSection) {
-            if (!in_array($useSection, $this->useSection)) {
-                $this->useSection[] = $useSection;
-            }
-        }
-    }
-
-    /**
      * @param string $entityName
      * @param string $tableName
      */
