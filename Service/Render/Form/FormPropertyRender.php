@@ -33,7 +33,6 @@ class FormPropertyRender
         EnumStringFormPropertyType::class,
         IntegerFormPropertyType::class,
         EntityFormPropertyType::class,
-        ArrayFormPropertyType::class,
         FormFormPropertyType::class,
         CollectionFormFormPropertyType::class,
         DateFormPropertyType::class,
