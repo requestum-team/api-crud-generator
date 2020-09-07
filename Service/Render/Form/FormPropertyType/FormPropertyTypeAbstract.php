@@ -93,7 +93,9 @@ EOF;
      */
     protected static function wrapPropertyConstraints(array $constraints)
     {
-        $constraintsContent = implode(",\n", $constraints);
+        $constraintsContent = implode(<<<EOF
+,\n            
+EOF, $constraints);
 
         return <<<EOF
     'constraints' => [

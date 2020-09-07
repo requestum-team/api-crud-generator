@@ -185,6 +185,18 @@ class FormGeneratorModelBuilderTest extends TestCase
 ->add('firstName', TextType::class, [
     'constraints' => [
         new NotBlank(),
+        new Length(['max' => 100]),
+    ]
+])
+EOF
+                    ],
+                    [
+                        'Symfony\Component\Form\Extension\Core\Type\TextType',
+                        <<<EOF
+->add('lastName', TextType::class, [
+    'constraints' => [
+        new NotBlank(),
+        new Length(['min' => 3, 'max' => 50]),
     ]
 ])
 EOF
@@ -195,6 +207,7 @@ EOF
 ->add('email', EmailType::class, [
     'constraints' => [
         new NotBlank(),
+        new Length(['min' => 4]),
     ]
 ])
 EOF

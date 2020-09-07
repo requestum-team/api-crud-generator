@@ -123,6 +123,14 @@ class FormBuilder implements BuilderInterface
                 );
             }
 
+            if (!empty($data['minLength'])) {
+                $property->getLength()->setMin($data['minLength']);
+            }
+
+            if (!empty($data['maxLength'])) {
+                $property->getLength()->setMax($data['maxLength']);
+            }
+
             if (!empty($data['$ref'])) {
                 $property->setReferencedLink(
                     StringHelper::getReferencedSchemaObjectName($data['$ref'])

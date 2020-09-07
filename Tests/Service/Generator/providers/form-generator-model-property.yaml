@@ -85,13 +85,17 @@ components:
                             firstName:
                                 description: ""
                                 type: string
+                                maxLength: 100
                             lastName:
                                 description: ""
                                 type: string
+                                minLength: 3
+                                maxLength: 50
                             email:
                                 description: ""
                                 type: string
                                 format: email
+                                minLength: 4
                             phone:
                                 description: ""
                                 type: string
