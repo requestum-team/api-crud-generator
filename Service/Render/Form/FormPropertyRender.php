@@ -3,6 +3,7 @@
 namespace Requestum\ApiGeneratorBundle\Service\Render\Form;
 
 use Requestum\ApiGeneratorBundle\Model\FormProperty;
+use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyConstraint\LengthFormPropertyConstraint;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyConstraint\NotBlankFormPropertyConstraint;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\ArrayFormPropertyType;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType\CollectionFormFormPropertyType;
@@ -43,6 +44,7 @@ class FormPropertyRender
     /** @var string[] */
     protected array $constraints = [
         NotBlankFormPropertyConstraint::class,
+        LengthFormPropertyConstraint::class,
     ];
 
     /** @var FormPropertyTypeInterface */

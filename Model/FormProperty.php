@@ -39,6 +39,17 @@ class FormProperty extends BaseAbstractProperty
      */
     protected ?Form $form = null;
 
+    /** @var LengthProperty */
+    protected LengthProperty $length;
+
+    /**
+     * FormProperty constructor.
+     */
+    public function __construct()
+    {
+        $this->length = new LengthProperty();
+    }
+
     /**
      * @return string
      */
@@ -152,5 +163,24 @@ class FormProperty extends BaseAbstractProperty
 
         return null;
     }
-}
 
+    /**
+     * @return LengthProperty
+     */
+    public function getLength(): LengthProperty
+    {
+        return $this->length;
+    }
+
+    /**
+     * @param LengthProperty $length
+     *
+     * @return $this
+     */
+    public function setLength(LengthProperty $length): self
+    {
+        $this->length = $length;
+
+        return $this;
+    }
+}
