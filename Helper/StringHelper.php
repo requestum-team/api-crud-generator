@@ -90,16 +90,6 @@ class StringHelper
     }
 
     /**
-     * @param string $objectName
-     *
-     * @return string | null
-     */
-    public static function getFormName(string $objectName): ?string
-    {
-        return CommonHelper::isForm($objectName) ? $objectName: null;
-    }
-
-    /**
      * @param string $name
      *
      * @return string

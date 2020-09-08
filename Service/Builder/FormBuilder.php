@@ -6,6 +6,7 @@ use Requestum\ApiGeneratorBundle\Exception\CollectionException;
 use Requestum\ApiGeneratorBundle\Exception\EntityMissingException;
 use Requestum\ApiGeneratorBundle\Exception\FormMissingException;
 use Requestum\ApiGeneratorBundle\Helper\CommonHelper;
+use Requestum\ApiGeneratorBundle\Helper\FormHelper;
 use Requestum\ApiGeneratorBundle\Helper\StringHelper;
 use Requestum\ApiGeneratorBundle\Model\BaseAbstractCollection;
 use Requestum\ApiGeneratorBundle\Model\Entity;
@@ -45,7 +46,7 @@ class FormBuilder implements BuilderInterface
         }
 
         foreach ($openApiSchema as $objectName => $objectData) {
-            if (null !== ($name = StringHelper::getFormName($objectName))) {
+            if (null !== ($name = FormHelper::getFormName($objectName))) {
                 $required = !empty($objectData['required']) ? array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $objectData['required']): [];
                 $entity = null;
                 if (!empty($objectData['x-entity']['$ref'])) {
@@ -141,7 +142,16 @@ class FormBuilder implements BuilderInterface
         return $properties;
     }
 
-    private function processRelations(?BaseAbstractCollection $relatedCollection = null)
+    /**
+     * @param BaseAbstractCollection|null $relatedCollection
+     *
+     * @return $this
+     *
+     * @throws CollectionException
+     * @throws EntityMissingException
+     * @throws FormMissingException
+     */
+    private function processRelations(?BaseAbstractCollection $relatedCollection = null): self
     {
         /**
          * @var string $formName
@@ -191,6 +201,8 @@ class FormBuilder implements BuilderInterface
                 }
             }
         }
+
+        return $this;
     }
 
     /**

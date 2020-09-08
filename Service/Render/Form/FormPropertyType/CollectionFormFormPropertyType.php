@@ -3,16 +3,17 @@
 namespace Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType;
 
 use Requestum\ApiGeneratorBundle\Helper\FormHelper;
+use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
 use Requestum\ApiGeneratorBundle\Model\Form;
 use Requestum\ApiGeneratorBundle\Model\FormProperty;
 use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyRenderOutput;
 
 /**
- * Class FormFormPropertyType
+ * Class CollectionFormFormPropertyType
  *
  * @package Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType
  */
-class FormFormPropertyType extends FormPropertyTypeAbstract
+class CollectionFormFormPropertyType extends FormPropertyTypeAbstract
 {
     /**
      * @param FormProperty $formProperty
@@ -23,7 +24,7 @@ class FormFormPropertyType extends FormPropertyTypeAbstract
     {
         return
             $formProperty->isForm()
-            && empty($formProperty->getType())
+            && $formProperty->getType() === PropertyTypeEnum::TYPE_ARRAY
         ;
     }
 
@@ -36,16 +37,28 @@ class FormFormPropertyType extends FormPropertyTypeAbstract
     {
         /** @var Form $form */
         $form = $formProperty->getReferencedObject();
+        $subFormClass = FormHelper::getFormClassNameByEntity($form->getEntity());
+
+        $optionsContent = <<<EOF
+    'entry_type' => {$subFormClass}::class,
+        'allow_add' => true,
+        'allow_delete' => true,
+        'by_reference' => false,
+EOF;
 
         return (new FormPropertyRenderOutput())
             ->setUseSections([
+                'Symfony\Component\Form\Extension\Core\Type\CollectionType',
                 FormHelper::getFormNameSpace($this->bundleName, $form),
             ])
-            ->setContent($this->wrapProperty(
-                $formProperty->getNameCamelCase(),
-                FormHelper::getFormClassNameByEntity($form->getEntity()),
-                $this->getNeededConstraints($formProperty)
-            ))
+            ->setContent(
+                $this->wrapProperty(
+                    $formProperty->getNameCamelCase(),
+                    'CollectionType',
+                    $this->getNeededConstraints($formProperty),
+                    $optionsContent
+                )
+            )
         ;
     }
 }
