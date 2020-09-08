@@ -38,6 +38,12 @@ class AnnotationGenerator
         //Validation
         Validation\UniqueAnnotationGenerator::class,
         Validation\NotBlankAnnotationGenerator::class,
+        Validation\EmailAnnotationGenerator::class,
+        Validation\RegexAnnotationGenerator::class,
+        Validation\RangeAnnotationGenerator::class,
+        Validation\GreaterThanOrEqualAnnotationGenerator::class,
+        Validation\LessThanOrEqualAnnotationGenerator::class,
+        Validation\CountAnnotationGenerator::class,
         //Serializer
         Serializer\SerializerAnnotationGenerator::class,
         //Custom

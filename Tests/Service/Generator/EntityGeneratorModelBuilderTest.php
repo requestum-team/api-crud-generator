@@ -89,6 +89,12 @@ class EntityGeneratorModelBuilderTest extends TestCase
         static::assertNotFalse(strpos($content, '@Serializer\Groups({"Default"})'));
         static::assertNotFalse(strpos($content, '@Reference()'));
         static::assertNotFalse(strpos($content, '@Assert\NotBlank'));
+        static::assertNotFalse(strpos($content, '@Assert\Email'));
+        static::assertNotFalse(strpos($content, '@Assert\Regex("^\d{3}-\d{2}-\d{4}$")'));
+        static::assertNotFalse(strpos($content, '@Assert\Range(min = 5, max = 10)'));
+        static::assertNotFalse(strpos($content, '@Assert\GreaterThanOrEqual(1)'));
+        static::assertNotFalse(strpos($content, '@Assert\LessThanOrEqual(10000)'));
+        static::assertNotFalse(strpos($content, '@Assert\Count(min=1, max=10)'));
     }
 
     /**
