@@ -86,6 +86,11 @@ class Entity implements ModelInterface
     private array $interfaces = [];
 
     /**
+     * @var bool
+     */
+    private bool $generate = true;
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -522,6 +527,26 @@ class Entity implements ModelInterface
     public function setInterfaces(array $interfaces)
     {
         $this->interfaces = $interfaces;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGenerate(): bool
+    {
+        return $this->generate;
+    }
+
+    /**
+     * @param bool $generate
+     *
+     * @return Entity
+     */
+    public function setGenerate(bool $generate)
+    {
+        $this->generate = $generate;
 
         return $this;
     }
