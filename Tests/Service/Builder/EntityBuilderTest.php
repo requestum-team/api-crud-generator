@@ -35,7 +35,7 @@ class EntityBuilderTest extends TestCase
         );
 
         $elements = $collection->getElements();
-        static::assertEquals(5, count($elements));
+        static::assertEquals(6, count($elements));
 
         /** @var Entity $structureTest */
         $structureTest = $collection->findElement('StructureTest');
@@ -43,7 +43,7 @@ class EntityBuilderTest extends TestCase
         static::assertEquals('StructureTest', $structureTest->getName());
         static::assertEquals('structure_test', $structureTest->getTableName());
         static::assertEquals('StructureTestEntity', $structureTest->getOriginObjectName());
-        static::assertEquals(12, count($structureTest->getProperties()));
+        static::assertEquals(13, count($structureTest->getProperties()));
         static::assertContains('AppBundle\AbsTrait', $structureTest->getTraits());
         static::assertContains('AppBundle\QweTrait', $structureTest->getTraits());
         static::assertContains('AppBundle\AbsRepositoryTrait', $structureTest->getRepositoryTraits());
