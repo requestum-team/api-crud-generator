@@ -52,6 +52,7 @@ class EntityBuilder implements BuilderInterface
                 $repositoryTraits = !empty($objectData['x-repository-trait']) ? $objectData['x-repository-trait'] : [];
                 $annotation = !empty($objectData['x-annotation']) ? $objectData['x-annotation'] : [];
                 $interfaces = !empty($objectData['x-interface']) ? $objectData['x-interface'] : [];
+                $exist = !empty($objectData['x-exist']) ? $objectData['x-exist'] : null;
 
                 $entity = new Entity();
                 $entity
@@ -68,7 +69,7 @@ class EntityBuilder implements BuilderInterface
                     ->setTraits($traits)
                     ->setRepositoryTraits($repositoryTraits)
                     ->setAnnotations($annotation)
-                    ->setExist(!empty($objectData['x-exist']))
+                    ->setGenerate(!$exist)
                 ;
 
                 $this->collection->addElement($entity);

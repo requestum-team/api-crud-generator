@@ -2,6 +2,8 @@
 
 namespace Requestum\ApiGeneratorBundle\Service\Generator;
 
+use Requestum\ApiGeneratorBundle\Exception\AccessLevelException;
+use Requestum\ApiGeneratorBundle\Exception\SubjectTypeException;
 use Requestum\ApiGeneratorBundle\Helper\StringHelper;
 use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\Generator\AccessLevelEnum;
@@ -10,55 +12,22 @@ use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorParameterModel;
 use Requestum\ApiGeneratorBundle\Model\Generator\GeneratorPropertyModel;
 use Requestum\ApiGeneratorBundle\Model\EntityProperty;
 use Requestum\ApiGeneratorBundle\Model\Enum\PropertyTypeEnum;
-use Requestum\ApiGeneratorBundle\Service\Annotations\AnnotationRecord;
-use Requestum\ApiGeneratorBundle\Service\Annotations\Doctrine\DoctrineAnnotationGeneratorStrategy;
+use Requestum\ApiGeneratorBundle\Service\Annotations\AnnotationGenerator;
 
 /**
  * Class EntityGeneratorModelBuilder
  *
  * @package Requestum\ApiGeneratorBundle\Service\Generator
  */
-class EntityGeneratorModelBuilder
+class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
 {
     /**
-     * @var string
+     * @var AnnotationGenerator
      */
-    protected string $bundleName;
+    protected AnnotationGenerator $annotationGenerator;
 
-    /**
-     * @var array
-     */
-    protected array $useSection = [];
-
-    /**
-     * @var array
-     */
+    /** @var array */
     protected array $annotations = [];
-
-    /**
-     * @var array
-     */
-    protected array $traits = [];
-
-    /**
-     * @var array
-     */
-    protected array $constants = [];
-
-    /**
-     * @var array
-     */
-    protected array $properties = [];
-
-    /**
-     * @var array
-     */
-    protected array $methods = [];
-
-    /**
-     * @var DoctrineAnnotationGeneratorStrategy
-     */
-    protected DoctrineAnnotationGeneratorStrategy $doctrineAnnotationGeneratorStrategy;
 
     /**
      * EntityGeneratorModelBuilder constructor.
@@ -67,21 +36,27 @@ class EntityGeneratorModelBuilder
      */
     public function __construct(string $bundleName)
     {
-        $this->bundleName = $bundleName;
-        $this->doctrineAnnotationGeneratorStrategy = new DoctrineAnnotationGeneratorStrategy();
+        parent::__construct($bundleName);
+
+        $this->annotationGenerator = new AnnotationGenerator();
     }
 
     /**
-     * @param Entity $entity
+     * @param Entity|object $entity
      *
      * @return ClassGeneratorModelInterface
+     *
+     * @throws AccessLevelException
      */
-    public function buildModel(Entity $entity): ClassGeneratorModelInterface
+    public function buildModel(object $entity): ClassGeneratorModelInterface
     {
-        $this->baseUseSection($entity->getName());
+        if (!$entity instanceof Entity) {
+            throw new SubjectTypeException($entity, Entity::class);
+        }
+
         $this->baseAnnotations($entity->getName(), $entity->getTableName());
-        $this->addTraits($entity->getTraits());
         $this->addAnnotations($entity->getAnnotations());
+        $this->addTraits($entity->getTraits());
         $this->detectConstructor($entity);
         $this->prepareConstants($entity);
         $this->prepareProperties($entity->getProperties());
@@ -109,15 +84,6 @@ class EntityGeneratorModelBuilder
 
     /**
      * @param string $entityName
-     */
-    private function baseUseSection(string $entityName)
-    {
-        $this->useSection[] = 'Doctrine\ORM\Mapping as ORM';
-        $this->useSection[] = 'Symfony\Component\Serializer\Annotation\Groups';
-    }
-
-    /**
-     * @param string $entityName
      * @param string $tableName
      */
     private function baseAnnotations(string $entityName, string $tableName)
@@ -127,22 +93,6 @@ class EntityGeneratorModelBuilder
         // AppBundle\Repository\SomeRepository
         $repositoryClass = implode('\\', [$this->bundleName, 'Repository', implode('', [$entityName, 'Repository'])]);
         $this->annotations[] = sprintf('@ORM\Entity(repositoryClass="%s")', $repositoryClass);
-    }
-
-    /**
-     * @param array $traits
-     */
-    private function addTraits(array $traits = [])
-    {
-        foreach ($traits as $trait) {
-            $explodeTrait = explode('\\', $trait);
-            if (count($explodeTrait) > 1) {
-                $this->useSection[] = $trait;
-                $trait = array_pop($explodeTrait);
-            }
-
-            $this->traits[] = $trait;
-        }
     }
 
     /**
@@ -192,7 +142,7 @@ class EntityGeneratorModelBuilder
             $construct = new GeneratorMethodModel();
             $construct
                 ->setName('__construct')
-                ->setAccessLevel(AccessLevelEnum::ACCESS_LELEV_PUBLIC)
+                ->setAccessLevel(AccessLevelEnum::ACCESS_LEVEL_PUBLIC)
                 ->setBody(implode('', $body))
             ;
 
@@ -213,6 +163,9 @@ class EntityGeneratorModelBuilder
 
     /**
      * @param array $properties
+     *
+     * @throws AccessLevelException
+     * @throws \Exception
      */
     private function prepareProperties(array $properties)
     {
@@ -221,9 +174,9 @@ class EntityGeneratorModelBuilder
             $property = new GeneratorPropertyModel();
             $property
                 ->setName($entityProperty->getName())
-                ->setAccessLevel(AccessLevelEnum::ACCESS_LELEV_PROTECTED)
-                ->setAttributs(
-                    $this->getPropertyAttributs($entityProperty)
+                ->setAccessLevel(AccessLevelEnum::ACCESS_LEVEL_PROTECTED)
+                ->setAttributes(
+                    $this->getPropertyAttributes($entityProperty)
                 )
             ;
 
@@ -235,20 +188,22 @@ class EntityGeneratorModelBuilder
      * @param EntityProperty $entityProperty
      *
      * @return array
+     *
+     * @throws \Exception
      */
-    private function getPropertyAttributs(EntityProperty $entityProperty): array
+    private function getPropertyAttributes(EntityProperty $entityProperty): array
     {
-        $result[] = [
-            'name' => 'var',
-            'description' => sprintf('%s $%s', $entityProperty->getType(), $entityProperty->getName())
-        ];
+        $annotationRecord = $this->annotationGenerator->getAnnotationRecord($entityProperty);
+        $annotationRecord->addAnnotations($entityProperty->getAnnotations());
+        $annotationRecord->addAnnotations(
+                [
+                    sprintf('var %s $%s', $entityProperty->getType(), $entityProperty->getName())
+                ]
+        );
 
-        $generator = $this->doctrineAnnotationGeneratorStrategy->getAnnotationGenerator($entityProperty);
-        $result = array_merge($result, $generator->generate($entityProperty)->getAnnotation());
-        $annotationRecord = new AnnotationRecord($entityProperty->getAnnotations());
-        $result = array_merge($result, $annotationRecord->getAnnotation());
+        $this->addUseSections($annotationRecord->getUseSection());
 
-        return $result;
+        return $annotationRecord->getAnnotation();
     }
 
     /**
@@ -277,7 +232,7 @@ class EntityGeneratorModelBuilder
 
             $setter
                 ->setName(StringHelper::makeSetterName($entityProperty->getName()))
-                ->setAccessLevel(AccessLevelEnum::ACCESS_LELEV_PUBLIC)
+                ->setAccessLevel(AccessLevelEnum::ACCESS_LEVEL_PUBLIC)
                 ->setBody(sprintf('$this->%s = $%s;' . PHP_EOL . PHP_EOL . 'return $this;', $entityProperty->getName(), $entityProperty->getName()))
                 ->addParameters($setterInputParameter)
                 ->addParameters($setterReturnParameter)
@@ -291,7 +246,7 @@ class EntityGeneratorModelBuilder
 
             $getter
                 ->setName(StringHelper::makeGetterName($entityProperty->getName()))
-                ->setAccessLevel(AccessLevelEnum::ACCESS_LELEV_PUBLIC)
+                ->setAccessLevel(AccessLevelEnum::ACCESS_LEVEL_PUBLIC)
                 ->setBody(sprintf('return $this->%s;', $entityProperty->getName()))
                 ->addParameters($getterReturnParameter)
             ;

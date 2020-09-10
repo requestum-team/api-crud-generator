@@ -16,14 +16,15 @@ class ArrayAnnotationGenerator implements AnnotationGeneratorInterface
 {
     /**
      * @param EntityProperty $entityProperty
+     * @param AnnotationRecord $annotationRecord
      *
      * @return AnnotationRecord
      */
-    public function generate(EntityProperty $entityProperty): AnnotationRecord
+    public function generate(EntityProperty $entityProperty, AnnotationRecord $annotationRecord): AnnotationRecord
     {
         // TODO: Implement generate() method.
 
-        return new AnnotationRecord([]);
+        return $annotationRecord;
     }
 
     /**
@@ -37,6 +38,4 @@ class ArrayAnnotationGenerator implements AnnotationGeneratorInterface
 
         return $entityProperty->getType() === PropertyTypeEnum::TYPE_ARRAY;
     }
-
-
 }

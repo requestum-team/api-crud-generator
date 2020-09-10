@@ -56,8 +56,10 @@ class PhpGenerator
             'shortDescription' => sprintf('Class %s', $model->getName()),
             'tags' => $tags,
         ]);
+
         $class
             ->setName($model->getName())
+            ->setExtendedClass($model->getExtendsClass())
             ->setDocblock($docblock)
             ->addConstants($model->getConstants())
             ->addProperties(
@@ -84,11 +86,11 @@ class PhpGenerator
         foreach ($properties as $property) {
             $flag = PropertyGenerator::FLAG_PUBLIC;
             switch ($property->getAccessLevel()) {
-                case AccessLevelEnum::ACCESS_LELEV_PROTECTED:
+                case AccessLevelEnum::ACCESS_LEVEL_PROTECTED:
                     $flag = PropertyGenerator::FLAG_PROTECTED;
                     break;
 
-                case AccessLevelEnum::ACCESS_LELEV_PRIVATE:
+                case AccessLevelEnum::ACCESS_LEVEL_PRIVATE:
                     $flag = PropertyGenerator::FLAG_PRIVATE;
                     break;
             }
@@ -97,9 +99,9 @@ class PhpGenerator
                 $propertyGenerator->omitDefaultValue(true);
             }
 
-            if (!empty($property->getAttributs()) && is_array($property->getAttributs())) {
+            if (!empty($property->getAttributes()) && is_array($property->getAttributes())) {
                 $docblock = DocBlockGenerator::fromArray([
-                    'tags' => $property->getAttributs(),
+                    'tags' => $property->getAttributes(),
                 ]);
                 $propertyGenerator->setDocBlock($docblock);
             }
@@ -112,7 +114,7 @@ class PhpGenerator
     }
 
     /**
-     * @param array $properties
+     * @param array $methods
      *
      * @return array
      */
@@ -124,11 +126,11 @@ class PhpGenerator
         foreach ($methods as $method) {
             $flag = PropertyGenerator::FLAG_PUBLIC;
             switch ($method->getAccessLevel()) {
-                case AccessLevelEnum::ACCESS_LELEV_PROTECTED:
+                case AccessLevelEnum::ACCESS_LEVEL_PROTECTED:
                     $flag = PropertyGenerator::FLAG_PROTECTED;
                     break;
 
-                case AccessLevelEnum::ACCESS_LELEV_PRIVATE:
+                case AccessLevelEnum::ACCESS_LEVEL_PRIVATE:
                     $flag = PropertyGenerator::FLAG_PRIVATE;
                     break;
             }

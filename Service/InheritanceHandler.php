@@ -126,10 +126,17 @@ class InheritanceHandler
     private function processProperties(array $properties): array
     {
         $result = [];
+
         foreach ($properties as $name => $property) {
-            if (!empty($property['$ref']) && !CommonHelper::isEntity(StringHelper::getReferencedSchemaObjectName($property['$ref']))) {
+            if (!empty($property['$ref'])
+                && !(
+                    CommonHelper::isEntity(StringHelper::getReferencedSchemaObjectName($property['$ref']))
+                    || CommonHelper::isForm(StringHelper::getReferencedSchemaObjectName($property['$ref']))
+                )
+            ) {
                 $property = CommonHelper::getComponentsSchemaDataByPath($this->openApiSchema, $property['$ref']);
             }
+
             $result[$name] = $property;
         }
 

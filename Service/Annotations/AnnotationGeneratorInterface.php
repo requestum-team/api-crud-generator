@@ -13,10 +13,11 @@ interface AnnotationGeneratorInterface
 {
     /**
      * @param EntityProperty $entityProperty
+     * @param AnnotationRecord $annotationRecord
      *
-     * @return array
+     * @return AnnotationRecord
      */
-    public function generate(EntityProperty $entityProperty): AnnotationRecord;
+    public function generate(EntityProperty $entityProperty, AnnotationRecord $annotationRecord): AnnotationRecord;
 
     /**
      * @param EntityProperty $entityProperty

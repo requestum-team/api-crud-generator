@@ -17,6 +17,14 @@ components:
         - ZaqTrait
       x-annotation:
         - Gedmo\Mapping\Annotation\SoftDeleteable()
+      x-unique:
+        - email
+        - slug
+      x-reference:
+        - comments
+      x-repository-trait:
+        - AppBundle\AbsRepositoryTrait
+        - AppBundle\QweRepositoryTrait
       type: object
       properties:
         id:
@@ -28,6 +36,9 @@ components:
           x-annotation:
             - Assert\NotBlank(groups={"create"})
             - Assert\NotBlank(groups={"update"})
+          x-serializer:
+            - Default
+            - some_group
         email:
           description: ""
           type: string
@@ -51,10 +62,12 @@ components:
           description: ""
           type: integer
           format: int32
+          minimum: 1
         price:
           description: ""
           type: number
           format: double
+          maximum: 10000
         status:
           type: string
           enum:

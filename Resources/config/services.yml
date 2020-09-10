@@ -1,5 +1,5 @@
 services:
     requestum.command.api.generator:
-        class: ApiGeneratorBundle\Command\ApiGeneratorCommand
+        class: Requestum\ApiGeneratorBundle\Command\ApiGeneratorCommand
         tags:
           - { name: console.command }

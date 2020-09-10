@@ -16,14 +16,15 @@ class OneToManyAnnotationGenerator implements AnnotationGeneratorInterface
 {
     /**
      * @param EntityProperty $entityProperty
+     * @param AnnotationRecord $annotationRecord
      *
      * @return AnnotationRecord
      */
-    public function generate(EntityProperty $entityProperty): AnnotationRecord
+    public function generate(EntityProperty $entityProperty, AnnotationRecord $annotationRecord): AnnotationRecord
     {
         // TODO: Implement generate() method.
 
-        return new AnnotationRecord([]);
+        return $annotationRecord;
     }
 
     /**
@@ -37,6 +38,4 @@ class OneToManyAnnotationGenerator implements AnnotationGeneratorInterface
 
         return $entityProperty->isOneToMany();
     }
-
-
 }

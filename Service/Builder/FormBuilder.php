@@ -6,6 +6,7 @@ use Requestum\ApiGeneratorBundle\Exception\CollectionException;
 use Requestum\ApiGeneratorBundle\Exception\EntityMissingException;
 use Requestum\ApiGeneratorBundle\Exception\FormMissingException;
 use Requestum\ApiGeneratorBundle\Helper\CommonHelper;
+use Requestum\ApiGeneratorBundle\Helper\FormHelper;
 use Requestum\ApiGeneratorBundle\Helper\StringHelper;
 use Requestum\ApiGeneratorBundle\Model\BaseAbstractCollection;
 use Requestum\ApiGeneratorBundle\Model\Entity;
@@ -28,10 +29,13 @@ class FormBuilder implements BuilderInterface
 
     /**
      * @param array $openApiSchema
+     * @param BaseAbstractCollection|null $relatedCollection
      *
      * @return BaseAbstractCollection
      *
-     * @throws \Exception
+     * @throws CollectionException
+     * @throws EntityMissingException
+     * @throws FormMissingException
      */
     public function build(array $openApiSchema, ?BaseAbstractCollection $relatedCollection = null): BaseAbstractCollection
     {
@@ -42,7 +46,7 @@ class FormBuilder implements BuilderInterface
         }
 
         foreach ($openApiSchema as $objectName => $objectData) {
-            if (null !== ($name = StringHelper::getFormName($objectName))) {
+            if (null !== ($name = FormHelper::getFormName($objectName))) {
                 $required = !empty($objectData['required']) ? array_map(['\Requestum\ApiGeneratorBundle\Helper\StringHelper', 'camelCaseToSnakeCaseName'], $objectData['required']): [];
                 $entity = null;
                 if (!empty($objectData['x-entity']['$ref'])) {
@@ -120,6 +124,14 @@ class FormBuilder implements BuilderInterface
                 );
             }
 
+            if (!empty($data['minLength'])) {
+                $property->getLength()->setMin($data['minLength']);
+            }
+
+            if (!empty($data['maxLength'])) {
+                $property->getLength()->setMax($data['maxLength']);
+            }
+
             if (!empty($data['$ref'])) {
                 $property->setReferencedLink(
                     StringHelper::getReferencedSchemaObjectName($data['$ref'])
@@ -138,7 +150,16 @@ class FormBuilder implements BuilderInterface
         return $properties;
     }
 
-    private function processRelations(?BaseAbstractCollection $relatedCollection = null)
+    /**
+     * @param BaseAbstractCollection|null $relatedCollection
+     *
+     * @return $this
+     *
+     * @throws CollectionException
+     * @throws EntityMissingException
+     * @throws FormMissingException
+     */
+    private function processRelations(?BaseAbstractCollection $relatedCollection = null): self
     {
         /**
          * @var string $formName
@@ -188,6 +209,8 @@ class FormBuilder implements BuilderInterface
                 }
             }
         }
+
+        return $this;
     }
 
     /**
@@ -199,7 +222,12 @@ class FormBuilder implements BuilderInterface
      */
     private function checkRelatedCollectionIsEmpty(string $formName, string $entityObjectName, ?BaseAbstractCollection $relatedCollection = null)
     {
-        if (is_null($relatedCollection) || (($relatedCollection instanceof $relatedCollection) && $relatedCollection->isEmpty())) {
+        if (is_null($relatedCollection)
+            || (
+                ($relatedCollection instanceof BaseAbstractCollection)
+                && $relatedCollection->isEmpty())
+            )
+        {
             throw new CollectionException(
                 sprintf(
                     'Required the entity collection. Form %s has as a dependency an entity %s',
