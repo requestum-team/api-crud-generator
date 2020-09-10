@@ -43,6 +43,8 @@ class FormGeneratorModelBuilderTest extends TestCase
      * @throws CollectionException
      * @throws EntityMissingException
      * @throws FormMissingException
+     *
+     * @throws \Exception
      */
     private function getFormCollection(string $filename): BaseAbstractCollection
     {
@@ -57,9 +59,9 @@ class FormGeneratorModelBuilderTest extends TestCase
     /**
      * @param object $subject
      *
-     * @return string
+     * @return string|null
      */
-    private function generateModel(object $subject): string
+    private function generateModel(object $subject): ?string
     {
         $modelBuilder = (new FormGeneratorModelBuilder('AppBundle'));
         $model = $modelBuilder->buildModel($subject);
@@ -349,6 +351,48 @@ EOF
                 'TestErrorExceptionInput',
                 \LogicException::class,
                 sprintf("Form property type '%s' cannot get supported render", 'wrong'),
+            ],
+        ];
+    }
+
+    /**
+     * @param string $filename
+     * @param string $elementName
+     * @param bool $isMustBeGenerated
+     *
+     * @throws CollectionException
+     * @throws EntityMissingException
+     * @throws FormMissingException
+     *
+     * @dataProvider formIsGenerateProvider
+     */
+    public function testFormIsGenerate(string $filename, string $elementName, bool $isMustBeGenerated)
+    {
+        $formCollection = $this->getFormCollection($filename);
+        /** @var Form $form */
+        $form = $formCollection->findElement($elementName);
+        $content = $this->generateModel($form);
+
+        static::assertTrue(
+            $isMustBeGenerated ? is_string($content) && !empty($content) : is_null($content)
+        );
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function formIsGenerateProvider()
+    {
+        return [
+            [
+                'form-generator-model-is-generate.yaml',
+                'EntityCreateWithXExist',
+                false,
+            ],
+            [
+                'form-generator-model-is-generate.yaml',
+                'EntityCreateWithoutXExist',
+                true,
             ],
         ];
     }

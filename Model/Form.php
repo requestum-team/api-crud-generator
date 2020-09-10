@@ -175,6 +175,6 @@ class Form implements ModelInterface
      */
     public function isGenerate(): bool
     {
-        return !(!empty($entity = $this->getEntity()) && $entity->isExist());
+        return !empty($entity = $this->getEntity()) && $entity->isGenerate();
     }
 }

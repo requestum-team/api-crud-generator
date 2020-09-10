@@ -25,10 +25,14 @@ class PhpGenerator
     /**
      * @param ClassGeneratorModelInterface $model
      *
-     * @return string
+     * @return string|null
      */
-    public function generate(ClassGeneratorModelInterface $model): string
+    public function generate(ClassGeneratorModelInterface $model): ?string
     {
+        if (!$model->isReady()) {
+            return null;
+        }
+
         $file = new FileGenerator([
             'namespace' => $model->getNameSpace(),
             'classes' => [

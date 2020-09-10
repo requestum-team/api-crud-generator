@@ -31,6 +31,10 @@ class FormGeneratorModelBuilder extends GeneratorModelBuilderAbstract
             throw new SubjectTypeException($form, Form::class);
         }
 
+        if (!$form->isGenerate()) {
+            return new ClassGeneratorModel();
+        }
+
         $entity = $form->getEntity();
         $nameSpace = implode('\\', [$this->bundleName, 'Form', $entity->getName(),]);
 

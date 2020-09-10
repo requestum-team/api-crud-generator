@@ -314,4 +314,17 @@ class ClassGeneratorModel implements ClassGeneratorModelInterface
 
         return count($result) === 1 ? array_shift($result): null;
     }
+
+    /**
+     * @return bool
+     */
+    public function isReady(): bool
+    {
+        return
+            isset($this->name)
+            && !empty($this->name)
+            && isset($this->filePath)
+            && !empty($this->filePath)
+        ;
+    }
 }
