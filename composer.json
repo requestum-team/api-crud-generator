@@ -19,12 +19,11 @@
         }
     ],
     "require": {
-        "symfony/console": "^5.1",
-        "symfony/yaml": "^5.1",
-        "symfony/filesystem": "^5.1",
-        "symfony/options-resolver": "^5.1",
-        "zendframework/zend-code": "^3.4",
-        "requestum/api-bundle": "^0.1.2"
+        "symfony/console": "4.4.*",
+        "symfony/yaml": "4.4.*",
+        "symfony/filesystem": "4.4.*",
+        "symfony/options-resolver": "4.4.*",
+        "zendframework/zend-code": "^3.4"
     },
     "autoload-dev": {
         "psr-4": {
