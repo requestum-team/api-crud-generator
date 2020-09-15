@@ -59,9 +59,9 @@ class FormGeneratorModelBuilderTest extends TestCase
     /**
      * @param object $subject
      *
-     * @return string|null
+     * @return string
      */
-    private function generateModel(object $subject): ?string
+    private function generateModel(object $subject): string
     {
         $modelBuilder = (new FormGeneratorModelBuilder('AppBundle'));
         $model = $modelBuilder->buildModel($subject);
