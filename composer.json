@@ -1,5 +1,6 @@
 {
     "name": "requestum/api-crud-generator",
+    "version": "0.0.1",
     "type" : "symfony-bundle",
     "description": "Symfony ApiBundle CRUD generator",
     "keywords": ["symfony", "api", "bundle", "openapi", "crud", "generator"],
