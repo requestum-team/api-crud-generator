@@ -29,10 +29,6 @@ class PhpGenerator
      */
     public function generate(ClassGeneratorModelInterface $model): ?string
     {
-        if (!$model->isReady()) {
-            return null;
-        }
-
         $file = new FileGenerator([
             'namespace' => $model->getNameSpace(),
             'classes' => [

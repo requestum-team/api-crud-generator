@@ -30,6 +30,4 @@ interface ClassGeneratorModelInterface
     public function getProperties(): array;
 
     public function getMethods(): array;
-
-    public function isReady(): bool;
 }

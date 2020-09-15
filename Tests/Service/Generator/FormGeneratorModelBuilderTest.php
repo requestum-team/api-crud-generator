@@ -354,46 +354,4 @@ EOF
             ],
         ];
     }
-
-    /**
-     * @param string $filename
-     * @param string $elementName
-     * @param bool $isMustBeGenerated
-     *
-     * @throws CollectionException
-     * @throws EntityMissingException
-     * @throws FormMissingException
-     *
-     * @dataProvider formIsGenerateProvider
-     */
-    public function testFormIsGenerate(string $filename, string $elementName, bool $isMustBeGenerated)
-    {
-        $formCollection = $this->getFormCollection($filename);
-        /** @var Form $form */
-        $form = $formCollection->findElement($elementName);
-        $content = $this->generateModel($form);
-
-        static::assertTrue(
-            $isMustBeGenerated ? is_string($content) && !empty($content) : is_null($content)
-        );
-    }
-
-    /**
-     * @return string[][]
-     */
-    public function formIsGenerateProvider()
-    {
-        return [
-            [
-                'form-generator-model-is-generate.yaml',
-                'EntityCreateWithXExist',
-                false,
-            ],
-            [
-                'form-generator-model-is-generate.yaml',
-                'EntityCreateWithoutXExist',
-                true,
-            ],
-        ];
-    }
 }

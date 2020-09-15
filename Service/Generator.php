@@ -235,7 +235,12 @@ class Generator
             return;
         }
 
-//        foreach ($this->entityCollection->dump() as $key => $dump) {
+//        foreach ($this->formCollection->dump() as $key => $dump) {
+//            /** @var Form $dump */
+//            if (!$dump->isGenerate()) {
+//                continue;
+//            }
+//
 //            // src/AppBundle/Resources/config/actions/action.yml
 //            $bundleFile = implode(DIRECTORY_SEPARATOR, [$this->actionsDir, $key . '.yml']);
 //
