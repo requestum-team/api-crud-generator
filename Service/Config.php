@@ -127,6 +127,6 @@ class Config
             })
         ;
 
-        return $resolver->resolve($config['config']);
+        return $resolver->resolve($config);
     }
 }

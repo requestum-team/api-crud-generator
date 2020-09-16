@@ -15,6 +15,8 @@ use Requestum\ApiGeneratorBundle\Service\Generator;
 
 class ApiGeneratorCommand extends Command
 {
+    /** @var int */
+    const SUCCESS = 0;
 
     protected function configure()
     {
@@ -44,10 +46,12 @@ class ApiGeneratorCommand extends Command
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int
+     *
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -68,6 +72,6 @@ class ApiGeneratorCommand extends Command
 
         $output->write("Command success");
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }
