@@ -39,6 +39,8 @@ class CollectionFormFormPropertyType extends FormPropertyTypeAbstract
         $form = $formProperty->getReferencedObject();
         $subFormClass = FormHelper::getFormClassNameByEntity($form->getEntity());
 
+        $formPropertyConstraintDto = $this->getNeededConstraints($formProperty);
+
         $optionsContent = <<<EOF
     'entry_type' => {$subFormClass}::class,
         'allow_add' => true,
@@ -47,15 +49,16 @@ class CollectionFormFormPropertyType extends FormPropertyTypeAbstract
 EOF;
 
         return (new FormPropertyRenderOutput())
-            ->setUseSections([
+            ->addUseSections([
                 'Symfony\Component\Form\Extension\Core\Type\CollectionType',
                 FormHelper::getFormNameSpace($this->bundleName, $form),
             ])
+            ->addUseSections($formPropertyConstraintDto->getUses())
             ->setContent(
                 $this->wrapProperty(
                     $formProperty->getNameCamelCase(),
                     'CollectionType',
-                    $this->getNeededConstraints($formProperty),
+                    $formPropertyConstraintDto->getContents(),
                     $optionsContent
                 )
             )

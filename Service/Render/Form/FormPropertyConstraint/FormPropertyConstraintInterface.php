@@ -19,6 +19,11 @@ interface FormPropertyConstraintInterface
     public static function isNeeded(FormProperty $formProperty): bool;
 
     /**
+     * @return string[]
+     */
+    public static function getConstraintUses(): array;
+
+    /**
      * @param FormProperty $formProperty
      *
      * @return string

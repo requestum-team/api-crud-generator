@@ -3,6 +3,7 @@
 namespace Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyType;
 
 use Requestum\ApiGeneratorBundle\Model\FormProperty;
+use Requestum\ApiGeneratorBundle\Service\Render\Form\FormPropertyConstraintDto;
 
 /**
  * Interface FormPropertyTypeAbstract
@@ -32,21 +33,24 @@ abstract class FormPropertyTypeAbstract implements FormPropertyTypeInterface
     /**
      * @param FormProperty $formProperty
      *
-     * @return array
+     * @return FormPropertyConstraintDto
      */
-    protected function getNeededConstraints(FormProperty $formProperty): array
+    protected function getNeededConstraints(FormProperty $formProperty): FormPropertyConstraintDto
     {
-        $constraints = [];
+        $formPropertyConstraintDto = new FormPropertyConstraintDto();
 
         foreach ($this->supportedConstraints as $constraint) {
             if (!$constraint::isNeeded($formProperty)) {
                 continue;
             }
 
-            $constraints[] = $constraint::getConstraintContent($formProperty);
+            $formPropertyConstraintDto
+                ->addUses($constraint::getConstraintUses())
+                ->addContent($constraint::getConstraintContent($formProperty))
+            ;
         }
 
-        return $constraints;
+        return $formPropertyConstraintDto;
     }
 
     /**

@@ -10,7 +10,7 @@ namespace Requestum\ApiGeneratorBundle\Service\Render\Form;
 class FormPropertyRenderOutput
 {
     /** @var array */
-    protected array $useSections;
+    protected array $useSections = [];
 
     /** @var string */
     protected string $content;
@@ -31,6 +31,18 @@ class FormPropertyRenderOutput
     public function setUseSections(array $useSections): self
     {
         $this->useSections = $useSections;
+
+        return $this;
+    }
+
+    /**
+     * @param array $useSections
+     *
+     * @return $this
+     */
+    public function addUseSections(array $useSections): self
+    {
+        $this->useSections = array_merge($this->useSections, $useSections);
 
         return $this;
     }

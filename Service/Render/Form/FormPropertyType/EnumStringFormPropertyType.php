@@ -33,6 +33,8 @@ class EnumStringFormPropertyType extends FormPropertyTypeAbstract
      */
     public function render(FormProperty $formProperty): FormPropertyRenderOutput
     {
+        $formPropertyConstraintDto = $this->getNeededConstraints($formProperty);
+
         $enum = $formProperty->getEnum();
         $enum = "'" . implode("', '", $enum) . "',";
 
@@ -43,14 +45,15 @@ class EnumStringFormPropertyType extends FormPropertyTypeAbstract
 EOF     ;
 
         return (new FormPropertyRenderOutput())
-            ->setUseSections([
+            ->addUseSections([
                 'Symfony\Component\Form\Extension\Core\Type\ChoiceType',
             ])
+            ->addUseSections($formPropertyConstraintDto->getUses())
             ->setContent(
                 $this->wrapProperty(
                     $formProperty->getNameCamelCase(),
                     'ChoiceType',
-                    $this->getNeededConstraints($formProperty),
+                    $formPropertyConstraintDto->getContents(),
                     $optionsContent
                 )
             )

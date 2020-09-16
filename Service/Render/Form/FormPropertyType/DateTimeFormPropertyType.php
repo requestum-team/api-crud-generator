@@ -34,20 +34,23 @@ class DateTimeFormPropertyType extends FormPropertyTypeAbstract
      */
     public function render(FormProperty $formProperty): FormPropertyRenderOutput
     {
+        $formPropertyConstraintDto = $this->getNeededConstraints($formProperty);
+
         $optionsContent = <<<EOF
     'format' => DateTimeType::HTML5_FORMAT,
         'widget' => 'single_text',
 EOF;
 
         return (new FormPropertyRenderOutput())
-            ->setUseSections([
+            ->addUseSections([
                 'Symfony\Component\Form\Extension\Core\Type\DateTimeType',
             ])
+            ->addUseSections($formPropertyConstraintDto->getUses())
             ->setContent(
                 $this->wrapProperty(
                     $formProperty->getNameCamelCase(),
                     'DateTimeType',
-                    $this->getNeededConstraints($formProperty),
+                    $formPropertyConstraintDto->getContents(),
                     $optionsContent
                 )
             )

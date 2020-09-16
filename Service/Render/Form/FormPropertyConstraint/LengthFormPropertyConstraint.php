@@ -27,6 +27,16 @@ class LengthFormPropertyConstraint implements FormPropertyConstraintInterface
     }
 
     /**
+     * @return string[]
+     */
+    public static function getConstraintUses(): array
+    {
+        return [
+            'Symfony\Component\Validator\Constraints\Length',
+        ];
+    }
+
+    /**
      * @param FormProperty $formProperty
      *
      * @return string
