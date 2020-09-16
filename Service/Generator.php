@@ -3,11 +3,16 @@
 namespace Requestum\ApiGeneratorBundle\Service;
 
 use Requestum\ApiGeneratorBundle\Exception\AccessLevelException;
+use Requestum\ApiGeneratorBundle\Exception\CollectionException;
+use Requestum\ApiGeneratorBundle\Exception\EntityMissingException;
+use Requestum\ApiGeneratorBundle\Exception\FormMissingException;
 use Requestum\ApiGeneratorBundle\Model\Entity;
+use Requestum\ApiGeneratorBundle\Model\Form;
 use Requestum\ApiGeneratorBundle\Service\Generator\BundleGenerator;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\EntityGeneratorModelBuilder;
+use Requestum\ApiGeneratorBundle\Service\Generator\FormGeneratorModelBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\PhpGenerator;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Filesystem\Filesystem;
@@ -103,6 +108,13 @@ class Generator
         $this->outputDirectory = $outputDirectory;
     }
 
+    /**
+     * @throws AccessLevelException
+     * @throws CollectionException
+     * @throws EntityMissingException
+     * @throws FormMissingException
+     * @throws \Exception
+     */
     public function generate()
     {
         $this->buildBaseFileSystem();
@@ -119,7 +131,7 @@ class Generator
 
 //        $this->generateAction();
         $this->generateEntity();
-//        $this->generateForm();
+        $this->generateForm();
 //        $this->generateRouting();
     }
 
@@ -256,15 +268,22 @@ class Generator
             return;
         }
 
-//        foreach ($this->entityCollection->dump() as $key => $dump) {
-//            // src/AppBundle/Resources/config/actions/action.yml
-//            $bundleFile = implode(DIRECTORY_SEPARATOR, [$this->actionsDir, $key . '.yml']);
-//
-//            $this->fs->dumpFile(
-//                $bundleFile,
-//                Yaml::dump($dump, 4)
-//            );
-//        }
+        $generatorModelBuilder = new FormGeneratorModelBuilder($this->config->bundleName);
+
+        foreach ($this->formCollection->dump() as $key => $dump) {
+            /** @var Form $dump */
+
+            $generatorModel = $generatorModelBuilder->buildModel($dump);
+            $content = $this->phpGenerator->generate($generatorModel);
+
+            $filePath = sprintf(
+                '%s/%s',
+                $this->formDir,
+                $generatorModel->getFilePath()
+            );
+
+            $this->fs->dumpFile($filePath, $content);
+        }
     }
 
     protected function generateRouting()
