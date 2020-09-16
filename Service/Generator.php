@@ -12,6 +12,7 @@ use Requestum\ApiGeneratorBundle\Service\Generator\BundleGenerator;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\EntityGeneratorModelBuilder;
+use Requestum\ApiGeneratorBundle\Service\Generator\EntityRepositoryGeneratorModelBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\FormGeneratorModelBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\PhpGenerator;
 use Symfony\Component\Yaml\Yaml;
@@ -103,7 +104,6 @@ class Generator
 
         $this->phpGenerator = new PhpGenerator();
         $this->fs = new Filesystem();
-
         $this->openApiSchema = $openApiSchema;
         $this->outputDirectory = $outputDirectory;
     }
@@ -136,18 +136,16 @@ class Generator
     }
 
     /**
-     * Build base file system for geberated bundle
+     * Build base file system for generated bundle
      */
     protected function buildBaseFileSystem()
     {
-        // src
-        $outputDir = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', $this->outputDirectory]);
-        if (!$this->fs->exists($outputDir)) {
-            $this->fs->mkdir($outputDir);
+        if (!$this->fs->exists($this->outputDirectory)) {
+            $this->fs->mkdir($this->outputDirectory);
         }
 
         // src/AppBundle
-        $bundleDir = implode(DIRECTORY_SEPARATOR, [$outputDir, $this->config->bundleName]);
+        $bundleDir = implode(DIRECTORY_SEPARATOR, [$this->outputDirectory, $this->config->bundleName]);
 
         if (!$this->fs->exists($bundleDir)) {
             $this->fs->mkdir($bundleDir);
@@ -259,7 +257,27 @@ class Generator
             );
 
             $this->fs->dumpFile($filePath, $content);
+
+            $this->generateEntityRepository($dump);
         }
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    protected function generateEntityRepository(Entity $entity)
+    {
+        $generatorModelBuilder = new EntityRepositoryGeneratorModelBuilder($this->config->bundleName);
+        $generatorModel = $generatorModelBuilder->buildModel($entity);
+        $content = $this->phpGenerator->generate($generatorModel);
+
+        $filePath = sprintf(
+            '%s/%s',
+            $this->repositoryDir,
+            $generatorModel->getFilePath()
+        );
+
+        $this->fs->dumpFile($filePath, $content);
     }
 
     protected function generateForm()

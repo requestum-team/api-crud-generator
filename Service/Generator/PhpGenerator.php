@@ -60,6 +60,7 @@ class PhpGenerator
         $class
             ->setName($model->getName())
             ->setExtendedClass($model->getExtendsClass())
+            ->setImplementedInterfaces($model->getImplementedInterfaces())
             ->setDocblock($docblock)
             ->addConstants($model->getConstants())
             ->addProperties(
