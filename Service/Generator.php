@@ -2,9 +2,13 @@
 
 namespace Requestum\ApiGeneratorBundle\Service;
 
+use Requestum\ApiGeneratorBundle\Exception\AccessLevelException;
+use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Service\Generator\BundleGenerator;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
+use Requestum\ApiGeneratorBundle\Service\Generator\EntityGeneratorModelBuilder;
+use Requestum\ApiGeneratorBundle\Service\Generator\PhpGenerator;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -20,6 +24,9 @@ use Requestum\ApiGeneratorBundle\Model\RoutingCollection;
  */
 class Generator
 {
+    /** @var PhpGenerator */
+    protected $phpGenerator;
+
     /**
      * @var Filesystem
      */
@@ -89,6 +96,7 @@ class Generator
     {
         $this->config = $config;
 
+        $this->phpGenerator = new PhpGenerator();
         $this->fs = new Filesystem();
 
         $this->openApiSchema = $openApiSchema;
@@ -110,7 +118,7 @@ class Generator
 
 
 //        $this->generateAction();
-//        $this->generateEntity();
+        $this->generateEntity();
 //        $this->generateForm();
 //        $this->generateRouting();
     }
@@ -212,21 +220,34 @@ class Generator
         }
     }
 
+    /**
+     * @throws AccessLevelException
+     */
     protected function generateEntity()
     {
         if (!$this->config->isGenerateEntity || $this->entityCollection->isEmpty()) {
             return;
         }
 
-//        foreach ($this->entityCollection->dump() as $key => $dump) {
-//            // src/AppBundle/Resources/config/actions/action.yml
-//            $bundleFile = implode(DIRECTORY_SEPARATOR, [$this->actionsDir, $key . '.yml']);
-//
-//            $this->fs->dumpFile(
-//                $bundleFile,
-//                Yaml::dump($dump, 4)
-//            );
-//        }
+        $generatorModelBuilder = new EntityGeneratorModelBuilder($this->config->bundleName);
+
+        foreach ($this->entityCollection->dump() as $key => $dump) {
+            /** @var Entity $dump */
+            if (!$dump->isGenerate()) {
+                continue;
+            }
+
+            $generatorModel = $generatorModelBuilder->buildModel($dump);
+            $content = $this->phpGenerator->generate($generatorModel);
+
+            $filePath = sprintf(
+                '%s/%s',
+                $this->entityDir,
+                $generatorModel->getFilePath()
+            );
+
+            $this->fs->dumpFile($filePath, $content);
+        }
     }
 
     protected function generateForm()
