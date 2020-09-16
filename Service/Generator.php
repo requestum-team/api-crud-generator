@@ -272,6 +272,9 @@ class Generator
 
         foreach ($this->formCollection->dump() as $key => $dump) {
             /** @var Form $dump */
+            if (!$dump->isGenerate()) {
+                continue;
+            }
 
             $generatorModel = $generatorModelBuilder->buildModel($dump);
             $content = $this->phpGenerator->generate($generatorModel);

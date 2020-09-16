@@ -43,6 +43,8 @@ class FormGeneratorModelBuilderTest extends TestCase
      * @throws CollectionException
      * @throws EntityMissingException
      * @throws FormMissingException
+     *
+     * @throws \Exception
      */
     private function getFormCollection(string $filename): BaseAbstractCollection
     {
