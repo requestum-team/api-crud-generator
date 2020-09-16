@@ -34,20 +34,23 @@ class DateFormPropertyType extends FormPropertyTypeAbstract
      */
     public function render(FormProperty $formProperty): FormPropertyRenderOutput
     {
+        $formPropertyConstraintDto = $this->getNeededConstraints($formProperty);
+
         $optionsContent = <<<EOF
     'format' => DateType::HTML5_FORMAT,
         'widget' => 'single_text',
 EOF;
 
         return (new FormPropertyRenderOutput())
-            ->setUseSections([
+            ->addUseSections([
                 'Symfony\Component\Form\Extension\Core\Type\DateType',
             ])
+            ->addUseSections($formPropertyConstraintDto->getUses())
             ->setContent(
                 $this->wrapProperty(
                     $formProperty->getNameCamelCase(),
                     'DateType',
-                    $this->getNeededConstraints($formProperty),
+                    $formPropertyConstraintDto->getContents(),
                     $optionsContent
                 )
             )

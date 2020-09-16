@@ -37,14 +37,17 @@ class FormFormPropertyType extends FormPropertyTypeAbstract
         /** @var Form $form */
         $form = $formProperty->getReferencedObject();
 
+        $formPropertyConstraintDto = $this->getNeededConstraints($formProperty);
+
         return (new FormPropertyRenderOutput())
-            ->setUseSections([
+            ->addUseSections([
                 FormHelper::getFormNameSpace($this->bundleName, $form),
             ])
+            ->addUseSections($formPropertyConstraintDto->getUses())
             ->setContent($this->wrapProperty(
                 $formProperty->getNameCamelCase(),
                 FormHelper::getFormClassNameByEntity($form->getEntity()),
-                $this->getNeededConstraints($formProperty)
+                $formPropertyConstraintDto->getContents()
             ))
         ;
     }

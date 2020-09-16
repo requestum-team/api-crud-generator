@@ -22,6 +22,16 @@ class NotBlankFormPropertyConstraint implements FormPropertyConstraintInterface
     }
 
     /**
+     * @return string[]
+     */
+    public static function getConstraintUses(): array
+    {
+        return [
+            'Symfony\Component\Validator\Constraints\NotBlank',
+        ];
+    }
+
+    /**
      * @param FormProperty $formProperty
      *
      * @return string

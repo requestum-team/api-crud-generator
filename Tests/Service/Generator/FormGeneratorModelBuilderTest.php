@@ -191,7 +191,11 @@ class FormGeneratorModelBuilderTest extends TestCase
                 'UserCreate',
                 [
                     [
-                        'Symfony\Component\Form\Extension\Core\Type\TextType',
+                        [
+                            'Symfony\Component\Form\Extension\Core\Type\TextType',
+                            'Symfony\Component\Validator\Constraints\NotBlank',
+                            'Symfony\Component\Validator\Constraints\Length',
+                        ],
                         <<<EOF
 ->add('firstName', TextType::class, [
     'constraints' => [
@@ -202,7 +206,11 @@ class FormGeneratorModelBuilderTest extends TestCase
 EOF
                     ],
                     [
-                        'Symfony\Component\Form\Extension\Core\Type\TextType',
+                        [
+                            'Symfony\Component\Form\Extension\Core\Type\TextType',
+                            'Symfony\Component\Validator\Constraints\NotBlank',
+                            'Symfony\Component\Validator\Constraints\Length',
+                        ],
                         <<<EOF
 ->add('lastName', TextType::class, [
     'constraints' => [
@@ -213,7 +221,11 @@ EOF
 EOF
                     ],
                     [
-                        'Symfony\Component\Form\Extension\Core\Type\EmailType',
+                        [
+                            'Symfony\Component\Form\Extension\Core\Type\EmailType',
+                            'Symfony\Component\Validator\Constraints\NotBlank',
+                            'Symfony\Component\Validator\Constraints\Length',
+                        ],
                         <<<EOF
 ->add('email', EmailType::class, [
     'constraints' => [
