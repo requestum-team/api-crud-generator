@@ -34,15 +34,18 @@ class EmailFormPropertyType extends FormPropertyTypeAbstract
      */
     public function render(FormProperty $formProperty): FormPropertyRenderOutput
     {
+        $formPropertyConstraintDto = $this->getNeededConstraints($formProperty);
+
         return (new FormPropertyRenderOutput())
-            ->setUseSections([
+            ->addUseSections([
                 'Symfony\Component\Form\Extension\Core\Type\EmailType',
             ])
+            ->addUseSections($formPropertyConstraintDto->getUses())
             ->setContent(
                 $this->wrapProperty(
                     $formProperty->getNameCamelCase(),
                     'EmailType',
-                    $this->getNeededConstraints($formProperty)
+                    $formPropertyConstraintDto->getContents()
                 )
             )
         ;

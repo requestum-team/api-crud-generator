@@ -34,15 +34,18 @@ class TextareaFormPropertyType extends FormPropertyTypeAbstract
      */
     public function render(FormProperty $formProperty): FormPropertyRenderOutput
     {
+        $formPropertyConstraintDto = $this->getNeededConstraints($formProperty);
+
         return (new FormPropertyRenderOutput())
-            ->setUseSections([
+            ->addUseSections([
                 'Symfony\Component\Form\Extension\Core\Type\TextareaType',
             ])
+            ->addUseSections($formPropertyConstraintDto->getUses())
             ->setContent(
                 $this->wrapProperty(
                     $formProperty->getNameCamelCase(),
                     'TextareaType',
-                    $this->getNeededConstraints($formProperty)
+                    $formPropertyConstraintDto->getContents()
                 )
             )
         ;
