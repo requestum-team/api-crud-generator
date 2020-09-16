@@ -8,11 +8,11 @@ use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\Config\FileLocator;
 
 /**
- * Class ApiCrudGeneratorExtension
+ * Class ApiGeneratorExtension
  *
  * @package Requestum\ApiGeneratorBundle\DependencyInjection
  */
-class ApiCrudGeneratorExtension extends Extension
+class ApiGeneratorExtension extends Extension
 {
     /**
      * @param array $configs
