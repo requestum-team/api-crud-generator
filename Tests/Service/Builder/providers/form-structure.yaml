@@ -61,6 +61,7 @@ components:
       x-primary-key:
         - id
       type: object
+      x-exist: AppBundle\Entity\SomeEntity
       properties:
         id:
           description: ""

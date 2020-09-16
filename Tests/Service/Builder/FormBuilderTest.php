@@ -50,6 +50,7 @@ class FormBuilderTest extends TestCase
         static::assertInstanceOf(Form::class, $structureTest);
         static::assertEquals('UserCreate', $structureTest->getName());
         static::assertEquals(8, count($structureTest->getProperties()));
+        static::assertTrue($structureTest->isGenerate());
 
         $property = $structureTest->getPropertyByNameCamelCase('firstName');
         static::assertEquals('firstName', $property->getNameCamelCase());
@@ -87,6 +88,10 @@ class FormBuilderTest extends TestCase
         static::assertInstanceOf(Form::class, $property->getReferencedObject());
         static::assertEquals('AddressInput', $property->getReferencedObject()->getName());
         static::assertEquals(1, count($property->getReferencedObject()->getProperties()));
+
+        /** @var Form $structureTest */
+        $structureTest = $collection->findElement('AddressInput');
+        static::assertFalse($structureTest->isGenerate());
     }
 
     /**
