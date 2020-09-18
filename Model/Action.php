@@ -2,6 +2,11 @@
 
 namespace Requestum\ApiGeneratorBundle\Model;
 
+/**
+ * Class Action
+ *
+ * @package Requestum\ApiGeneratorBundle\Model
+ */
 class Action extends BaseModel implements ModelInterface
 {
     const DEFAULT_ACTION_LIST   = 'Requestum\\ApiBundle\\Action\\ListAction';
@@ -62,6 +67,8 @@ class Action extends BaseModel implements ModelInterface
 
     /**
      * @return string
+     *
+     * @throws \Exception
      */
     public function getClassName(): string
     {
@@ -170,6 +177,5 @@ class Action extends BaseModel implements ModelInterface
             default:
                 throw new \Exception(sprintf('Allowed methods %s', self::getAllowedMethodsString()));
         }
-
     }
 }

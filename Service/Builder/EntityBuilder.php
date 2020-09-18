@@ -215,6 +215,11 @@ class EntityBuilder implements BuilderInterface
         return $properties;
     }
 
+    /**
+     * @throws EntityMissingException
+     * @throws PrimaryException
+     * @throws ReferencedColumnException
+     */
     private function processRelations()
     {
         /**
