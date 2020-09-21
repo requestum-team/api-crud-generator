@@ -2,6 +2,8 @@
 
 namespace Requestum\ApiGeneratorBundle\Helper;
 
+use Symfony\Component\PropertyAccess\PropertyAccess;
+
 /**
  * Class CommonHelper
  *
@@ -44,5 +46,23 @@ class CommonHelper
         [,,$path, $node] = explode('/', $ref);
 
         return $openApiSchema['components'][$path][$node] ?? null;
+    }
+
+    /**
+     * @param array $array
+     * @param array $path
+     *
+     * @return mixed|null
+     */
+    public static function getArrayValueByPath(array &$array, array $path)
+    {
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $transformedPath = sprintf('[%s]', implode('][', $path));
+
+        if (!$propertyAccessor->isReadable($array, $transformedPath)) {
+            return null;
+        }
+
+        return $propertyAccessor->getValue($array, $transformedPath);
     }
 }

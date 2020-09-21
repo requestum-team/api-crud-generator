@@ -10,6 +10,8 @@ paths:
                 - user
             summary: List of users
             operationId: user.list
+            x-entity:
+                $ref: '#/components/schemas/UserEntity'
             responses:
                 '200':
                     description: OK

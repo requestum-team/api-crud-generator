@@ -23,9 +23,15 @@ class Action extends BaseModel implements ModelInterface
     private string $prefix;
 
     /**
-     * @var string
+     * @var string|null
      */
     private ?string $className = null;
+
+    /** @var string|null */
+    private ?string $entityClassName = null;
+
+    /** @var string|null */
+    private ?string $formClassName = null;
 
     /**
      * @var string[]
@@ -45,6 +51,8 @@ class Action extends BaseModel implements ModelInterface
 
     /**
      * @return string
+     *
+     * @throws \Exception
      */
     public function getServiceName(): string
     {
@@ -87,6 +95,46 @@ class Action extends BaseModel implements ModelInterface
     public function setClassName(string $className)
     {
         $this->className = $className;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEntityClassName(): ?string
+    {
+        return $this->entityClassName;
+    }
+
+    /**
+     * @param string $entityClassName
+     *
+     * @return $this
+     */
+    public function setEntityClassName(string $entityClassName): self
+    {
+        $this->entityClassName = $entityClassName;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFormClassName(): ?string
+    {
+        return $this->formClassName;
+    }
+
+    /**
+     * @param string $formClassName
+     *
+     * @return $this
+     */
+    public function setFormClassName(string $formClassName): self
+    {
+        $this->formClassName = $formClassName;
 
         return $this;
     }

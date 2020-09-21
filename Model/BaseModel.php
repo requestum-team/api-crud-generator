@@ -2,9 +2,13 @@
 
 namespace Requestum\ApiGeneratorBundle\Model;
 
+/**
+ * Class BaseModel
+ *
+ * @package Requestum\ApiGeneratorBundle\Model
+ */
 class BaseModel
 {
-
     const ALLOWED_METHOD_GET    = 'get';
     const ALLOWED_METHOD_POST   = 'post';
     const ALLOWED_METHOD_PATCH  = 'patch';
