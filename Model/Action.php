@@ -2,6 +2,8 @@
 
 namespace Requestum\ApiGeneratorBundle\Model;
 
+use Requestum\ApiGeneratorBundle\Helper\ActionHelper;
+
 /**
  * Class Action
  *
@@ -74,17 +76,11 @@ class Action extends BaseModel implements ModelInterface
     }
 
     /**
-     * @return string
-     *
-     * @throws \Exception
+     * @return string|null
      */
-    public function getClassName(): string
+    public function getClassName(): ?string
     {
-        if (!is_null($this->className)) {
-            return $this->className;
-        }
-
-        return $this->getDefaultClassName();
+        return $this->className;
     }
 
     /**
@@ -203,27 +199,28 @@ class Action extends BaseModel implements ModelInterface
         return $this;
     }
 
-    private function getDefaultClassName(): string {
-        switch ($this->getMethod()) {
-            case self::ALLOWED_METHOD_GET:
-                return $this->hasAttributs() ? self::DEFAULT_ACTION_FETCH: self::DEFAULT_ACTION_LIST;
-                break;
-
-            case self::ALLOWED_METHOD_POST:
-                return self::DEFAULT_ACTION_CREATE;
-                break;
-
-            case self::ALLOWED_METHOD_PATCH:
-            case self::ALLOWED_METHOD_PUT:
-                return self::DEFAULT_ACTION_UPDATE;
-                break;
-
-            case self::ALLOWED_METHOD_DELETE:
-                return self::DEFAULT_ACTION_DELETE;
-                break;
-
-            default:
-                throw new \Exception(sprintf('Allowed methods %s', self::getAllowedMethodsString()));
+    /**
+     * @return string
+     *
+     * @throws \Exception
+     */
+    public function getSuffix(): string
+    {
+        switch ($this->getClassName()) {
+            case Action::DEFAULT_ACTION_FETCH:
+                return ActionHelper::ACTION_FETCH;
+            case Action::DEFAULT_ACTION_LIST:
+                return ActionHelper::ACTION_LIST;
+            case Action::DEFAULT_ACTION_CREATE:
+                return ActionHelper::ACTION_CREATE;
+            case Action::DEFAULT_ACTION_UPDATE:
+                return ActionHelper::ACTION_UPDATE;
+            case Action::DEFAULT_ACTION_DELETE:
+                return ActionHelper::ACTION_DELETE;
         }
+
+        throw new \Exception(sprintf(
+            'Method "%s" not allowed. Allowed methods %s', $this->getMethod(), self::getAllowedMethodsString()
+        ));
     }
 }

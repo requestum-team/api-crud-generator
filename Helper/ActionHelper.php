@@ -16,6 +16,12 @@ class ActionHelper
     const ACTION_FETCH = 'fetch';
     /** @var string */
     const ACTION_LIST = 'list';
+    /** @var string */
+    const ACTION_CREATE = 'create';
+    /** @var string */
+    const ACTION_UPDATE = 'update';
+    /** @var string */
+    const ACTION_DELETE = 'delete';
 
     /**
      * @param string $method
@@ -28,14 +34,11 @@ class ActionHelper
         switch ($method) {
             case BaseModel::ALLOWED_METHOD_POST:
                 return Action::DEFAULT_ACTION_CREATE;
-                break;
             case BaseModel::ALLOWED_METHOD_PATCH:
             case BaseModel::ALLOWED_METHOD_PUT:
                 return Action::DEFAULT_ACTION_UPDATE;
-                break;
             case BaseModel::ALLOWED_METHOD_DELETE:
                 return Action::DEFAULT_ACTION_DELETE;
-                break;
             case BaseModel::ALLOWED_METHOD_GET:
                 if (!empty($operationId)
                     && preg_match(
@@ -48,10 +51,8 @@ class ActionHelper
                     switch ($m[1]) {
                         case self::ACTION_FETCH:
                             return Action::DEFAULT_ACTION_FETCH;
-                            break;
                         case self::ACTION_LIST:
                             return Action::DEFAULT_ACTION_LIST;
-                            break;
                     }
                 }
                 break;

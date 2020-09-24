@@ -5,6 +5,18 @@ namespace Requestum\ApiGeneratorBundle\Model;
 
 class ActionCollection extends BaseAbstractCollection
 {
+    /**
+     * @param ModelInterface $element
+     *
+     * @return $this
+     */
+    public function addElement(ModelInterface $element)
+    {
+        $this->elements[$element->getName()] = $element;
+
+        return $this;
+    }
+
     public function dump(): array
     {
         $result = [];

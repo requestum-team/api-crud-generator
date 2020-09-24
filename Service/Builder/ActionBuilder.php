@@ -38,9 +38,12 @@ class ActionBuilder implements BuilderInterface
      * @param array $openApiSchema
      * @param BaseAbstractCollection|null $relatedEntityCollection
      * @param BaseAbstractCollection|null $relatedFormCollection
+     *
      * @return BaseAbstractCollection
+     *
      * @throws EntityMissingException
      * @throws FormMissingException
+     * @throws \Exception
      */
     public function build(
         array $openApiSchema,
@@ -66,15 +69,12 @@ class ActionBuilder implements BuilderInterface
                     throw new EntityMissingException('Cannot define entity class for action.');
                 }
 
-                $name = strtolower($entityClassName);
-
                 $action = (new Action())
-                    ->setName($name)
                     ->setMethod($method)
                     ->setClassName($actionClass)
                     ->setEntity($entity)
                     ->setServicePath([
-                        $name,
+                        strtolower($entityClassName),
                     ])
                 ;
 
@@ -92,6 +92,8 @@ class ActionBuilder implements BuilderInterface
 
                     $action->setForm($form);
                 }
+
+                $action->setName($action->getServiceName());
 
                 $this->collection->addElement($action);
             }
