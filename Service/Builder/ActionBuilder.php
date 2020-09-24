@@ -4,13 +4,14 @@ namespace Requestum\ApiGeneratorBundle\Service\Builder;
 
 use Requestum\ApiGeneratorBundle\Exception\ActionClassDefineException;
 use Requestum\ApiGeneratorBundle\Exception\EntityMissingException;
+use Requestum\ApiGeneratorBundle\Exception\FormMissingException;
 use Requestum\ApiGeneratorBundle\Helper\ActionHelper;
 use Requestum\ApiGeneratorBundle\Helper\CommonHelper;
 use Requestum\ApiGeneratorBundle\Helper\StringHelper;
 use Requestum\ApiGeneratorBundle\Model\Action;
 use Requestum\ApiGeneratorBundle\Model\ActionCollection;
 use Requestum\ApiGeneratorBundle\Model\BaseAbstractCollection;
-use Requestum\ApiGeneratorBundle\Service\InheritanceHandler;
+use Requestum\ApiGeneratorBundle\Model\BaseModel;
 
 /**
  * Class ActionBuilder
@@ -35,22 +36,21 @@ class ActionBuilder implements BuilderInterface
 
     /**
      * @param array $openApiSchema
-     * @param BaseAbstractCollection|null $relatedCollection
-     *
+     * @param BaseAbstractCollection|null $relatedEntityCollection
+     * @param BaseAbstractCollection|null $relatedFormCollection
      * @return BaseAbstractCollection
      * @throws EntityMissingException
+     * @throws FormMissingException
      */
     public function build(
         array $openApiSchema,
-        ?BaseAbstractCollection $relatedCollection = null
+        ?BaseAbstractCollection $relatedEntityCollection = null,
+        ?BaseAbstractCollection $relatedFormCollection = null
     ): BaseAbstractCollection
     {
         if (empty($openApiSchema[self::SCHEMA_KEY])) {
             return $this->collection;
         }
-
-        //$inheritanceHandler = new InheritanceHandler();
-        //$openApiSchemaCollection = $inheritanceHandler->process($openApiSchema);
 
         foreach ($openApiSchema[self::SCHEMA_KEY] as $path => $methodsData) {
             foreach ($methodsData as $method => $data) {
@@ -60,18 +60,38 @@ class ActionBuilder implements BuilderInterface
                     throw new ActionClassDefineException($path, $method, $operationId);
                 }
 
-                if (empty($entityClassName = $this->extractEntityClassName($data, $openApiSchema))) {
+                if (empty($entityClassName = $this->extractEntityClassName($data, $openApiSchema))
+                    || empty($entity = $relatedEntityCollection->findElement($entityClassName))
+                ) {
                     throw new EntityMissingException('Cannot define entity class for action.');
                 }
 
+                $name = strtolower($entityClassName);
+
                 $action = (new Action())
-                    ->setName('test') /** todo */
+                    ->setName($name)
                     ->setMethod($method)
                     ->setClassName($actionClass)
-                    ->setEntityClassName($entityClassName)
-                    /** todo */
-                    //->setFormClassName(...)
+                    ->setEntity($entity)
+                    ->setServicePath([
+                        $name,
+                    ])
                 ;
+
+                if (in_array($method, [
+                        BaseModel::ALLOWED_METHOD_POST,
+                        BaseModel::ALLOWED_METHOD_PATCH,
+                        BaseModel::ALLOWED_METHOD_PUT
+                    ])
+                ) {
+                    if (empty($formClassName = $this->extractFormClassName($data, $openApiSchema))
+                        || empty($form = $relatedFormCollection->findElement($formClassName))
+                    ) {
+                        throw new FormMissingException('Cannot define form class for action.');
+                    }
+
+                    $action->setForm($form);
+                }
 
                 $this->collection->addElement($action);
             }
@@ -113,5 +133,18 @@ class ActionBuilder implements BuilderInterface
         }
 
         return $entityClassName;
+    }
+
+    /**
+     * @param array $data
+     * @param array $openApiSchema
+     *
+     * @return string|null
+     */
+    private function extractFormClassName(array $data, array &$openApiSchema): ?string
+    {
+        $requestBodyRef = CommonHelper::getArrayValueByPath($data, ['requestBody', '$ref',]);
+
+        return StringHelper::getReferencedSchemaObjectName($requestBodyRef);
     }
 }

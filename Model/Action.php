@@ -27,11 +27,11 @@ class Action extends BaseModel implements ModelInterface
      */
     private ?string $className = null;
 
-    /** @var string|null */
-    private ?string $entityClassName = null;
+    /** @var Entity|null */
+    private ?Entity $entity = null;
 
-    /** @var string|null */
-    private ?string $formClassName = null;
+    /** @var Form|null */
+    private ?Form $form = null;
 
     /**
      * @var string[]
@@ -100,41 +100,41 @@ class Action extends BaseModel implements ModelInterface
     }
 
     /**
-     * @return string|null
+     * @return Entity|null
      */
-    public function getEntityClassName(): ?string
+    public function getEntity(): ?Entity
     {
-        return $this->entityClassName;
+        return $this->entity;
     }
 
     /**
-     * @param string $entityClassName
+     * @param Entity $entity
      *
      * @return $this
      */
-    public function setEntityClassName(string $entityClassName): self
+    public function setEntity(Entity $entity): self
     {
-        $this->entityClassName = $entityClassName;
+        $this->entity = $entity;
 
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return Form|null
      */
-    public function getFormClassName(): ?string
+    public function getForm(): ?Form
     {
-        return $this->formClassName;
+        return $this->form;
     }
 
     /**
-     * @param string $formClassName
+     * @param Form $form
      *
      * @return $this
      */
-    public function setFormClassName(string $formClassName): self
+    public function setForm(Form $form): self
     {
-        $this->formClassName = $formClassName;
+        $this->form = $form;
 
         return $this;
     }
