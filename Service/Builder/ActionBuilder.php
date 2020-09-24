@@ -69,12 +69,15 @@ class ActionBuilder implements BuilderInterface
                     throw new EntityMissingException('Cannot define entity class for action.');
                 }
 
+                $name = strtolower($entityClassName);
+
                 $action = (new Action())
+                    ->setName($name)
                     ->setMethod($method)
                     ->setClassName($actionClass)
                     ->setEntity($entity)
                     ->setServicePath([
-                        strtolower($entityClassName),
+                        $name,
                     ])
                 ;
 
@@ -92,8 +95,6 @@ class ActionBuilder implements BuilderInterface
 
                     $action->setForm($form);
                 }
-
-                $action->setName($action->getServiceName());
 
                 $this->collection->addElement($action);
             }
