@@ -33,6 +33,31 @@ paths:
                                 $ref: '#/components/schemas/UserEntity'
             requestBody:
                 $ref: '#/components/requestBodies/UserCreate'
+    /api/users/{id}:
+        patch:
+            tags:
+                - user
+            summary: Update user
+            operationId: user.update
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UserEntity"
+            requestBody:
+                $ref: '#/components/requestBodies/UserUpdate'
+        delete:
+            tags:
+                - user
+            summary: Delete user
+            operationId: user.delete
+            x-entity:
+                $ref: '#/components/schemas/UserEntity'
+            responses:
+                '204':
+                    description: No Content
 components:
     schemas:
         UserEntity:
@@ -106,3 +131,22 @@ components:
                                     - user
                                     - manager
                                     - admin
+        UserUpdate:
+            content:
+                application/json:
+                    schema:
+                        description: ""
+                        x-entity:
+                            $ref: '#/components/schemas/UserEntity'
+                        required:
+                            - firstName
+                            - lastName
+                            - email
+                        type: object
+                        properties:
+                            firstName:
+                                description: ""
+                                type: string
+                            lastName:
+                                description: ""
+                                type: string
