@@ -42,7 +42,7 @@ class ActionHelper
             case BaseModel::ALLOWED_METHOD_GET:
                 if (!empty($operationId)
                     && preg_match(
-                        sprintf("/(?:[\W]?(%s|%s)[\W]?)/ui", self::ACTION_FETCH, self::ACTION_LIST),
+                        sprintf("/[\W]?(%s|%s)[\W]?/ui", self::ACTION_FETCH, self::ACTION_LIST),
                         $operationId,
                         $m
                     )
