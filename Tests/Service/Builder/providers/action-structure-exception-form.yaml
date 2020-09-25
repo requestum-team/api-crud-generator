@@ -1,0 +1,60 @@
+---
+openapi: 3.0.2
+info:
+    title: Paths
+    version: 1.0.0
+paths:
+    /api/users:
+        post:
+            tags:
+                - user
+            summary: Create new user
+            operationId: user.create
+            x-entity:
+                $ref: '#/components/schemas/UserEntity'
+            responses:
+                '201':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserEntity'
+            requestBody:
+                $ref: '#/components/requestBodies/UserCreate'
+components:
+    schemas:
+        UserEntity:
+            description: ""
+            required:
+                - firstName
+                - lastName
+                - email
+            x-primary-key:
+                - id
+            type: object
+            properties:
+                id:
+                    description: ""
+                    type: integer
+                firstName:
+                    description: ""
+                    type: string
+                lastName:
+                    description: ""
+                    type: string
+                email:
+                    description: ""
+                    type: string
+                    format: email
+                phone:
+                    description: ""
+                    type: string
+                age:
+                    description: ""
+                    type: integer
+                type:
+                    type: string
+                    enum:
+                        - user
+                        - manager
+                        - admin

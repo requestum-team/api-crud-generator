@@ -2,6 +2,13 @@
 
 namespace Requestum\ApiGeneratorBundle\Model;
 
+use Requestum\ApiGeneratorBundle\Helper\ActionHelper;
+
+/**
+ * Class Action
+ *
+ * @package Requestum\ApiGeneratorBundle\Model
+ */
 class Action extends BaseModel implements ModelInterface
 {
     const DEFAULT_ACTION_LIST   = 'Requestum\\ApiBundle\\Action\\ListAction';
@@ -18,9 +25,15 @@ class Action extends BaseModel implements ModelInterface
     private string $prefix;
 
     /**
-     * @var string
+     * @var string|null
      */
     private ?string $className = null;
+
+    /** @var Entity|null */
+    private ?Entity $entity = null;
+
+    /** @var Form|null */
+    private ?Form $form = null;
 
     /**
      * @var string[]
@@ -40,6 +53,8 @@ class Action extends BaseModel implements ModelInterface
 
     /**
      * @return string
+     *
+     * @throws \Exception
      */
     public function getServiceName(): string
     {
@@ -61,15 +76,11 @@ class Action extends BaseModel implements ModelInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getClassName(): string
+    public function getClassName(): ?string
     {
-        if (!is_null($this->className)) {
-            return $this->className;
-        }
-
-        return $this->getDefaultClassName();
+        return $this->className;
     }
 
     /**
@@ -80,6 +91,46 @@ class Action extends BaseModel implements ModelInterface
     public function setClassName(string $className)
     {
         $this->className = $className;
+
+        return $this;
+    }
+
+    /**
+     * @return Entity|null
+     */
+    public function getEntity(): ?Entity
+    {
+        return $this->entity;
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return $this
+     */
+    public function setEntity(Entity $entity): self
+    {
+        $this->entity = $entity;
+
+        return $this;
+    }
+
+    /**
+     * @return Form|null
+     */
+    public function getForm(): ?Form
+    {
+        return $this->form;
+    }
+
+    /**
+     * @param Form $form
+     *
+     * @return $this
+     */
+    public function setForm(Form $form): self
+    {
+        $this->form = $form;
 
         return $this;
     }
@@ -148,28 +199,28 @@ class Action extends BaseModel implements ModelInterface
         return $this;
     }
 
-    private function getDefaultClassName(): string {
-        switch ($this->getMethod()) {
-            case self::ALLOWED_METHOD_GET:
-                return $this->hasAttributs() ? self::DEFAULT_ACTION_FETCH: self::DEFAULT_ACTION_LIST;
-                break;
-
-            case self::ALLOWED_METHOD_POST:
-                return self::DEFAULT_ACTION_CREATE;
-                break;
-
-            case self::ALLOWED_METHOD_PATCH:
-            case self::ALLOWED_METHOD_PUT:
-                return self::DEFAULT_ACTION_UPDATE;
-                break;
-
-            case self::ALLOWED_METHOD_DELETE:
-                return self::DEFAULT_ACTION_DELETE;
-                break;
-
-            default:
-                throw new \Exception(sprintf('Allowed methods %s', self::getAllowedMethodsString()));
+    /**
+     * @return string
+     *
+     * @throws \Exception
+     */
+    public function getSuffix(): string
+    {
+        switch ($this->getClassName()) {
+            case Action::DEFAULT_ACTION_FETCH:
+                return ActionHelper::ACTION_FETCH;
+            case Action::DEFAULT_ACTION_LIST:
+                return ActionHelper::ACTION_LIST;
+            case Action::DEFAULT_ACTION_CREATE:
+                return ActionHelper::ACTION_CREATE;
+            case Action::DEFAULT_ACTION_UPDATE:
+                return ActionHelper::ACTION_UPDATE;
+            case Action::DEFAULT_ACTION_DELETE:
+                return ActionHelper::ACTION_DELETE;
         }
 
+        throw new \Exception(sprintf(
+            'Method "%s" not allowed. Allowed methods %s', $this->getMethod(), self::getAllowedMethodsString()
+        ));
     }
 }

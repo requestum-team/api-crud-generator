@@ -15,7 +15,8 @@
         "symfony/yaml": "^5.1",
         "symfony/filesystem": "^5.1",
         "symfony/options-resolver": "^5.1",
-        "zendframework/zend-code": "^3.4"
+        "zendframework/zend-code": "^3.4",
+        "symfony/property-access": "^5.1"
     },
     "autoload-dev": {
         "psr-4": {

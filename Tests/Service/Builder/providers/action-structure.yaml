@@ -1,0 +1,108 @@
+---
+openapi: 3.0.2
+info:
+    title: Paths
+    version: 1.0.0
+paths:
+    /api/users:
+        get:
+            tags:
+                - user
+            summary: List of users
+            operationId: user.list
+            x-entity:
+                $ref: '#/components/schemas/UserEntity'
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserEntity'
+        post:
+            tags:
+                - user
+            summary: Create new user
+            operationId: user.create
+            responses:
+                '201':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserEntity'
+            requestBody:
+                $ref: '#/components/requestBodies/UserCreate'
+components:
+    schemas:
+        UserEntity:
+            description: ""
+            required:
+                - firstName
+                - lastName
+                - email
+            x-primary-key:
+                - id
+            type: object
+            properties:
+                id:
+                    description: ""
+                    type: integer
+                firstName:
+                    description: ""
+                    type: string
+                lastName:
+                    description: ""
+                    type: string
+                email:
+                    description: ""
+                    type: string
+                    format: email
+                phone:
+                    description: ""
+                    type: string
+                age:
+                    description: ""
+                    type: integer
+                type:
+                    type: string
+                    enum:
+                        - user
+                        - manager
+                        - admin
+    requestBodies:
+        UserCreate:
+            content:
+                application/json:
+                    schema:
+                        description: ""
+                        x-entity:
+                            $ref: '#/components/schemas/UserEntity'
+                        required:
+                            - firstName
+                            - lastName
+                            - email
+                        type: object
+                        properties:
+                            firstName:
+                                description: ""
+                                type: string
+                            lastName:
+                                description: ""
+                                type: string
+                            email:
+                                description: ""
+                                type: string
+                                format: email
+                            phone:
+                                description: ""
+                                type: string
+                            age:
+                                description: ""
+                                type: integer
+                            type:
+                                type: string
+                                enum:
+                                    - user
+                                    - manager
+                                    - admin

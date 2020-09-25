@@ -12,7 +12,6 @@ use Requestum\ApiGeneratorBundle\Helper\StringHelper;
  */
 class InheritanceHandler
 {
-
     /**
      * @var array
      */
@@ -21,7 +20,7 @@ class InheritanceHandler
     /**
      * @var array
      */
-    protected $collection = [];
+    protected array $collection = [];
 
     /**
      * @param array $openApiSchema
