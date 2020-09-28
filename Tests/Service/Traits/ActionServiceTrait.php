@@ -7,8 +7,7 @@ use Requestum\ApiGeneratorBundle\Exception\EntityMissingException;
 use Requestum\ApiGeneratorBundle\Exception\FormMissingException;
 use Requestum\ApiGeneratorBundle\Helper\FileHelper;
 use Requestum\ApiGeneratorBundle\Model\Action;
-use Requestum\ApiGeneratorBundle\Model\Entity;
-use Requestum\ApiGeneratorBundle\Model\Form;
+use Requestum\ApiGeneratorBundle\Model\BaseAbstractCollection;
 use Requestum\ApiGeneratorBundle\Service\Builder\ActionBuilder;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
@@ -21,17 +20,15 @@ use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
 trait ActionServiceTrait
 {
     /**
-     * @param string $nodeName
      * @param string $filePath
      *
-     * @return Action[]|null
+     * @return BaseAbstractCollection
      *
      * @throws CollectionException
      * @throws EntityMissingException
      * @throws FormMissingException
-     * @throws \Exception
      */
-    protected function getActionNode(string $nodeName, string $filePath): ?array
+    protected function getActionCollection(string $filePath)
     {
         $data = $this->getSchemasAndRequestBodiesCollection($filePath);
 
@@ -47,8 +44,19 @@ trait ActionServiceTrait
         );
 
         $builder = new ActionBuilder();
-        $collection = $builder->build(FileHelper::load($filePath), $entityCollection, $formCollection);
 
+        return $builder->build(FileHelper::load($filePath), $entityCollection, $formCollection);
+    }
+
+    /**
+     * @param string $nodeName
+     * @param BaseAbstractCollection $collection
+     *
+     * @return Action[]|null
+     *
+     */
+    protected function getActionNode(string $nodeName, BaseAbstractCollection $collection): ?array
+    {
         return $collection->findElement($nodeName);
     }
 }

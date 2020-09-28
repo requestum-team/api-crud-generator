@@ -4,6 +4,11 @@ namespace Requestum\ApiGeneratorBundle\Model;
 
 class RoutingCollection extends BaseAbstractCollection
 {
+    /**
+     * @return array
+     *
+     * @throws \Exception
+     */
     public function dump(): array
     {
         $result = [];
@@ -12,8 +17,8 @@ class RoutingCollection extends BaseAbstractCollection
             foreach ($routes as $route) {
 
                 $result[$key][$route->getServiceName()] = [
-                    'path' => $route->getUrl(),
-                    'methods' => strtoupper($route->getMethod()),
+                    'path'       => $route->getPath(),
+                    'methods'    => strtoupper($route->getMethod()),
                     'controller' => $route->getControllerName(),
                 ];
             }

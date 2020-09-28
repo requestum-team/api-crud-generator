@@ -36,7 +36,7 @@ class ActionGeneratorModelBuilderTest extends TestCase
     private function generateActionNode(string $filename, string $nodeName): string
     {
         $filePath = realpath(__DIR__ . '/providers/' . $filename);
-        $elements = $this->getActionNode($nodeName, $filePath);
+        $elements = $this->getActionNode($nodeName, $this->getActionCollection($filePath));
 
         $ymlGenerator = new YmlGenerator('AppBundle');
 

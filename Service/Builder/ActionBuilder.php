@@ -76,6 +76,7 @@ class ActionBuilder implements BuilderInterface
                     ->setMethod($method)
                     ->setClassName($actionClass)
                     ->setEntity($entity)
+                    ->setPath($path)
                     ->setServicePath([
                         $name,
                     ])
