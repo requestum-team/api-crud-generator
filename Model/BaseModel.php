@@ -2,9 +2,13 @@
 
 namespace Requestum\ApiGeneratorBundle\Model;
 
+/**
+ * Class BaseModel
+ *
+ * @package Requestum\ApiGeneratorBundle\Model
+ */
 class BaseModel
 {
-
     const ALLOWED_METHOD_GET    = 'get';
     const ALLOWED_METHOD_POST   = 'post';
     const ALLOWED_METHOD_PATCH  = 'patch';
@@ -172,29 +176,5 @@ class BaseModel
     public function hasAttributs(): bool
     {
         return $this->hasAttributs;
-    }
-
-    protected function getSuffix(): string {
-        switch ($this->getMethod()) {
-            case self::ALLOWED_METHOD_GET:
-                return $this->hasAttributs() ? 'fetch': 'list';
-                break;
-
-            case self::ALLOWED_METHOD_POST:
-                return 'create';
-                break;
-
-            case self::ALLOWED_METHOD_PATCH:
-            case self::ALLOWED_METHOD_PUT:
-                return 'update';
-                break;
-
-            case self::ALLOWED_METHOD_DELETE:
-                return 'delete';
-                break;
-
-            default:
-                throw new \Exception(sprintf('Method "%s" not allowed. Allowed methods %s', $this->getMethod(), self::getAllowedMethodsString()));
-        }
     }
 }

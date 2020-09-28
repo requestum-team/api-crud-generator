@@ -19,7 +19,6 @@ use Requestum\ApiGeneratorBundle\Tests\TestCaseTrait;
  */
 class EntityBuilderTest extends TestCase
 {
-
     use TestCaseTrait;
 
     /**

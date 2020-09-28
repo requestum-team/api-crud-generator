@@ -14,6 +14,7 @@ use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\FormGeneratorModelBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\PhpGenerator;
+use Requestum\ApiGeneratorBundle\Tests\Service\Traits\ContentTrait;
 use Requestum\ApiGeneratorBundle\Tests\TestCaseTrait;
 
 /**
@@ -24,6 +25,7 @@ use Requestum\ApiGeneratorBundle\Tests\TestCaseTrait;
 class FormGeneratorModelBuilderTest extends TestCase
 {
     use TestCaseTrait;
+    use ContentTrait;
 
     /**
      * @param string $filename
@@ -159,9 +161,8 @@ class FormGeneratorModelBuilderTest extends TestCase
      */
     public function testProperties(string $filename, string $elementName, array $propertiesExpectedContent)
     {
-        $replace = ["/[\n\r\s]+/u", ' '];
         $content = $this->generateModel($this->getFormCollection($filename)->findElement($elementName));
-        $content = preg_replace($replace[0], $replace[1], $content);
+        $this->minimizeContent($content);
 
         foreach ($propertiesExpectedContent as $propertyExpectedContent) {
             $useSections =
@@ -174,8 +175,10 @@ class FormGeneratorModelBuilderTest extends TestCase
                 static::assertNotFalse(strpos($content, 'use ' . $useSection));
             }
 
+            $this->minimizeContent($propertyExpectedContent[1]);
+
             static::assertNotFalse(
-                strpos($content, preg_replace($replace[0], $replace[1], $propertyExpectedContent[1]))
+                strpos($content, $propertyExpectedContent[1])
             );
         }
     }
