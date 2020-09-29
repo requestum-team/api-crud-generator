@@ -35,6 +35,9 @@ class Action extends BaseModel implements ModelInterface
     /** @var Form|null */
     private ?Form $form = null;
 
+    /** @var string|null */
+    private ?string $path = null;
+
     /**
      * @var string[]
      */
@@ -45,7 +48,9 @@ class Action extends BaseModel implements ModelInterface
      */
     private array $calls = [];
 
-
+    /**
+     * @param string $prefix
+     */
     public function __construct(string $prefix = 'action')
     {
         $this->prefix = $prefix;
@@ -131,6 +136,26 @@ class Action extends BaseModel implements ModelInterface
     public function setForm(Form $form): self
     {
         $this->form = $form;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPath(): ?string
+    {
+        return $this->path;
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return $this
+     */
+    public function setPath(string $path): self
+    {
+        $this->path = $path;
 
         return $this;
     }

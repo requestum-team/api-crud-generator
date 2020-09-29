@@ -6,17 +6,19 @@ use PHPUnit\Framework\TestCase;
 use Requestum\ApiGeneratorBundle\Exception\CollectionException;
 use Requestum\ApiGeneratorBundle\Exception\EntityMissingException;
 use Requestum\ApiGeneratorBundle\Exception\FormMissingException;
+use Requestum\ApiGeneratorBundle\Helper\FileHelper;
+use Requestum\ApiGeneratorBundle\Service\Builder\RoutingBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\YmlGenerator;
 use Requestum\ApiGeneratorBundle\Tests\Service\Traits\ActionServiceTrait;
 use Requestum\ApiGeneratorBundle\Tests\Service\Traits\ContentTrait;
 use Requestum\ApiGeneratorBundle\Tests\TestCaseTrait;
 
 /**
- * Class ActionGeneratorModelBuilderTest
+ * Class RoutingGeneratorModelBuilderTest
  *
  * @package Requestum\ApiGeneratorBundle\Tests\Service\Generator
  */
-class ActionGeneratorModelBuilderTest extends TestCase
+class RoutingGeneratorModelBuilderTest extends TestCase
 {
     use TestCaseTrait;
     use ActionServiceTrait;
@@ -33,14 +35,19 @@ class ActionGeneratorModelBuilderTest extends TestCase
      * @throws FormMissingException
      * @throws \Exception
      */
-    private function generateActionNode(string $filename, string $nodeName): string
+    private function generateRoutingNode(string $filename, string $nodeName): string
     {
         $filePath = realpath(__DIR__ . '/providers/' . $filename);
-        $elements = $this->getActionNode($nodeName, $this->getActionCollection($filePath));
+
+        $actionCollection = $this->getActionCollection($filePath);
+
+        $builder = new RoutingBuilder();
+        $collection = $builder->build(FileHelper::load($filePath), $actionCollection);
+        $elements = $collection->findElement($nodeName);
 
         $ymlGenerator = new YmlGenerator('AppBundle');
 
-        return $ymlGenerator->generateActionNode($elements);
+        return $ymlGenerator->generateRoutingNode($elements);
     }
 
     /**
@@ -56,7 +63,7 @@ class ActionGeneratorModelBuilderTest extends TestCase
      */
     public function testGeneratedContent(string $filename, string $nodeName, array $expectedServicesContent)
     {
-        $content = $this->generateActionNode($filename, $nodeName);
+        $content = $this->generateRoutingNode($filename, $nodeName);
         $this->minimizeContent($content);
 
         foreach ($expectedServicesContent as $expectedServiceContent) {
@@ -76,30 +83,33 @@ class ActionGeneratorModelBuilderTest extends TestCase
                 'action-structure.yaml',
                 'user',
                 [
-                    'services:',
                     <<<EOF
-action.user.list:
-    class: Requestum\ApiBundle\Action\ListAction
-    arguments: [AppBundle\Entity\User]
-    tags: [controller.service_arguments]
+user.list:
+    path: /api/users
+    methods: get
+    defaults:
+        _controller: 'action.user.list::executeAction'
 EOF                 ,
                     <<<EOF
-action.user.create:
-    class: Requestum\ApiBundle\Action\CreateAction
-    arguments: [AppBundle\Entity\User, AppBundle\Form\User\UserCreate]
-    tags: [controller.service_arguments]
+user.create:
+    path: /api/users
+    methods: post
+    defaults:
+        _controller: 'action.user.create::executeAction'
 EOF                 ,
-<<<EOF
-action.user.update:
-    class: Requestum\ApiBundle\Action\UpdateAction
-    arguments: [AppBundle\Entity\User, AppBundle\Form\User\UserUpdate]
-    tags: [controller.service_arguments]
+                    <<<EOF
+user.update:
+    path: '/api/users/{id}'
+    methods: patch
+    defaults:
+        _controller: 'action.user.update::executeAction'
 EOF                 ,
-<<<EOF
-action.user.delete:
-    class: Requestum\ApiBundle\Action\DeleteAction
-    arguments: [AppBundle\Entity\User]
-    tags: [controller.service_arguments]
+                    <<<EOF
+user.delete:
+    path: '/api/users/{id}'
+    methods: delete
+    defaults:
+        _controller: 'action.user.delete::executeAction'
 EOF                 ,
                 ],
             ],

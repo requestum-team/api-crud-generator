@@ -3,6 +3,7 @@
 namespace Requestum\ApiGeneratorBundle\Service\Generator;
 
 use Requestum\ApiGeneratorBundle\Model\Action;
+use Requestum\ApiGeneratorBundle\Model\Routing;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -27,6 +28,7 @@ class YmlGenerator
      * @param Action[] $actionNode
      *
      * @return string
+     *
      * @throws \Exception
      */
     public function generateActionNode(array $actionNode): string
@@ -46,6 +48,32 @@ class YmlGenerator
             ];
 
             $data['services'][] = $actionService;
+        }
+
+        return Yaml::dump($data, 4);
+    }
+
+    /**
+     * @param Routing[] $routingNode
+     *
+     * @return string
+     *
+     * @throws \Exception
+     */
+    public function generateRoutingNode(array $routingNode): string
+    {
+        $data = [];
+
+        foreach ($routingNode as $routing) {
+            $data[] = [
+                $routing->getServiceName() => [
+                    'path'     => $routing->getPath(),
+                    'methods'  => $routing->getMethod(),
+                    'defaults' => [
+                        '_controller' => $routing->getControllerName(),
+                    ],
+                ],
+            ];
         }
 
         return Yaml::dump($data, 4);
