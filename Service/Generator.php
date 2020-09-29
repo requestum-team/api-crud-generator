@@ -18,7 +18,6 @@ use Requestum\ApiGeneratorBundle\Service\Generator\EntityRepositoryGeneratorMode
 use Requestum\ApiGeneratorBundle\Service\Generator\FormGeneratorModelBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\PhpGenerator;
 use Requestum\ApiGeneratorBundle\Service\Generator\YmlGenerator;
-use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Filesystem\Filesystem;
 use Requestum\ApiGeneratorBundle\Model\ActionCollection;
 use Requestum\ApiGeneratorBundle\Model\EntityCollection;
