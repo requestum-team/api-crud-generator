@@ -70,6 +70,7 @@ class FormGeneratorModelBuilder extends GeneratorModelBuilderAbstract
     {
         $this->addUseSections([
             $this->bundleName . '\\' . $entity->getNameSpace(),
+            'Requestum\ApiBundle\Form\Type\AbstractApiType',
         ]);
     }
 
