@@ -39,7 +39,7 @@ class ActionBuilderTest extends TestCase
     public function testStructure(string $filename, string $nodeName, string $actionServiceName)
     {
         $filePath = realpath(__DIR__ . '/providers/' . $filename);
-        $elements = $this->getActionNode($nodeName, $filePath);
+        $elements = $this->getActionNode($nodeName, $this->getActionCollection($filePath));
         $action = null;
 
         foreach ($elements as $element) {
@@ -109,7 +109,7 @@ class ActionBuilderTest extends TestCase
         static::expectException($exception);
         static::expectExceptionMessage($message);
 
-        $this->getActionNode($nodeName, $filePath);
+        $this->getActionNode($nodeName, $this->getActionCollection($filePath));
     }
 
     /**

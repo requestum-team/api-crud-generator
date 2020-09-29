@@ -2,54 +2,56 @@
 
 namespace Requestum\ApiGeneratorBundle\Model;
 
-class Routing extends BaseModel
+/**
+ * Class Routing
+ *
+ * @package Requestum\ApiGeneratorBundle\Model
+ */
+class Routing extends BaseModel implements ModelInterface
 {
+    /** @var Action */
+    private Action $action;
 
     /**
-     * @var string
+     * @param Action $action
+     *
+     * @throws \Exception
      */
-    private string $url;
-
-    public function __construct(?Action $action = null)
+    public function __construct(Action $action)
     {
-        if (!is_null($action)) {
-            $this->setName($action->getName());
-            $this->setMethod($action->getMethod());
-            $this->setParent($action->getServiceName());
-            $this->setServicePath($action->getServicePath());
-        }
+        $this->action = $action;
+
+        $this
+            ->setName($this->action->getName())
+            ->setMethod($this->action->getMethod())
+            ->setParent($this->action->getServiceName())
+            ->setServicePath($this->action->getServicePath())
+        ;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPath(): ?string
+    {
+        return $this->action->getPath();
+    }
+
+    /**
+     * @return string
+     *
+     * @throws \Exception
+     */
+    public function getServiceName(): string
+    {
+        $suffix = $this->action->getSuffix();
+
+        return implode('.', [...$this->getServicePath(), $suffix]);
     }
 
     /**
      * @return string
      */
-    public function getUrl(): string
-    {
-        return $this->url;
-    }
-
-    /**
-     * @param string $url
-     *
-     * @return Routing
-     */
-    public function setUrl(string $url)
-    {
-        $this->url = $url;
-
-        return $this;
-    }
-
-    /**
-     * @return \StdClass
-     */
-    public function getServiceName(): string
-    {
-        $suffix = $this->getSuffix();
-
-        return implode('.', [...$this->getServicePath(), $suffix]);
-    }
-
     public function getControllerName(): string
     {
         return implode('::', [$this->getParent(), 'executeAction']);

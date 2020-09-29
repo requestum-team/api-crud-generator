@@ -58,7 +58,7 @@ abstract class BaseAbstractCollection
     /**
      * @param string $name
      *
-     * @return Form|Entity|Action[]|null
+     * @return Form|Entity|Action[]|Routing[]|null
      */
     public function findElement(string $name)
     {
