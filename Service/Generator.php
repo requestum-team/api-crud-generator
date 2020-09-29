@@ -9,6 +9,7 @@ use Requestum\ApiGeneratorBundle\Exception\FormMissingException;
 use Requestum\ApiGeneratorBundle\Model\Entity;
 use Requestum\ApiGeneratorBundle\Model\Form;
 use Requestum\ApiGeneratorBundle\Service\Builder\ActionBuilder;
+use Requestum\ApiGeneratorBundle\Service\Builder\RoutingBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\BundleGenerator;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
@@ -140,10 +141,17 @@ class Generator
             )
         ;
 
+        $this->routingCollection = (new RoutingBuilder())
+            ->build(
+                $this->openApiSchema,
+                $this->actionCollection
+            )
+        ;
+
         $this->generateEntity();
         $this->generateForm();
         $this->generateAction();
-//        $this->generateRouting();
+        $this->generateRouting();
     }
 
     /**
@@ -322,20 +330,26 @@ class Generator
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     protected function generateRouting()
     {
         if (!$this->config->isGenerateRoute || $this->routingCollection->isEmpty()) {
             return;
         }
 
-        foreach ($this->routingCollection->dump() as $key => $dump) {
-            // src/AppBundle/Resources/config/routing/routing.yml
-            $bundleFile = implode(DIRECTORY_SEPARATOR, [$this->routingDir, $key . '.yml']);
+        foreach ($this->routingCollection->getElements() as $key => $node) {
+            $content = $this->ymlGenerator->generateRoutingNode($node);
 
-            $this->fs->dumpFile(
-                $bundleFile,
-                Yaml::dump($dump, 4)
+            $filePath = sprintf(
+                '%s/%s.%s',
+                $this->routingDir,
+                $key,
+                'yml'
             );
+
+            $this->fs->dumpFile($filePath, $content);
         }
     }
 }
