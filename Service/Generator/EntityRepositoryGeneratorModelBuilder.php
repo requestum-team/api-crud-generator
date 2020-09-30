@@ -31,13 +31,14 @@ class EntityRepositoryGeneratorModelBuilder extends GeneratorModelBuilderAbstrac
         $this->baseUseSection();
         $this->baseTraits();
         $this->addTraits($entity->getRepositoryTraits());
+        $this->prepareInterfaces($entity);
 
         return (new ClassGeneratorModel())
             ->setName($entity->getName() . self::NAME_POSTFIX)
             ->setNameSpace($nameSpace)
             ->setFilePath($this->prepareFilePath($entity->getName()))
             ->setExtendsClass('EntityRepository')
-            ->setImplementedInterfaces(['FilterableRepositoryInterface',])
+            ->setImplementedInterfaces($this->interfaces)
             ->setUseSection($this->useSection)
             ->setTraits($this->traits)
         ;
@@ -67,5 +68,14 @@ class EntityRepositoryGeneratorModelBuilder extends GeneratorModelBuilderAbstrac
         $this->addTraits([
             'ApiRepositoryTrait',
         ]);
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    private function prepareInterfaces(Entity $entity): void
+    {
+        $this->interfaces[] = 'FilterableRepositoryInterface';
+        $this->interfaces = array_merge($this->interfaces, $entity->getRepositoryInterfaces());
     }
 }
