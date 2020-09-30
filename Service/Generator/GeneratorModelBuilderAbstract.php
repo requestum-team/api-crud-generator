@@ -27,6 +27,9 @@ abstract class GeneratorModelBuilderAbstract
     /** @var array */
     protected array $methods = [];
 
+    /** @var array */
+    protected array $interfaces = [];
+
     /**
      * GeneratorModelBuilderAbstract constructor.
      *
