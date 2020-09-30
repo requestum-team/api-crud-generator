@@ -63,13 +63,11 @@ class YmlGenerator
         $data = [];
 
         foreach ($routingNode as $routing) {
-            $data[] = [
-                $routing->getServiceName() => [
-                    'path'     => $routing->getPath(),
-                    'methods'  => $routing->getMethod(),
-                    'defaults' => [
-                        '_controller' => $routing->getControllerName(),
-                    ],
+            $data[$routing->getServiceName()] = [
+                'path'     => $routing->getPath(),
+                'methods'  => $routing->getMethod(),
+                'defaults' => [
+                    '_controller' => $routing->getControllerName(),
                 ],
             ];
         }
