@@ -39,15 +39,13 @@ class YmlGenerator
             $this->prepareAction($action);
 
             $actionService = [
-                $action->getServiceName() => [
-                    'class'     => $action->getClassName(),
-                    'arguments' => $action->getArguments(),
-                    //todo 'calls'     => [],
-                    'tags'      => ['controller.service_arguments',],
-                ],
+                'class'     => $action->getClassName(),
+                'arguments' => $action->getArguments(),
+                //todo 'calls'     => [],
+                'tags'      => ['controller.service_arguments',],
             ];
 
-            $data['services'][] = $actionService;
+            $data['services'][$action->getServiceName()] = $actionService;
         }
 
         return Yaml::dump($data, 4);
