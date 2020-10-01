@@ -57,6 +57,10 @@ class ActionBuilder implements BuilderInterface
 
         foreach ($openApiSchema[self::SCHEMA_KEY] as $path => $methodsData) {
             foreach ($methodsData as $method => $data) {
+                if (!empty($data['x-skip']) && $data['x-skip'] === true) {
+                    continue;
+                }
+
                 $operationId = !empty($data['operationId']) ? $data['operationId'] : null;
 
                 if (empty($actionClass = ActionHelper::getActionClassByMethod($method, $operationId))) {

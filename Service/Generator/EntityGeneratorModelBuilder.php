@@ -54,6 +54,8 @@ class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
             throw new SubjectTypeException($entity, Entity::class);
         }
 
+        $entity->getInterfaces();
+
         $this->baseAnnotations($entity->getName(), $entity->getTableName());
         $this->addAnnotations($entity->getAnnotations());
         $this->addTraits($entity->getTraits());
@@ -61,6 +63,7 @@ class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
         $this->prepareConstants($entity);
         $this->prepareProperties($entity->getProperties());
         $this->prepareMethods($entity->getProperties());
+        $this->prepareInterfaces($entity);
 
         $nameSpace = implode('\\', [$this->bundleName, 'Entity']);
         $model = new ClassGeneratorModel();
@@ -77,6 +80,7 @@ class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
             ->setConstants($this->constants)
             ->setProperties($this->properties)
             ->setMethods($this->methods)
+            ->setImplementedInterfaces($this->interfaces)
         ;
 
         return $model;
@@ -88,7 +92,7 @@ class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
      */
     private function baseAnnotations(string $entityName, string $tableName)
     {
-        $this->annotations[] = sprintf('@ORM\Table(name="%s")', $tableName);
+        $this->annotations[] = sprintf('@ORM\Table(name="`%s`")', $tableName);
 
         // AppBundle\Repository\SomeRepository
         $repositoryClass = implode('\\', [$this->bundleName, 'Repository', implode('', [$entityName, 'Repository'])]);
@@ -293,5 +297,13 @@ class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
         }
 
         return $type;
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    private function prepareInterfaces(Entity $entity): void
+    {
+        $this->interfaces = array_merge($this->interfaces, $entity->getInterfaces());
     }
 }

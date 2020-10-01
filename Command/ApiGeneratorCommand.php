@@ -2,6 +2,7 @@
 
 namespace Requestum\ApiGeneratorBundle\Command;
 
+use App\Kernel;
 use Requestum\ApiGeneratorBundle\Helper\FileHelper;
 use Requestum\ApiGeneratorBundle\Service\Config;
 use Symfony\Component\Console\Command\Command;
@@ -10,11 +11,21 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-
 use Requestum\ApiGeneratorBundle\Service\Generator;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class ApiGeneratorCommand extends Command
+/**
+ * Class ApiGeneratorCommand
+ *
+ * @package Requestum\ApiGeneratorBundle\Command
+ */
+class ApiGeneratorCommand extends Command implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
+    /** @var int */
+    const SUCCESS = 0;
 
     protected function configure()
     {
@@ -44,15 +55,20 @@ class ApiGeneratorCommand extends Command
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int
+     *
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $inputSpec = $input->getArgument('inputSpec');
         $outputDirectory = $input->getArgument('outputDirectory');
+
+        $this->wrapPath($inputSpec);
+        $this->wrapPath($outputDirectory);
 
         $openApiSchema = FileHelper::load($inputSpec);
 
@@ -62,12 +78,36 @@ class ApiGeneratorCommand extends Command
         $generator = new Generator(
             $openApiSchema,
             $outputDirectory,
-            $config,
+            $config
         );
+
         $generator->generate();
 
-        $output->write("Command success");
+        $output->writeln("Command success\n");
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
+    }
+
+    /**
+     * @param $path
+     */
+    private function wrapPath(&$path)
+    {
+        if (preg_match("/^" . preg_quote(DIRECTORY_SEPARATOR, '/') . "/", $path)) {
+            return;
+        }
+
+        $path = preg_replace(
+            "/^\." . preg_quote(DIRECTORY_SEPARATOR, '/') . "/", '', $path
+        );
+
+        /** @var Kernel $kernel */
+        $kernel = $this->container->get('kernel');
+
+        $path = sprintf(
+            '%s/%s',
+            $kernel->getProjectDir(),
+            $path
+        );
     }
 }

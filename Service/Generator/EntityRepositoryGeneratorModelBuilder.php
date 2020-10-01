@@ -28,13 +28,17 @@ class EntityRepositoryGeneratorModelBuilder extends GeneratorModelBuilderAbstrac
 
         $nameSpace = implode('\\', [$this->bundleName, self::NAME_POSTFIX]);
 
+        $this->baseUseSection();
+        $this->baseTraits();
         $this->addTraits($entity->getRepositoryTraits());
+        $this->prepareInterfaces($entity);
 
         return (new ClassGeneratorModel())
             ->setName($entity->getName() . self::NAME_POSTFIX)
             ->setNameSpace($nameSpace)
             ->setFilePath($this->prepareFilePath($entity->getName()))
-            ->setExtendsClass('ApiRepository')
+            ->setExtendsClass('EntityRepository')
+            ->setImplementedInterfaces($this->interfaces)
             ->setUseSection($this->useSection)
             ->setTraits($this->traits)
         ;
@@ -48,5 +52,30 @@ class EntityRepositoryGeneratorModelBuilder extends GeneratorModelBuilderAbstrac
     private function prepareFilePath(string $entityName): string
     {
         return implode('.', [$entityName . self::NAME_POSTFIX, 'php']);
+    }
+
+    private function baseUseSection()
+    {
+        $this->addUseSections([
+            'Requestum\ApiBundle\Repository\ApiRepositoryTrait',
+            'Requestum\ApiBundle\Repository\FilterableRepositoryInterface',
+            'Doctrine\ORM\EntityRepository',
+        ]);
+    }
+
+    private function baseTraits()
+    {
+        $this->addTraits([
+            'ApiRepositoryTrait',
+        ]);
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    private function prepareInterfaces(Entity $entity): void
+    {
+        $this->interfaces[] = 'FilterableRepositoryInterface';
+        $this->interfaces = array_merge($this->interfaces, $entity->getRepositoryInterfaces());
     }
 }

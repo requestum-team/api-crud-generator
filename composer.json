@@ -1,20 +1,29 @@
 {
     "name": "requestum/api-crud-generator",
+    "version": "0.0.1",
     "type" : "symfony-bundle",
-    "description": "Symfony ApiBundle",
+    "description": "Symfony ApiBundle CRUD generator",
     "keywords": ["symfony", "api", "bundle", "openapi", "crud", "generator"],
     "license": "MIT",
     "authors": [
         {
             "name": "Dmytro Somik",
             "email": "dsemik@gmail.com"
+        },
+        {
+            "name": "Viktor Suslin",
+            "email": "suslinviktorv@gmail.com"
+        },
+        {
+            "name": "Nick Modeewine",
+            "email": "modeewine@gmail.com"
         }
     ],
     "require": {
-        "symfony/console": "^5.1",
-        "symfony/yaml": "^5.1",
-        "symfony/filesystem": "^5.1",
-        "symfony/options-resolver": "^5.1",
+        "symfony/console": "4.4.*",
+        "symfony/yaml": "4.4.*",
+        "symfony/filesystem": "4.4.*",
+        "symfony/options-resolver": "4.4.*",
         "zendframework/zend-code": "^3.4",
         "symfony/property-access": "^5.1"
     },

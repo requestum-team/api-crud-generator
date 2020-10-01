@@ -4,6 +4,25 @@ info:
     title: Paths
     version: 1.0.0
 paths:
+    /oauth/v2/token:
+        post:
+            tags:
+                - auth
+            summary: Obtain a token set for any other operation
+            operationId: auth.token
+            x-skip: true
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            properties:
+                                client_id:
+                                    description: Client ID
+                                    type: string
+            responses:
+                '405':
+                    description: Invalid input
+                    content: { }
     /api/users:
         get:
             tags:

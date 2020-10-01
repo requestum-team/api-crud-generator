@@ -40,7 +40,7 @@ class FormGeneratorModelBuilder extends GeneratorModelBuilderAbstract
         return (new ClassGeneratorModel())
             ->setName($form->getName() . self::NAME_POSTFIX)
             ->setNameSpace($nameSpace)
-            ->setFilePath($this->prepareFilePath($form->getName()))
+            ->setFilePath($this->prepareFilePath($form))
             ->setExtendsClass('AbstractApiType')
             ->setUseSection($this->useSection)
             ->setMethods($this->methods)
@@ -48,13 +48,19 @@ class FormGeneratorModelBuilder extends GeneratorModelBuilderAbstract
     }
 
     /**
-     * @param string $name
+     * @param Form $form
      *
      * @return string
      */
-    private function prepareFilePath(string $name): string
+    private function prepareFilePath(Form $form): string
     {
-        return implode('.', [$name . self::NAME_POSTFIX, 'php']);
+        return sprintf(
+            '%s/%s%s.%s',
+            $form->getEntity()->getName(),
+            $form->getName(),
+            self::NAME_POSTFIX,
+            'php'
+        );
     }
 
     /**
@@ -64,6 +70,7 @@ class FormGeneratorModelBuilder extends GeneratorModelBuilderAbstract
     {
         $this->addUseSections([
             $this->bundleName . '\\' . $entity->getNameSpace(),
+            'Requestum\ApiBundle\Form\Type\AbstractApiType',
         ]);
     }
 

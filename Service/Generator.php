@@ -2,12 +2,23 @@
 
 namespace Requestum\ApiGeneratorBundle\Service;
 
+use Requestum\ApiGeneratorBundle\Exception\AccessLevelException;
+use Requestum\ApiGeneratorBundle\Exception\CollectionException;
+use Requestum\ApiGeneratorBundle\Exception\EntityMissingException;
+use Requestum\ApiGeneratorBundle\Exception\FormMissingException;
+use Requestum\ApiGeneratorBundle\Model\Entity;
+use Requestum\ApiGeneratorBundle\Model\Form;
+use Requestum\ApiGeneratorBundle\Service\Builder\ActionBuilder;
+use Requestum\ApiGeneratorBundle\Service\Builder\RoutingBuilder;
 use Requestum\ApiGeneratorBundle\Service\Generator\BundleGenerator;
 use Requestum\ApiGeneratorBundle\Service\Builder\EntityBuilder;
 use Requestum\ApiGeneratorBundle\Service\Builder\FormBuilder;
-use Symfony\Component\Yaml\Yaml;
+use Requestum\ApiGeneratorBundle\Service\Generator\EntityGeneratorModelBuilder;
+use Requestum\ApiGeneratorBundle\Service\Generator\EntityRepositoryGeneratorModelBuilder;
+use Requestum\ApiGeneratorBundle\Service\Generator\FormGeneratorModelBuilder;
+use Requestum\ApiGeneratorBundle\Service\Generator\PhpGenerator;
+use Requestum\ApiGeneratorBundle\Service\Generator\YmlGenerator;
 use Symfony\Component\Filesystem\Filesystem;
-
 use Requestum\ApiGeneratorBundle\Model\ActionCollection;
 use Requestum\ApiGeneratorBundle\Model\EntityCollection;
 use Requestum\ApiGeneratorBundle\Model\FormCollection;
@@ -20,25 +31,25 @@ use Requestum\ApiGeneratorBundle\Model\RoutingCollection;
  */
 class Generator
 {
-    /**
-     * @var Filesystem
-     */
-    protected $fs;
+    /** @var PhpGenerator */
+    protected PhpGenerator $phpGenerator;
+
+    /** @var YmlGenerator */
+    protected YmlGenerator $ymlGenerator;
+
+    /** @var Filesystem */
+    protected Filesystem $fs;
 
     /**
      * @var Config
      */
     protected $config;
 
-    /**
-     * @var string
-     */
-    protected $openApiSchema;
+    /** @var array */
+    protected array $openApiSchema;
 
-    /**
-     * @var string
-     */
-    protected $outputDirectory;
+    /** @var string */
+    protected string $outputDirectory;
 
     /**
      * @var EntityCollection
@@ -85,16 +96,29 @@ class Generator
      */
     protected $routingDir;
 
+    /**
+     * @param array $openApiSchema
+     * @param string $outputDirectory
+     * @param Config $config
+     */
     public function __construct(array $openApiSchema, string $outputDirectory, Config $config)
     {
         $this->config = $config;
 
+        $this->phpGenerator = new PhpGenerator();
+        $this->ymlGenerator = new YmlGenerator($this->config->bundleName);
         $this->fs = new Filesystem();
-
         $this->openApiSchema = $openApiSchema;
         $this->outputDirectory = $outputDirectory;
     }
 
+    /**
+     * @throws AccessLevelException
+     * @throws CollectionException
+     * @throws EntityMissingException
+     * @throws FormMissingException
+     * @throws \Exception
+     */
     public function generate()
     {
         $this->buildBaseFileSystem();
@@ -108,26 +132,38 @@ class Generator
         $formBuilder = new FormBuilder();
         $this->formCollection = $formBuilder->build($schemasAndRequestBodiesCollection, $this->entityCollection);
 
+        $this->actionCollection = (new ActionBuilder())
+            ->build(
+                $this->openApiSchema,
+                $this->entityCollection,
+                $this->formCollection
+            )
+        ;
 
-//        $this->generateAction();
-//        $this->generateEntity();
-//        $this->generateForm();
-//        $this->generateRouting();
+        $this->routingCollection = (new RoutingBuilder())
+            ->build(
+                $this->openApiSchema,
+                $this->actionCollection
+            )
+        ;
+
+        $this->generateEntity();
+        $this->generateForm();
+        $this->generateAction();
+        $this->generateRouting();
     }
 
     /**
-     * Build base file system for geberated bundle
+     * Build base file system for generated bundle
      */
     protected function buildBaseFileSystem()
     {
-        // src
-        $outputDir = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', $this->outputDirectory]);
-        if (!$this->fs->exists($outputDir)) {
-            $this->fs->mkdir($outputDir);
+        if (!$this->fs->exists($this->outputDirectory)) {
+            $this->fs->mkdir($this->outputDirectory);
         }
 
         // src/AppBundle
-        $bundleDir = implode(DIRECTORY_SEPARATOR, [$outputDir, $this->config->bundleName]);
+        $bundleDir = implode(DIRECTORY_SEPARATOR, [$this->outputDirectory, $this->config->bundleName]);
 
         if (!$this->fs->exists($bundleDir)) {
             $this->fs->mkdir($bundleDir);
@@ -195,38 +231,54 @@ class Generator
         }
     }
 
-    protected function generateAction()
-    {
-        if (!$this->config->isGenerateAction || $this->actionCollection->isEmpty()) {
-            return;
-        }
-
-        foreach ($this->actionCollection->dump() as $key => $dump) {
-            // src/AppBundle/Resources/config/actions/action.yml
-            $bundleFile = implode(DIRECTORY_SEPARATOR, [$this->actionsDir, $key . '.yml']);
-
-            $this->fs->dumpFile(
-                $bundleFile,
-                Yaml::dump($dump, 4)
-            );
-        }
-    }
-
+    /**
+     * @throws AccessLevelException
+     */
     protected function generateEntity()
     {
         if (!$this->config->isGenerateEntity || $this->entityCollection->isEmpty()) {
             return;
         }
 
-//        foreach ($this->entityCollection->dump() as $key => $dump) {
-//            // src/AppBundle/Resources/config/actions/action.yml
-//            $bundleFile = implode(DIRECTORY_SEPARATOR, [$this->actionsDir, $key . '.yml']);
-//
-//            $this->fs->dumpFile(
-//                $bundleFile,
-//                Yaml::dump($dump, 4)
-//            );
-//        }
+        $generatorModelBuilder = new EntityGeneratorModelBuilder($this->config->bundleName);
+
+        foreach ($this->entityCollection->dump() as $key => $dump) {
+            /** @var Entity $dump */
+            if (!$dump->isGenerate()) {
+                continue;
+            }
+
+            $generatorModel = $generatorModelBuilder->buildModel($dump);
+            $content = $this->phpGenerator->generate($generatorModel);
+
+            $filePath = sprintf(
+                '%s/%s',
+                $this->entityDir,
+                $generatorModel->getFilePath()
+            );
+
+            $this->fs->dumpFile($filePath, $content);
+
+            $this->generateEntityRepository($dump);
+        }
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    protected function generateEntityRepository(Entity $entity)
+    {
+        $generatorModelBuilder = new EntityRepositoryGeneratorModelBuilder($this->config->bundleName);
+        $generatorModel = $generatorModelBuilder->buildModel($entity);
+        $content = $this->phpGenerator->generate($generatorModel);
+
+        $filePath = sprintf(
+            '%s/%s',
+            $this->repositoryDir,
+            $generatorModel->getFilePath()
+        );
+
+        $this->fs->dumpFile($filePath, $content);
     }
 
     protected function generateForm()
@@ -235,36 +287,68 @@ class Generator
             return;
         }
 
-//        foreach ($this->formCollection->dump() as $key => $dump) {
-//            /** @var Form $dump */
-//            if (!$dump->isGenerate()) {
-//                continue;
-//            }
-//
-//            // src/AppBundle/Resources/config/actions/action.yml
-//            $bundleFile = implode(DIRECTORY_SEPARATOR, [$this->actionsDir, $key . '.yml']);
-//
-//            $this->fs->dumpFile(
-//                $bundleFile,
-//                Yaml::dump($dump, 4)
-//            );
-//        }
+        foreach ($this->formCollection->dump() as $key => $dump) {
+            /** @var Form $dump */
+            if (!$dump->isGenerate()) {
+                continue;
+            }
+
+            $generatorModel = (new FormGeneratorModelBuilder($this->config->bundleName))->buildModel($dump);
+            $content = $this->phpGenerator->generate($generatorModel);
+
+            $filePath = sprintf(
+                '%s/%s',
+                $this->formDir,
+                $generatorModel->getFilePath()
+            );
+
+            $this->fs->dumpFile($filePath, $content);
+        }
     }
 
+    /**
+     * @throws \Exception
+     */
+    protected function generateAction()
+    {
+        if (!$this->config->isGenerateAction || $this->actionCollection->isEmpty()) {
+            return;
+        }
+
+        foreach ($this->actionCollection->getElements() as $key => $node) {
+            $content = $this->ymlGenerator->generateActionNode($node);
+
+            $filePath = sprintf(
+                '%s/%s.%s',
+                $this->actionsDir,
+                $key,
+                'yml'
+            );
+
+            $this->fs->dumpFile($filePath, $content);
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
     protected function generateRouting()
     {
         if (!$this->config->isGenerateRoute || $this->routingCollection->isEmpty()) {
             return;
         }
 
-        foreach ($this->routingCollection->dump() as $key => $dump) {
-            // src/AppBundle/Resources/config/routing/routing.yml
-            $bundleFile = implode(DIRECTORY_SEPARATOR, [$this->routingDir, $key . '.yml']);
+        foreach ($this->routingCollection->getElements() as $key => $node) {
+            $content = $this->ymlGenerator->generateRoutingNode($node);
 
-            $this->fs->dumpFile(
-                $bundleFile,
-                Yaml::dump($dump, 4)
+            $filePath = sprintf(
+                '%s/%s.%s',
+                $this->routingDir,
+                $key,
+                'yml'
             );
+
+            $this->fs->dumpFile($filePath, $content);
         }
     }
 }

@@ -50,7 +50,15 @@ class EntityRepositoryGeneratorModelBuilderTest extends TestCase
         static::assertNotFalse(
             strpos($content, 'class ' . $elementName . EntityRepositoryGeneratorModelBuilder::NAME_POSTFIX)
         );
-        static::assertNotFalse(strpos($content, 'extends ApiRepository'));
+        static::assertNotFalse(strpos($content, 'use Requestum\ApiBundle\Repository\ApiRepositoryTrait;'));
+        static::assertNotFalse(
+            strpos($content, 'use Requestum\ApiBundle\Repository\FilterableRepositoryInterface;')
+        );
+        static::assertNotFalse(strpos($content, 'use Doctrine\ORM\EntityRepository;'));
+        static::assertNotFalse(
+            strpos($content, 'extends EntityRepository implements FilterableRepositoryInterface')
+        );
+        static::assertNotFalse(strpos($content, 'ApiRepositoryTrait'));
         static::assertNotFalse(strpos($content, 'AppBundle\AbsRepositoryTrait'));
         static::assertNotFalse(strpos($content, 'AppBundle\QweRepositoryTrait'));
     }

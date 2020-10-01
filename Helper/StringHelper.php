@@ -126,6 +126,10 @@ class StringHelper
             } else if (is_float($value) || is_double($value)) {
                 $param = sprintf('%s=%f', $key, $value);
             } else {
+                if ($key === 'name') {
+                    $value = sprintf('`%s`', $value);
+                }
+
                 $param = sprintf('%s="%s"',$key, $value);
             }
 
