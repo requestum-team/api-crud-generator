@@ -66,6 +66,8 @@ class RoutingGeneratorModelBuilderTest extends TestCase
         $content = $this->generateRoutingNode($filename, $nodeName);
         $this->minimizeContent($content);
 
+        static::assertFalse(strpos($content, '/oauth/v2/token'));
+
         foreach ($expectedServicesContent as $expectedServiceContent) {
             $this->minimizeContent($expectedServiceContent);
 
