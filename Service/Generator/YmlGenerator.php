@@ -85,7 +85,13 @@ class YmlGenerator
         if (!empty($form = $action->getForm())) {
             array_unshift(
                 $arguments,
-                sprintf('%s\%s\%s', $this->bundleName, $form->getNameSpace(), $form->getName())
+                sprintf(
+                    '%s\%s\%s%s',
+                    $this->bundleName,
+                    $form->getNameSpace(),
+                    $form->getName(),
+                    FormGeneratorModelBuilder::NAME_POSTFIX
+                )
             );
         }
 
