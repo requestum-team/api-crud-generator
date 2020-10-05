@@ -45,7 +45,7 @@ class UniqueAnnotationGenerator implements AnnotationGeneratorInterface
     public function support(EntityProperty $entityProperty): bool
     {
         return
-            $entityProperty->getName() === PropertyTypeEnum::TYPE_ARRAY
+            $entityProperty->getType() === PropertyTypeEnum::TYPE_ARRAY
             && $entityProperty->isUnique()
         ;
     }
