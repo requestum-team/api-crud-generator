@@ -269,6 +269,7 @@ class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
     private function prepareParameterType(EntityProperty $entityProperty): string
     {
         $type = '';
+
         if (!is_null($entityProperty->getType())) {
             $type = $entityProperty->getType();
 
@@ -294,6 +295,10 @@ class EntityGeneratorModelBuilder extends GeneratorModelBuilderAbstract
 
         if ($entityProperty->isOneToMany()) {
             $type = 'Doctrine\Common\Collections\ArrayCollection';
+        }
+
+        if ($entityProperty->isNullable()) {
+            $type = '?' . $type;
         }
 
         return $type;

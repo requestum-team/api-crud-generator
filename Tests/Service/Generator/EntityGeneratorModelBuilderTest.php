@@ -85,8 +85,8 @@ class EntityGeneratorModelBuilderTest extends TestCase
         static::assertNotFalse(strpos($content, '@Assert\NotBlank(groups={"update"})'));
         static::assertNotFalse(strpos($content, '@Assert\NotBlank(groups={"create"})'));
         static::assertNotFalse(strpos($content, '@Assert\Unique'));
-        static::assertNotFalse(strpos($content, '@Serializer\Groups({"Default", "some_group"})'));
-        static::assertNotFalse(strpos($content, '@Serializer\Groups({"Default"})'));
+        static::assertNotFalse(strpos($content, '@Serializer\Groups({"default", "some_group"})'));
+        static::assertNotFalse(strpos($content, '@Serializer\Groups({"default"})'));
         static::assertNotFalse(strpos($content, '@Reference()'));
         static::assertNotFalse(strpos($content, '@Assert\NotBlank'));
         static::assertNotFalse(strpos($content, '@Assert\Email'));
