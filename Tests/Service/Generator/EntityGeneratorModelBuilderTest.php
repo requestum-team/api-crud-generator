@@ -49,7 +49,7 @@ class EntityGeneratorModelBuilderTest extends TestCase
         static::assertEquals('AppBundle\Entity', $model->getNameSpace());
         static::assertEquals('StructureTest.php', $model->getFilePath());
         static::assertContains('Doctrine\ORM\Mapping as ORM', $model->getUseSection());
-        static::assertContains('@ORM\Table(name="structure_test")', $model->getAnnotations());
+        static::assertContains('@ORM\Table(name="`structure_test`")', $model->getAnnotations());
         static::assertContains('@ORM\Entity(repositoryClass="AppBundle\Repository\StructureTestRepository")', $model->getAnnotations());
         static::assertContains('Gedmo\Mapping\Annotation\SoftDeleteable()', $model->getAnnotations());
         static::assertContains('AbsTrait', $model->getTraits());
@@ -67,7 +67,7 @@ class EntityGeneratorModelBuilderTest extends TestCase
         $property = $model->getPropertyByName('name');
         static::assertEquals('name', $property->getName());
         static::assertEquals(AccessLevelEnum::ACCESS_LEVEL_PROTECTED, $property->getAccessLevel());
-        static::assertContains(['name' => 'ORM\Column(type="string", name="name")'], $property->getAttributes());
+        static::assertContains(['name' => 'ORM\Column(type="string", name="`name`")'], $property->getAttributes());
 
         $method = $model->getMethodByName('__construct');
         static::assertInstanceOf(GeneratorMethodModel::class, $method);
@@ -85,8 +85,8 @@ class EntityGeneratorModelBuilderTest extends TestCase
         static::assertNotFalse(strpos($content, '@Assert\NotBlank(groups={"update"})'));
         static::assertNotFalse(strpos($content, '@Assert\NotBlank(groups={"create"})'));
         static::assertNotFalse(strpos($content, '@Assert\Unique'));
-        static::assertNotFalse(strpos($content, '@Serializer\Groups({"Default", "some_group"})'));
-        static::assertNotFalse(strpos($content, '@Serializer\Groups({"Default"})'));
+        static::assertNotFalse(strpos($content, '@Serializer\Groups({"default", "some_group"})'));
+        static::assertNotFalse(strpos($content, '@Serializer\Groups({"default"})'));
         static::assertNotFalse(strpos($content, '@Reference()'));
         static::assertNotFalse(strpos($content, '@Assert\NotBlank'));
         static::assertNotFalse(strpos($content, '@Assert\Email'));

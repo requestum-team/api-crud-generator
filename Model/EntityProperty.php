@@ -182,7 +182,7 @@ class EntityProperty extends BaseAbstractProperty
     /**
      * @var array
      */
-    protected array $serializers = ['Default'];
+    protected array $serializers = ['default'];
 
     /**
      * @var bool

@@ -80,26 +80,36 @@ class ActionGeneratorModelBuilderTest extends TestCase
                     <<<EOF
 action.user.list:
     class: Requestum\ApiBundle\Action\ListAction
-    arguments: [AppBundle\Entity\User]
-    tags: [controller.service_arguments]
+    arguments: 
+        - AppBundle\Entity\User
+    tags: 
+        - controller.service_arguments
 EOF                 ,
                     <<<EOF
 action.user.create:
     class: Requestum\ApiBundle\Action\CreateAction
-    arguments: [AppBundle\Entity\User, AppBundle\Form\User\UserCreate]
-    tags: [controller.service_arguments]
+    arguments: 
+        - AppBundle\Entity\User
+        - AppBundle\Form\User\UserCreate
+    tags: 
+        - controller.service_arguments
 EOF                 ,
 <<<EOF
 action.user.update:
     class: Requestum\ApiBundle\Action\UpdateAction
-    arguments: [AppBundle\Entity\User, AppBundle\Form\User\UserUpdate]
-    tags: [controller.service_arguments]
+    arguments: 
+        - AppBundle\Entity\User
+        - AppBundle\Form\User\UserUpdate
+    tags:
+        - controller.service_arguments
 EOF                 ,
 <<<EOF
 action.user.delete:
     class: Requestum\ApiBundle\Action\DeleteAction
-    arguments: [AppBundle\Entity\User]
-    tags: [controller.service_arguments]
+    arguments: 
+        - AppBundle\Entity\User
+    tags: 
+        - controller.service_arguments
 EOF                 ,
                 ],
             ],

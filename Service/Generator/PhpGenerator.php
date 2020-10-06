@@ -185,16 +185,23 @@ class PhpGenerator
     private function prepareDocBlockParams(array $parameters): array
     {
         $result = [];
-        /** @var GeneratorParameterModel $parameter */
+
         foreach ($parameters as $parameter) {
+            $type = $parameter->getType();
+
+            if (preg_match("/^\?/", $type)) {
+                $type = preg_replace("/^\?/", '', $type) . '|null';
+            }
+
             if ($parameter->isReturn()) {
-                $tag = new Tag\ReturnTag($parameter->getType());
+                $tag = new Tag\ReturnTag($type);
             } else {
                 $tag = new Tag\ParamTag(
                     $parameter->getName(),
-                    $parameter->getType()
+                    $type
                 );
             }
+
             $result[] = $tag;
         }
 
